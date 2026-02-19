@@ -1,0 +1,12 @@
+node_modules
+.next
+.DS_Store
+*.zip
+dist
+build
+.env
+.env.local
+.claude
+frontend/node_modules
+frontend/.next
+frontend/.DS_Store

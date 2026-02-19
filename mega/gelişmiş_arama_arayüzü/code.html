@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+
+<html lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gelişmiş Arama Arayüzü - CNC Otomasyon</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0d59f2",
+                        "primary-dark": "#0b4ecf",
+                        "background-light": "#f5f6f8",
+                        "background-dark": "#101622",
+                        "neutral-surface": "#f8f9fc",
+                        "neutral-border": "#e2e8f0",
+                        "success": "#059669",
+                        "danger": "#dc2626",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        /* Custom scrollbar for the results area */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen flex items-start justify-center pt-20">
+<!-- Overlay Backdrop -->
+<div aria-hidden="true" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40 transition-opacity"></div>
+<!-- Main Search Modal Container -->
+<div class="relative z-50 w-full max-w-[1024px] bg-white dark:bg-[#1e293b] rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh] mx-4 animate-fade-in-up">
+<!-- Search Header -->
+<div class="p-6 pb-2 border-b border-neutral-border dark:border-slate-700">
+<div class="relative flex items-center w-full">
+<!-- Search Icon -->
+<span class="absolute left-4 text-primary material-symbols-outlined select-none">search</span>
+<!-- Input Field -->
+<input autofocus="" class="w-full h-14 pl-12 pr-12 rounded-lg bg-neutral-surface dark:bg-slate-800 border-2 border-transparent focus:border-primary/50 focus:bg-white dark:focus:bg-slate-800 focus:ring-0 text-lg text-slate-900 dark:text-white placeholder:text-slate-400 transition-all font-medium" placeholder="Ürün, kategori veya marka arayın..." type="text" value="Servo Motor"/>
+<!-- Clear Button -->
+<button class="absolute right-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<!-- Tabs Navigation -->
+<div class="flex gap-8 mt-6 overflow-x-auto no-scrollbar">
+<button class="relative pb-3 text-sm font-bold text-primary border-b-[3px] border-primary transition-colors whitespace-nowrap">
+                    Ürünler <span class="ml-1 text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">142</span>
+</button>
+<button class="relative pb-3 text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 border-b-[3px] border-transparent transition-colors whitespace-nowrap">
+                    Kategoriler
+                </button>
+<button class="relative pb-3 text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 border-b-[3px] border-transparent transition-colors whitespace-nowrap">
+                    Markalar
+                </button>
+</div>
+</div>
+<!-- Main Content Area: Split View -->
+<div class="flex flex-1 overflow-hidden min-h-[400px]">
+<!-- Left Side: Search Results -->
+<div class="flex-1 overflow-y-auto custom-scrollbar bg-white dark:bg-[#1e293b] p-2">
+<div class="flex flex-col gap-1 p-2">
+<!-- Result Item 1 (Focused/Active State) -->
+<div class="group flex items-start gap-4 p-3 rounded-lg bg-blue-50/50 dark:bg-slate-700/50 hover:bg-blue-50 dark:hover:bg-slate-700 cursor-pointer border border-primary/20 transition-all">
+<div class="shrink-0 relative">
+<div class="w-16 h-16 rounded-lg bg-white dark:bg-slate-800 border border-neutral-border dark:border-slate-600 flex items-center justify-center overflow-hidden">
+<img alt="Servo Drive Unit" class="w-full h-full object-cover" data-alt="Close up of an industrial servo drive unit" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_bB-tx-Z-zoodP1gxdzFDElRYB0-9avbd-9huIWTiV9zJTCXmjs1WpPqbWoyNY5HbfiDhy4Rvhp9u1qwyPqDMh_lVyXJj7jHzh81eg5bya__1BsA2bI5YDvGwk2qEyenkGjvo_qmrtKP4AF2GcarQzRWaeUTcVFtsoRqFTKxrQEPkgrfG6HhPF1QAXjBT9UsmWzoN3xW0ltZ1KB-mlGhZCvMmkospuNnMIPgjptLEfrOZy6jAxVmcpNdEgBBAJVOF05RInpTeAd4X"/>
+</div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start">
+<h3 class="text-sm font-bold text-slate-900 dark:text-white truncate pr-2 group-hover:text-primary transition-colors">Delta ASD-B2 Servo Sürücü</h3>
+<span class="shrink-0 text-sm font-bold text-primary">4.250 TL</span>
+</div>
+<div class="flex items-center gap-2 mt-1">
+<span class="flex items-center gap-1 text-xs font-medium text-success bg-success/10 px-1.5 py-0.5 rounded">
+<span class="w-1.5 h-1.5 rounded-full bg-success"></span> Stokta
+                                </span>
+<span class="text-xs text-slate-400 dark:text-slate-500">•</span>
+<span class="text-xs text-slate-500 dark:text-slate-400 truncate">Otomasyon &gt; Sürücüler &gt; Delta</span>
+</div>
+</div>
+<div class="hidden group-hover:flex items-center justify-center h-full pl-2">
+<span class="material-symbols-outlined text-slate-400 text-lg">keyboard_return</span>
+</div>
+</div>
+<!-- Result Item 2 -->
+<div class="group flex items-start gap-4 p-3 rounded-lg hover:bg-neutral-surface dark:hover:bg-slate-800 cursor-pointer border border-transparent transition-all">
+<div class="shrink-0 relative">
+<div class="w-16 h-16 rounded-lg bg-white dark:bg-slate-800 border border-neutral-border dark:border-slate-600 flex items-center justify-center overflow-hidden">
+<img alt="Industrial Electric Motor" class="w-full h-full object-cover" data-alt="Detailed shot of an electric motor coil" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCbul9oDkjFEcPSLfBtCWicgRJw1mHlWUvij7NW7licc4AjQ8XpybuKo-khCkRfwVXH-bGrbWnEuz2kybP7YqfZoou13fbyRMpYqypFkwRNQHQu0-Q9fRQy5wO7lLci0RUiVTAdNwanmn10NJS_q2_g2vD4aRe1llrMmcbFLZMSYBRJXI-QfyL6wRe-MPSVqrsZew0Co624H6OhAMfGO7jWFpmSCT-jSxJalRfe3kRLKPGY-mraQCfYcxxOueydOeWciQJu7hYkDsij"/>
+</div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start">
+<h3 class="text-sm font-bold text-slate-900 dark:text-white truncate pr-2 group-hover:text-primary transition-colors">750W Frenli Servo Motor</h3>
+<span class="shrink-0 text-sm font-bold text-primary">6.100 TL</span>
+</div>
+<div class="flex items-center gap-2 mt-1">
+<span class="flex items-center gap-1 text-xs font-medium text-success bg-success/10 px-1.5 py-0.5 rounded">
+<span class="w-1.5 h-1.5 rounded-full bg-success"></span> Stokta
+                                </span>
+<span class="text-xs text-slate-400 dark:text-slate-500">•</span>
+<span class="text-xs text-slate-500 dark:text-slate-400 truncate">Motorlar &gt; Servo &gt; Frenli</span>
+</div>
+</div>
+</div>
+<!-- Result Item 3 -->
+<div class="group flex items-start gap-4 p-3 rounded-lg hover:bg-neutral-surface dark:hover:bg-slate-800 cursor-pointer border border-transparent transition-all">
+<div class="shrink-0 relative">
+<div class="w-16 h-16 rounded-lg bg-white dark:bg-slate-800 border border-neutral-border dark:border-slate-600 flex items-center justify-center overflow-hidden grayscale opacity-80">
+<img alt="Planetary Gearbox" class="w-full h-full object-cover" data-alt="Mechanical gears close up" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjMBvjfQIgnveWOGKJhYcTZ5rfLk17I-FDpnm6wgbZ09acAjUmtjnm7LzM6vbgKQIy3f794cQzRloVcu4va7rIfgIpnNwGLymvvM0UFIeWWIY7njde3iaBor5EoE8x50PN6yll8dfRKS4rsEv2Hc_-RWU4qfRTTjmJAa9lqsB_km5wHiEBe6V1eFKonnEjOYjypFMwxeRnPMTrpQ2gpEK4iS7i1wRNbPnbKkq8WrLuyCnSIlVC1b4ud5z28BRnOESm_S6hly452zdb"/>
+</div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start">
+<h3 class="text-sm font-bold text-slate-900 dark:text-white truncate pr-2 group-hover:text-primary transition-colors">Planet Redüktör 1:10</h3>
+<span class="shrink-0 text-sm font-bold text-primary">1.200 TL</span>
+</div>
+<div class="flex items-center gap-2 mt-1">
+<span class="flex items-center gap-1 text-xs font-medium text-danger bg-danger/10 px-1.5 py-0.5 rounded">
+<span class="w-1.5 h-1.5 rounded-full bg-danger"></span> Tükendi
+                                </span>
+<span class="text-xs text-slate-400 dark:text-slate-500">•</span>
+<span class="text-xs text-slate-500 dark:text-slate-400 truncate">Mekanik &gt; Redüktör &gt; Planet</span>
+</div>
+</div>
+</div>
+<!-- Result Item 4 -->
+<div class="group flex items-start gap-4 p-3 rounded-lg hover:bg-neutral-surface dark:hover:bg-slate-800 cursor-pointer border border-transparent transition-all">
+<div class="shrink-0 relative">
+<div class="w-16 h-16 rounded-lg bg-white dark:bg-slate-800 border border-neutral-border dark:border-slate-600 flex items-center justify-center overflow-hidden">
+<img alt="Servo Cables" class="w-full h-full object-cover" data-alt="Industrial cables and connectors" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9GPYoFndh3plO3cRkglOcpTrbgTSRW2WZGr9V_TyiP2Y-jmWylaD7XC2rGqqSf9EtoF1WWg9aQknFVwvXm7FNBmqzdpovmnD-ZGlgE1dcGLnNMxfVjMhk7t8buwHlD-TRsePm11IGDqQNcW5JJkxjI-qaPuS_kci9EoGNjGmbYgjbPyiD2_imY9j2M5TitPJCfhfqWMYQiq6q78hBLTikRxNCW81zTUDpVeVnUS22TG_3kj9qh6XhH4awWG8G2_bsTI9uhXo3EMxI"/>
+</div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start">
+<h3 class="text-sm font-bold text-slate-900 dark:text-white truncate pr-2 group-hover:text-primary transition-colors">Servo Motor Kablo Seti (5m)</h3>
+<span class="shrink-0 text-sm font-bold text-primary">850 TL</span>
+</div>
+<div class="flex items-center gap-2 mt-1">
+<span class="flex items-center gap-1 text-xs font-medium text-success bg-success/10 px-1.5 py-0.5 rounded">
+<span class="w-1.5 h-1.5 rounded-full bg-success"></span> Stokta
+                                </span>
+<span class="text-xs text-slate-400 dark:text-slate-500">•</span>
+<span class="text-xs text-slate-500 dark:text-slate-400 truncate">Aksesuarlar &gt; Kablolar</span>
+</div>
+</div>
+</div>
+</div>
+<!-- View All Button -->
+<div class="sticky bottom-0 bg-white/95 dark:bg-[#1e293b]/95 backdrop-blur pt-2 pb-4 px-4 border-t border-neutral-border dark:border-slate-700 mt-2">
+<button class="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark text-white font-bold py-3 px-6 rounded-lg transition-all shadow-sm group">
+                        Tüm Sonuçları Gör (142)
+                        <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Right Side: Suggestions & History -->
+<div class="hidden md:flex w-72 flex-col border-l border-neutral-border dark:border-slate-700 bg-neutral-surface dark:bg-slate-900/50 p-6">
+<!-- Recent Searches Section -->
+<div class="mb-8">
+<div class="flex items-center justify-between mb-3">
+<h4 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Son Aramalar</h4>
+<button class="text-xs text-primary hover:underline">Temizle</button>
+</div>
+<ul class="space-y-1">
+<li>
+<button class="flex items-center justify-between w-full px-2 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-black/5 dark:hover:bg-white/5 rounded group">
+<div class="flex items-center gap-2 truncate">
+<span class="material-symbols-outlined text-slate-400 text-lg">history</span>
+<span>Step Motor Sürücü</span>
+</div>
+<span class="opacity-0 group-hover:opacity-100 material-symbols-outlined text-slate-400 text-sm hover:text-danger">close</span>
+</button>
+</li>
+<li>
+<button class="flex items-center justify-between w-full px-2 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-black/5 dark:hover:bg-white/5 rounded group">
+<div class="flex items-center gap-2 truncate">
+<span class="material-symbols-outlined text-slate-400 text-lg">history</span>
+<span>Spindle</span>
+</div>
+<span class="opacity-0 group-hover:opacity-100 material-symbols-outlined text-slate-400 text-sm hover:text-danger">close</span>
+</button>
+</li>
+</ul>
+</div>
+<!-- Popular Searches Section -->
+<div>
+<h4 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">Popüler Aramalar</h4>
+<div class="flex flex-wrap gap-2">
+<button class="flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-slate-800 border border-neutral-border dark:border-slate-700 rounded-full text-sm text-slate-700 dark:text-slate-300 hover:border-primary hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-base">trending_up</span> PLC
+                        </button>
+<button class="flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-slate-800 border border-neutral-border dark:border-slate-700 rounded-full text-sm text-slate-700 dark:text-slate-300 hover:border-primary hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-base">trending_up</span> Güç Kaynağı
+                        </button>
+<button class="flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-slate-800 border border-neutral-border dark:border-slate-700 rounded-full text-sm text-slate-700 dark:text-slate-300 hover:border-primary hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-base">trending_up</span> HMI Panel
+                        </button>
+<button class="flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-slate-800 border border-neutral-border dark:border-slate-700 rounded-full text-sm text-slate-700 dark:text-slate-300 hover:border-primary hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-base">trending_up</span> İnvertör
+                        </button>
+</div>
+</div>
+<!-- Help / Support Prompt -->
+<div class="mt-auto pt-8">
+<div class="bg-primary/5 rounded-lg p-3 border border-primary/10">
+<p class="text-xs text-primary font-medium flex gap-2 items-center">
+<span class="material-symbols-outlined text-lg">support_agent</span>
+                            Teknik destek mi lazım?
+                        </p>
+<a class="text-xs text-slate-600 dark:text-slate-400 mt-1 block hover:underline ml-7" href="#">Satış mühendisimize danışın</a>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer / Keyboard Shortcuts -->
+<div class="bg-neutral-surface dark:bg-slate-900 border-t border-neutral-border dark:border-slate-700 px-6 py-3 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+<div class="flex items-center gap-4">
+<span class="flex items-center gap-1">
+<kbd class="hidden sm:inline-block px-1.5 py-0.5 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-sans text-[10px] font-medium shadow-sm">
+<span class="text-primary font-bold">↑</span>
+<span class="text-primary font-bold">↓</span>
+</kbd>
+<span class="hidden sm:inline">Gezin</span>
+</span>
+<span class="flex items-center gap-1">
+<kbd class="hidden sm:inline-block px-1.5 py-0.5 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-sans text-[10px] font-medium shadow-sm">ENTER</kbd>
+<span class="hidden sm:inline">Seç</span>
+</span>
+<span class="flex items-center gap-1">
+<kbd class="hidden sm:inline-block px-1.5 py-0.5 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-sans text-[10px] font-medium shadow-sm">ESC</kbd>
+<span class="hidden sm:inline">Kapat</span>
+</span>
+</div>
+<div class="hidden sm:block">
+               Mega Otomasyon Arama
+            </div>
+</div>
+</div>
+</body></html>

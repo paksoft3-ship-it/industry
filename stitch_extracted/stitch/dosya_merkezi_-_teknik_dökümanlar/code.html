@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+
+<html lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dosya Merkezi - CNC Otomasyon</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0d59f2",
+                        "primary-dark": "#0a46c2",
+                        "background-light": "#f5f6f8",
+                        "background-dark": "#101622",
+                        "surface": "#ffffff",
+                        "text-main": "#0d121c",
+                        "text-secondary": "#49659c",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "body": ["Noto Sans", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-text-main antialiased min-h-screen flex flex-col">
+<!-- Header -->
+<header class="sticky top-0 z-50 bg-surface/90 backdrop-blur-md border-b border-[#e7ebf4] dark:border-gray-800 dark:bg-background-dark/90">
+<div class="max-w-[1440px] mx-auto px-6 h-16 flex items-center justify-between">
+<div class="flex items-center gap-3 text-text-main dark:text-white">
+<div class="w-8 h-8 text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-3xl">precision_manufacturing</span>
+</div>
+<h2 class="text-xl font-bold tracking-tight">CNC Otomasyon</h2>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-text-main dark:text-gray-200 text-sm font-medium hover:text-primary transition-colors" href="#">Ürünler</a>
+<a class="text-text-main dark:text-gray-200 text-sm font-medium hover:text-primary transition-colors" href="#">Çözümler</a>
+<a class="text-primary text-sm font-bold border-b-2 border-primary pb-0.5" href="#">Destek Merkezi</a>
+<a class="text-text-main dark:text-gray-200 text-sm font-medium hover:text-primary transition-colors" href="#">İletişim</a>
+</nav>
+<div class="flex items-center gap-4">
+<a class="hidden lg:flex items-center gap-2 text-text-secondary hover:text-primary text-sm font-medium group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary">history</span>
+                    İndirme Geçmişi
+                </a>
+<div class="w-px h-6 bg-[#e7ebf4] dark:bg-gray-700 hidden lg:block"></div>
+<button class="flex items-center justify-center gap-2 text-text-main dark:text-white hover:bg-background-light dark:hover:bg-gray-800 rounded-lg px-2 py-1 transition-colors">
+<div class="w-8 h-8 rounded-full bg-cover bg-center border border-gray-200" data-alt="User profile avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuB69ynG4vDn29MglSHPlMpeQgdykc3fun8rS5tR-9MUBGdaLKJbJtXfSLIezjsU_hi4j4G5qgBYxo_ziu76Egy2242_B5sWCQmJ50yTy7EOlx396XQvqGtveSp1GwB69mkCXxrvJBhvzGV93sA3sR5SPVhlGYiTxAPXq2PgQArIv2msQszNabu9sz9BoESQHIZD9UUyuNntjQGMhNWbLjE8Jz25Q9PanL9fejsY_prHPgoI7KAQ1-hLkuAn6T6vA8vnL44a9tyR3A4T');"></div>
+<span class="text-sm font-medium hidden sm:block">Ahmet Y.</span>
+<span class="material-symbols-outlined text-[20px] text-text-secondary">expand_more</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content Wrapper -->
+<main class="flex-grow flex flex-col">
+<!-- Hero Section -->
+<section class="relative bg-background-dark overflow-hidden">
+<!-- Abstract technical background -->
+<div class="absolute inset-0 opacity-20" data-alt="Abstract technical blueprint background" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDqRdEWuS3j77WUSR0TGBgcpsFKTqfqSkIWGbN_aVYpP2_Rekrbm7CclqoNUbUEeQXB0A6EJKq85_JaPgrcdNrbX3qjCFcz0fyDzTIv2a-CFjpcc7WYVKALEifbzjHKU_g3Bj9xJcky-H8Bdys4BgcXV87dM-okMKR4abNNz9VUKh8kW-lBVGgiyJRS2HuNLsXeToeaoIqWHhCs2e0KWph9e7Rnd6cKXL9e4n0uhMnpFrBOWpRo4hzrPQvIGAF01lJz9W-Y_f_OJk4r'); background-size: cover; background-position: center;"></div>
+<div class="absolute inset-0 bg-gradient-to-r from-background-dark via-background-dark/95 to-background-dark/80"></div>
+<div class="relative max-w-[1440px] mx-auto px-6 py-16 lg:py-24 flex flex-col items-center justify-center text-center">
+<span class="text-primary font-bold tracking-widest uppercase text-xs mb-3">Teknik Destek Platformu</span>
+<h1 class="text-white text-3xl md:text-5xl font-bold tracking-tight mb-4 max-w-3xl">
+                    Dosya ve Teknik Döküman Merkezi
+                </h1>
+<p class="text-gray-400 text-base md:text-lg mb-10 max-w-2xl font-light">
+                    Tüm teknik çizimler, kullanım kılavuzları, CAD dosyaları ve yazılımlar tek bir yerde. Projeniz için gerekli dökümanları saniyeler içinde bulun.
+                </p>
+<!-- Search Bar -->
+<div class="w-full max-w-2xl relative group">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-text-secondary">search</span>
+</div>
+<input class="block w-full pl-12 pr-32 py-4 rounded-xl border-0 ring-1 ring-gray-700 bg-white/10 text-white placeholder:text-gray-400 focus:ring-2 focus:ring-primary focus:bg-white/15 transition-all shadow-lg backdrop-blur-sm" placeholder="Model, dosya adı veya kategori ara (Örn: NEMA 23, Planet Redüktör)..." type="text"/>
+<div class="absolute inset-y-0 right-2 flex items-center">
+<button class="bg-primary hover:bg-primary-dark text-white text-sm font-bold py-2 px-6 rounded-lg transition-colors shadow-md">
+                            Ara
+                        </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Layout Container -->
+<div class="max-w-[1440px] w-full mx-auto flex flex-col lg:flex-row gap-8 px-6 py-8 flex-grow">
+<!-- Sidebar Filters -->
+<aside class="w-full lg:w-72 flex-shrink-0 space-y-8">
+<div class="bg-surface rounded-xl border border-[#e7ebf4] p-5 shadow-sm sticky top-24">
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-bold text-lg text-text-main flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">filter_list</span>
+                            Filtrele
+                        </h3>
+<button class="text-xs font-medium text-text-secondary hover:text-primary underline">Temizle</button>
+</div>
+<!-- Filter Group: Product Type -->
+<div class="mb-6">
+<button class="flex items-center justify-between w-full text-left mb-3 group">
+<span class="text-sm font-bold text-text-main">Ürün Grubu</span>
+<span class="material-symbols-outlined text-text-secondary text-lg group-hover:text-primary">expand_less</span>
+</button>
+<div class="space-y-2">
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary/20" type="checkbox"/>
+<span class="text-sm text-text-secondary group-hover:text-text-main transition-colors">Step Motorlar</span>
+<span class="ml-auto text-xs text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">124</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary/20" type="checkbox"/>
+<span class="text-sm text-text-secondary group-hover:text-text-main transition-colors">Servo Sistemler</span>
+<span class="ml-auto text-xs text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">85</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary/20" type="checkbox"/>
+<span class="text-sm text-text-secondary group-hover:text-text-main transition-colors">Planet Redüktörler</span>
+<span class="ml-auto text-xs text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">42</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary/20" type="checkbox"/>
+<span class="text-sm text-text-secondary group-hover:text-text-main transition-colors">Spindle Motorlar</span>
+<span class="ml-auto text-xs text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">18</span>
+</label>
+</div>
+</div>
+<!-- Divider -->
+<div class="h-px bg-[#e7ebf4] my-4"></div>
+<!-- Filter Group: File Type -->
+<div>
+<button class="flex items-center justify-between w-full text-left mb-3 group">
+<span class="text-sm font-bold text-text-main">Dosya Tipi</span>
+<span class="material-symbols-outlined text-text-secondary text-lg group-hover:text-primary">expand_less</span>
+</button>
+<div class="space-y-2">
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary/20" type="checkbox"/>
+<span class="text-sm text-text-secondary group-hover:text-text-main transition-colors">3D CAD (STEP/IGES)</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary/20" type="checkbox"/>
+<span class="text-sm text-text-secondary group-hover:text-text-main transition-colors">2D Çizim (DXF/DWG)</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary/20" type="checkbox"/>
+<span class="text-sm text-text-secondary group-hover:text-text-main transition-colors">Teknik Datasheet</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary/20" type="checkbox"/>
+<span class="text-sm text-text-secondary group-hover:text-text-main transition-colors">Kullanım Kılavuzu</span>
+</label>
+</div>
+</div>
+</div>
+</aside>
+<!-- Results Grid -->
+<div class="flex-grow">
+<!-- Results Header -->
+<div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+<div>
+<h2 class="text-xl font-bold text-text-main">Popüler İndirmeler</h2>
+<p class="text-sm text-text-secondary">Step Motorlar kategorisinde 124 sonuç bulundu</p>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-sm text-text-secondary">Sırala:</span>
+<select class="form-select bg-surface border-[#e7ebf4] text-text-main text-sm rounded-lg focus:ring-primary focus:border-primary py-1.5 pl-3 pr-8">
+<option>En Yeni</option>
+<option>En Çok İndirilen</option>
+<option>İsme Göre (A-Z)</option>
+</select>
+</div>
+</div>
+<!-- Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+<!-- Card 1 -->
+<div class="group bg-surface rounded-xl border border-[#e7ebf4] overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-300 flex flex-col">
+<div class="relative h-48 bg-background-light p-6 flex items-center justify-center border-b border-[#e7ebf4]">
+<img alt="Industrial step motor product shot" class="h-full object-contain mix-blend-multiply" data-alt="NEMA 23 Step Motor Product Image" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZEbUU2-1yJHy2qSUOmXKNHJ7ozJ-CtuaEQaLEZk4ebyaJ6ZF0ZFT-eRt8BDWwBiIuS7rxuAhI0zTBdmF7Kw1VwEzn2dwrAmDQkj53GBm50GRod9xzcEBwK21F3bY6uuT9exP4z5s0oECsNB2Dd05jg3T69g4MdU_nOd1AeK6RfzuRK0Bf_z8haZrZoMl11p7DECSw15kTG4sU1KKi3LiZw-83i4WXhppRQYq8KqCtmh_PVPLobLcFlgvroI3F5dsLA2SQgdkCf4v0"/>
+<div class="absolute top-3 right-3">
+<span class="bg-blue-100 text-primary text-xs font-bold px-2 py-1 rounded">YENİ</span>
+</div>
+</div>
+<div class="p-5 flex flex-col flex-grow">
+<div class="mb-1">
+<span class="text-xs font-medium text-text-secondary uppercase tracking-wider">Step Motorlar</span>
+</div>
+<h3 class="font-bold text-lg text-text-main mb-2 group-hover:text-primary transition-colors">NEMA 23 Hibrit Step Motor</h3>
+<p class="text-sm text-text-secondary mb-4 line-clamp-2">2.2 Nm tork, 1.8° adım açısı, 8 telli bağlantı konfigürasyonu. ST-57 Serisi.</p>
+<!-- File Formats -->
+<div class="flex flex-wrap gap-2 mb-4">
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-gray-100 text-xs font-medium text-text-main border border-gray-200" title="STEP Format">
+<span class="material-symbols-outlined text-[14px]">deployed_code</span> STEP
+                                </span>
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-gray-100 text-xs font-medium text-text-main border border-gray-200" title="PDF Datasheet">
+<span class="material-symbols-outlined text-[14px]">picture_as_pdf</span> PDF
+                                </span>
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-gray-100 text-xs font-medium text-text-main border border-gray-200" title="DXF Drawing">
+<span class="material-symbols-outlined text-[14px]">architecture</span> DXF
+                                </span>
+</div>
+<div class="mt-auto pt-4 border-t border-[#e7ebf4] flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-xs text-text-secondary font-medium">15.4 MB</span>
+<span class="text-[10px] text-gray-400">Güncelleme: 12.03.2024</span>
+</div>
+<button class="flex items-center gap-2 bg-primary hover:bg-primary-dark text-white text-sm font-bold py-2 px-4 rounded-lg transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                                    İndir
+                                </button>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="group bg-surface rounded-xl border border-[#e7ebf4] overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-300 flex flex-col">
+<div class="relative h-48 bg-background-light p-6 flex items-center justify-center border-b border-[#e7ebf4]">
+<img alt="Industrial planetary gearbox product shot" class="h-full object-contain mix-blend-multiply" data-alt="Planet Redüktör Product Image" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEmwLeBuGUbegXTB2WcVHbAAQ1xwHljuCMyDGmnloc174i1vFlLoKZlsxsCHJm4eQsaAZsyEbCwfA9VwB8MdzDkcUMO-zTYcXBlWULWBBsJcleDkpG4QoFccgIXqdPKGVdiG83VKy9YWXTYmXeKyI6m5LVW3LeEjvUIXwEwmhO4gzbGll1pSqXndHHzzN59Jj_CQuw_5X8wDy8E5lxY7qVEqG2bVxLS8_UM9QFCIBOIErUr5GnbtZ1xmsgODUM3REteQbHl7FMSmzX"/>
+</div>
+<div class="p-5 flex flex-col flex-grow">
+<div class="mb-1">
+<span class="text-xs font-medium text-text-secondary uppercase tracking-wider">Planet Redüktörler</span>
+</div>
+<h3 class="font-bold text-lg text-text-main mb-2 group-hover:text-primary transition-colors">PL-80 Serisi Hassas Redüktör</h3>
+<p class="text-sm text-text-secondary mb-4 line-clamp-2">5:1 - 100:1 tahvil oranları, düşük boşluk oranı, NEMA 34 uyumlu flanş.</p>
+<!-- File Formats -->
+<div class="flex flex-wrap gap-2 mb-4">
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-gray-100 text-xs font-medium text-text-main border border-gray-200">
+<span class="material-symbols-outlined text-[14px]">deployed_code</span> STEP
+                                </span>
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-gray-100 text-xs font-medium text-text-main border border-gray-200">
+<span class="material-symbols-outlined text-[14px]">picture_as_pdf</span> PDF
+                                </span>
+</div>
+<div class="mt-auto pt-4 border-t border-[#e7ebf4] flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-xs text-text-secondary font-medium">8.2 MB</span>
+<span class="text-[10px] text-gray-400">Güncelleme: 05.02.2024</span>
+</div>
+<button class="flex items-center gap-2 bg-primary hover:bg-primary-dark text-white text-sm font-bold py-2 px-4 rounded-lg transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                                    İndir
+                                </button>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="group bg-surface rounded-xl border border-[#e7ebf4] overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-300 flex flex-col">
+<div class="relative h-48 bg-background-light p-6 flex items-center justify-center border-b border-[#e7ebf4]">
+<img alt="CNC drive controller product shot" class="h-full object-contain mix-blend-multiply" data-alt="CNC Sürücü Product Image" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJpXyw6KKjeQzg-zi8IrKldTD_M6nLdrco-2gagAFEyfnxp-0IK_CzoNCz4Z_WK0w4LyvRhPzq4Hrco4Tne1sBYj5bxwBLXfVqpH8jZDGs6gZ3j6pU7dccQN-4eq3FePELtJv2vURVD95YlXMQ-VsnPMgEIpyYL6t8QrrVnTNb8uqc0juUrW6Ow-mbuMQmXqLtHJ2a_UAhqPYhw6e00HM8tzNEp-DjZagoemUZM5419XL6X4YlaWaEOeTFrv9J3w3zQ5JVmxkOieFX"/>
+</div>
+<div class="p-5 flex flex-col flex-grow">
+<div class="mb-1">
+<span class="text-xs font-medium text-text-secondary uppercase tracking-wider">Sürücüler</span>
+</div>
+<h3 class="font-bold text-lg text-text-main mb-2 group-hover:text-primary transition-colors">DM556 Dijital Step Sürücü</h3>
+<p class="text-sm text-text-secondary mb-4 line-clamp-2">5.6A Maksimum akım, 50V DC giriş, anti-rezonans teknolojisi.</p>
+<!-- File Formats -->
+<div class="flex flex-wrap gap-2 mb-4">
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-gray-100 text-xs font-medium text-text-main border border-gray-200">
+<span class="material-symbols-outlined text-[14px]">menu_book</span> Manual
+                                </span>
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-gray-100 text-xs font-medium text-text-main border border-gray-200">
+<span class="material-symbols-outlined text-[14px]">picture_as_pdf</span> PDF
+                                </span>
+</div>
+<div class="mt-auto pt-4 border-t border-[#e7ebf4] flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-xs text-text-secondary font-medium">2.1 MB</span>
+<span class="text-[10px] text-gray-400">Güncelleme: 10.01.2024</span>
+</div>
+<button class="flex items-center gap-2 bg-primary hover:bg-primary-dark text-white text-sm font-bold py-2 px-4 rounded-lg transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                                    İndir
+                                </button>
+</div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="group bg-surface rounded-xl border border-[#e7ebf4] overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-300 flex flex-col">
+<div class="relative h-48 bg-background-light p-6 flex items-center justify-center border-b border-[#e7ebf4]">
+<img alt="CNC spindle motor product shot" class="h-full object-contain mix-blend-multiply" data-alt="Spindle Motor Product Image" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCb2MQgfRahDHothRcXyOQOeGwS-nkF5SGKIhu3LHYjT6WVaciPTfJveo1ik9eRLrWPdmub53LwQkdDdjm0F0-BdDCtEZ6EEA3CyXfErhpwfy3M1asg4qWzHChGCyGHtiZLNTd71w5WOoa9iuIubBgwLjisvlsXnuAI8Qxu4GZlBKcv8E1hTW9NuMud404VW7I2ThyD6Hpt6nKy0kbeVsG2CT4P09MctB7kI0fUDXE-XJAUZyoS7ic0WkT-1kJlUMVvA1G9yebaQdxB"/>
+</div>
+<div class="p-5 flex flex-col flex-grow">
+<div class="mb-1">
+<span class="text-xs font-medium text-text-secondary uppercase tracking-wider">Spindle Motorlar</span>
+</div>
+<h3 class="font-bold text-lg text-text-main mb-2 group-hover:text-primary transition-colors">2.2kW Hava Soğutmalı Spindle</h3>
+<p class="text-sm text-text-secondary mb-4 line-clamp-2">ER20 Collet, 24000 RPM, Seramik rulmanlar, kare gövde.</p>
+<!-- File Formats -->
+<div class="flex flex-wrap gap-2 mb-4">
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-gray-100 text-xs font-medium text-text-main border border-gray-200">
+<span class="material-symbols-outlined text-[14px]">deployed_code</span> STEP
+                                </span>
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-gray-100 text-xs font-medium text-text-main border border-gray-200">
+<span class="material-symbols-outlined text-[14px]">architecture</span> DXF
+                                </span>
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-gray-100 text-xs font-medium text-text-main border border-gray-200">
+<span class="material-symbols-outlined text-[14px]">picture_as_pdf</span> PDF
+                                </span>
+</div>
+<div class="mt-auto pt-4 border-t border-[#e7ebf4] flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-xs text-text-secondary font-medium">45.2 MB</span>
+<span class="text-[10px] text-gray-400">Güncelleme: 15.11.2023</span>
+</div>
+<button class="flex items-center gap-2 bg-primary hover:bg-primary-dark text-white text-sm font-bold py-2 px-4 rounded-lg transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                                    İndir
+                                </button>
+</div>
+</div>
+</div>
+<!-- Card 5 -->
+<div class="group bg-surface rounded-xl border border-[#e7ebf4] overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-300 flex flex-col">
+<div class="relative h-48 bg-background-light p-6 flex items-center justify-center border-b border-[#e7ebf4]">
+<img alt="Cable carrier chain product shot" class="h-full object-contain mix-blend-multiply" data-alt="Kablo Taşıyıcı Product Image" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDUHEkuRjrlRNZRWcT-frEdnpynuE2bP3WCY4yAfnTqdfhWOGXrMjPS49IMPhYcpfjuk6XdOSVcndFNNJJpPKVOt6E4xDrWwSOKJ3R8Ga6sxJdqYUDZDFskJqdPJKeRgdCzwP5eNX5m4sh6-pT03P3vTzsGdvvw7UYWPuyOkCVJXky1sJf_P3lbUMTszsC9Pw36nn-56wkkpnmX9fxiOFCkBhsQyHjbDLRQvnfQbLpbuedh7eEU2DuGcPqZECqQEHGpEyEEd3EMHlEg"/>
+</div>
+<div class="p-5 flex flex-col flex-grow">
+<div class="mb-1">
+<span class="text-xs font-medium text-text-secondary uppercase tracking-wider">Aksesuarlar</span>
+</div>
+<h3 class="font-bold text-lg text-text-main mb-2 group-hover:text-primary transition-colors">Kablo Taşıyıcı Zincir 25x38</h3>
+<p class="text-sm text-text-secondary mb-4 line-clamp-2">Açık seri, güçlendirilmiş naylon, R55 bükülme yarıçapı.</p>
+<!-- File Formats -->
+<div class="flex flex-wrap gap-2 mb-4">
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-gray-100 text-xs font-medium text-text-main border border-gray-200">
+<span class="material-symbols-outlined text-[14px]">deployed_code</span> STEP
+                                </span>
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-gray-100 text-xs font-medium text-text-main border border-gray-200">
+<span class="material-symbols-outlined text-[14px]">picture_as_pdf</span> PDF
+                                </span>
+</div>
+<div class="mt-auto pt-4 border-t border-[#e7ebf4] flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-xs text-text-secondary font-medium">5.8 MB</span>
+<span class="text-[10px] text-gray-400">Güncelleme: 01.03.2024</span>
+</div>
+<button class="flex items-center gap-2 bg-primary hover:bg-primary-dark text-white text-sm font-bold py-2 px-4 rounded-lg transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                                    İndir
+                                </button>
+</div>
+</div>
+</div>
+<!-- Card 6 -->
+<div class="group bg-surface rounded-xl border border-[#e7ebf4] overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-300 flex flex-col">
+<div class="relative h-48 bg-background-light p-6 flex items-center justify-center border-b border-[#e7ebf4]">
+<img alt="Power supply unit product shot" class="h-full object-contain mix-blend-multiply" data-alt="Güç Kaynağı Product Image" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7dVvm8V5cN49RkXOp45FQd2jzYkgeJfNMcvD9lzzvzZHZnt0zuFCe4uyPGA6_pDlmn5oOWppYBGScciAZsQqtdb3sgsk9S88JLVxB-9KXUB9IqkKyVRFtACnS6RBBek_Ungymtd681NqaAQC1s9UfzI6pIfcY4tHzqfYxoTdYpnJyUbEwVGAEFZsBF-b08uOZaRwCmdnt-ASmz6csc0hsLKEyMIo7MqwkowWngUW0qx7JSQdZCt0Tx2XjUbM4yH3Oa8updhYr0GdQ"/>
+</div>
+<div class="p-5 flex flex-col flex-grow">
+<div class="mb-1">
+<span class="text-xs font-medium text-text-secondary uppercase tracking-wider">Güç Kaynakları</span>
+</div>
+<h3 class="font-bold text-lg text-text-main mb-2 group-hover:text-primary transition-colors">48V 10A Endüstriyel PSU</h3>
+<p class="text-sm text-text-secondary mb-4 line-clamp-2">Kısa devre korumalı, fan soğutmalı, DIN ray montaj uyumlu.</p>
+<!-- File Formats -->
+<div class="flex flex-wrap gap-2 mb-4">
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-gray-100 text-xs font-medium text-text-main border border-gray-200">
+<span class="material-symbols-outlined text-[14px]">picture_as_pdf</span> PDF
+                                </span>
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-gray-100 text-xs font-medium text-text-main border border-gray-200">
+<span class="material-symbols-outlined text-[14px]">menu_book</span> Manual
+                                </span>
+</div>
+<div class="mt-auto pt-4 border-t border-[#e7ebf4] flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-xs text-text-secondary font-medium">1.4 MB</span>
+<span class="text-[10px] text-gray-400">Güncelleme: 22.02.2024</span>
+</div>
+<button class="flex items-center gap-2 bg-primary hover:bg-primary-dark text-white text-sm font-bold py-2 px-4 rounded-lg transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                                    İndir
+                                </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Pagination -->
+<div class="mt-10 flex items-center justify-center gap-2">
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border border-[#e7ebf4] bg-surface text-text-secondary hover:border-primary hover:text-primary transition-colors disabled:opacity-50">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg bg-primary text-white font-bold shadow-md">1</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border border-[#e7ebf4] bg-surface text-text-secondary hover:border-primary hover:text-primary transition-colors">2</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border border-[#e7ebf4] bg-surface text-text-secondary hover:border-primary hover:text-primary transition-colors">3</button>
+<span class="text-text-secondary px-1">...</span>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border border-[#e7ebf4] bg-surface text-text-secondary hover:border-primary hover:text-primary transition-colors">12</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border border-[#e7ebf4] bg-surface text-text-secondary hover:border-primary hover:text-primary transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating Action Button -->
+<button class="fixed bottom-8 right-8 z-40 bg-primary hover:bg-primary-dark text-white rounded-full p-4 shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2 group">
+<span class="material-symbols-outlined text-2xl">support_agent</span>
+<span class="font-bold text-sm max-w-0 overflow-hidden group-hover:max-w-xs group-hover:pr-2 transition-all duration-500 whitespace-nowrap">Teknik Destek</span>
+</button>
+<!-- Footer -->
+<footer class="bg-surface border-t border-[#e7ebf4] mt-auto">
+<div class="max-w-[1440px] mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
+<p class="text-sm text-text-secondary">© 2024 CNC Otomasyon. Tüm hakları saklıdır.</p>
+<div class="flex gap-6">
+<a class="text-sm text-text-secondary hover:text-primary" href="#">Gizlilik Politikası</a>
+<a class="text-sm text-text-secondary hover:text-primary" href="#">Kullanım Şartları</a>
+<a class="text-sm text-text-secondary hover:text-primary" href="#">Çerezler</a>
+</div>
+</div>
+</footer>
+</body></html>

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+
+<html lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MegaCNC - Gelişmiş Mega Menü</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0d59f2",
+                        "primary-dark": "#0a46c2",
+                        "background-light": "#f5f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "sans": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for better look in menu */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af;
+        }
+    </style>
+</head>
+<body class="bg-background-light text-slate-900 font-display antialiased overflow-x-hidden">
+<!-- Main Container -->
+<div class="relative flex min-h-screen w-full flex-col group/design-root">
+<!-- Header Section -->
+<header class="sticky top-0 z-50 w-full bg-white border-b border-slate-200 shadow-sm">
+<!-- Top Utility Bar (Optional, keeping it simple as per request focused on Mega Menu) -->
+<div class="bg-slate-900 text-white text-xs py-2 px-4 md:px-10 flex justify-between items-center">
+<div class="flex gap-4">
+<span>📞 0850 123 45 67</span>
+<span>✉️ destek@megacnc.com</span>
+</div>
+<div class="flex gap-4">
+<a class="hover:text-primary transition-colors" href="#">Sipariş Takibi</a>
+<a class="hover:text-primary transition-colors" href="#">Yardım</a>
+</div>
+</div>
+<!-- Main Navbar -->
+<div class="flex items-center justify-between px-4 md:px-10 py-4 gap-6 bg-white relative">
+<!-- Logo -->
+<div class="flex items-center gap-3 shrink-0">
+<div class="size-10 bg-primary text-white rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-3xl">precision_manufacturing</span>
+</div>
+<h1 class="text-2xl font-bold tracking-tight text-slate-900">MegaCNC</h1>
+</div>
+<!-- Search Bar -->
+<div class="hidden md:flex flex-1 max-w-2xl">
+<div class="flex w-full items-center rounded-lg border border-slate-200 bg-slate-50 overflow-hidden focus-within:ring-2 focus-within:ring-primary/50 transition-all">
+<div class="pl-4 text-slate-400 flex items-center justify-center">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="w-full bg-transparent border-none focus:ring-0 px-3 py-2.5 text-slate-700 placeholder-slate-400 font-medium" placeholder="Ürün, stok kodu veya marka arayın..." type="text"/>
+<button class="bg-primary hover:bg-primary-dark text-white font-bold px-6 py-2.5 h-full transition-colors">
+                            ARA
+                        </button>
+</div>
+</div>
+<!-- User Actions -->
+<div class="flex items-center gap-2 shrink-0">
+<button class="flex flex-col items-center justify-center p-2 text-slate-600 hover:text-primary hover:bg-slate-50 rounded-lg transition-colors group">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">person</span>
+<span class="text-xs font-medium mt-0.5">Hesabım</span>
+</button>
+<button class="flex flex-col items-center justify-center p-2 text-slate-600 hover:text-primary hover:bg-slate-50 rounded-lg transition-colors group relative">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">favorite</span>
+<span class="text-xs font-medium mt-0.5">Favoriler</span>
+</button>
+<button class="flex flex-col items-center justify-center p-2 text-slate-600 hover:text-primary hover:bg-slate-50 rounded-lg transition-colors group relative">
+<div class="relative">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">shopping_cart</span>
+<span class="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold h-4 w-4 rounded-full flex items-center justify-center">3</span>
+</div>
+<span class="text-xs font-medium mt-0.5">Sepetim</span>
+</button>
+</div>
+</div>
+<!-- Navigation Links Bar -->
+<div class="border-t border-slate-100 px-4 md:px-10 py-0 flex items-center gap-8 relative bg-white">
+<!-- Trigger Button for Mega Menu -->
+<button class="flex items-center gap-2 bg-slate-900 text-white px-6 py-3 font-bold text-sm tracking-wide hover:bg-slate-800 transition-colors relative z-20 rounded-t-lg mt-1">
+<span class="material-symbols-outlined text-lg">menu</span>
+                    KATEGORİLER
+                </button>
+<div class="hidden md:flex items-center gap-6 py-3">
+<a class="text-slate-600 hover:text-primary font-medium text-sm transition-colors" href="#">YENİ ÜRÜNLER</a>
+<a class="text-slate-600 hover:text-primary font-medium text-sm transition-colors" href="#">MARKALAR</a>
+<a class="text-slate-600 hover:text-primary font-medium text-sm transition-colors" href="#">İNDİRİMLİ ÜRÜNLER</a>
+<a class="text-slate-600 hover:text-primary font-medium text-sm transition-colors" href="#">ÇOK SATANLAR</a>
+<a class="text-slate-600 hover:text-primary font-medium text-sm transition-colors" href="#">BLOG</a>
+</div>
+<div class="ml-auto hidden md:flex items-center gap-2 text-primary font-bold text-sm">
+<span class="material-symbols-outlined text-lg">bolt</span>
+                    HAFTANIN FIRSATI
+                </div>
+</div>
+<!-- MEGA MENU OVERLAY CONTENT -->
+<!-- This is the requested component. It sits absolutely positioned below the header. -->
+<div class="absolute left-0 top-full w-full bg-white border-t border-slate-200 shadow-2xl z-40 transition-all duration-300 ease-in-out opacity-100 visible h-[600px]">
+<div class="layout-container mx-auto h-full flex">
+<!-- LEFT COLUMN: Primary Categories -->
+<div class="w-1/4 min-w-[300px] border-r border-slate-100 h-full overflow-y-auto custom-scrollbar bg-white py-4">
+<ul class="flex flex-col">
+<!-- Active Item -->
+<li>
+<button class="w-full flex items-center justify-between px-6 py-4 text-left bg-slate-50 border-l-4 border-primary text-primary font-bold group transition-all">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined">linear_scale</span>
+<span>Doğrusal Hareket Sistemleri</span>
+</div>
+<span class="material-symbols-outlined text-sm">arrow_forward_ios</span>
+</button>
+</li>
+<!-- Inactive Items -->
+<li>
+<button class="w-full flex items-center justify-between px-6 py-4 text-left text-slate-600 hover:bg-slate-50 hover:text-primary font-medium border-l-4 border-transparent hover:border-slate-200 group transition-all">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined">settings_motion_mode</span>
+<span>Motorlar ve Sürücüler</span>
+</div>
+<span class="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100 text-slate-400">arrow_forward_ios</span>
+</button>
+</li>
+<li>
+<button class="w-full flex items-center justify-between px-6 py-4 text-left text-slate-600 hover:bg-slate-50 hover:text-primary font-medium border-l-4 border-transparent hover:border-slate-200 group transition-all">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined">router</span>
+<span>CNC Router Parçaları</span>
+</div>
+<span class="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100 text-slate-400">arrow_forward_ios</span>
+</button>
+</li>
+<li>
+<button class="w-full flex items-center justify-between px-6 py-4 text-left text-slate-600 hover:bg-slate-50 hover:text-primary font-medium border-l-4 border-transparent hover:border-slate-200 group transition-all">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined">speed</span>
+<span>Spindle Motorlar</span>
+</div>
+<span class="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100 text-slate-400">arrow_forward_ios</span>
+</button>
+</li>
+<li>
+<button class="w-full flex items-center justify-between px-6 py-4 text-left text-slate-600 hover:bg-slate-50 hover:text-primary font-medium border-l-4 border-transparent hover:border-slate-200 group transition-all">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined">memory</span>
+<span>Kontrol Kartları &amp; Ekranlar</span>
+</div>
+<span class="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100 text-slate-400">arrow_forward_ios</span>
+</button>
+</li>
+<li>
+<button class="w-full flex items-center justify-between px-6 py-4 text-left text-slate-600 hover:bg-slate-50 hover:text-primary font-medium border-l-4 border-transparent hover:border-slate-200 group transition-all">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined">cable</span>
+<span>Kablolar ve Enerji Zinciri</span>
+</div>
+<span class="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100 text-slate-400">arrow_forward_ios</span>
+</button>
+</li>
+<li>
+<button class="w-full flex items-center justify-between px-6 py-4 text-left text-slate-600 hover:bg-slate-50 hover:text-primary font-medium border-l-4 border-transparent hover:border-slate-200 group transition-all">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined">power</span>
+<span>Güç Kaynakları (PSU)</span>
+</div>
+<span class="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100 text-slate-400">arrow_forward_ios</span>
+</button>
+</li>
+</ul>
+</div>
+<!-- MIDDLE COLUMN: Subcategories -->
+<div class="flex-1 p-8 overflow-y-auto custom-scrollbar bg-white">
+<div class="mb-6 pb-4 border-b border-slate-100 flex items-center justify-between">
+<h2 class="text-xl font-bold text-slate-900">Doğrusal Hareket Sistemleri</h2>
+<a class="text-sm font-semibold text-primary hover:text-primary-dark flex items-center gap-1" href="#">
+                                Tümünü Gör <span class="material-symbols-outlined text-base">arrow_forward</span>
+</a>
+</div>
+<div class="grid grid-cols-2 gap-y-8 gap-x-12">
+<!-- Subcategory Group 1 -->
+<div class="group">
+<a class="block text-slate-900 font-bold mb-3 hover:text-primary flex items-center gap-2" href="#">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary">arrow_right</span>
+                                    Vidalı Miller
+                                </a>
+<ul class="space-y-2 pl-8 border-l border-slate-100">
+<li><a class="text-slate-500 hover:text-primary text-sm block transition-colors" href="#">SFU Serisi Vidalı Miller</a></li>
+<li><a class="text-slate-500 hover:text-primary text-sm block transition-colors" href="#">DFU Serisi Vidalı Miller</a></li>
+<li><a class="text-slate-500 hover:text-primary text-sm block transition-colors" href="#">SFE Serisi Hızlı Miller</a></li>
+<li><a class="text-slate-500 hover:text-primary text-sm block transition-colors" href="#">Vidalı Mil Somun Gövdeleri</a></li>
+</ul>
+</div>
+<!-- Subcategory Group 2 -->
+<div class="group">
+<a class="block text-slate-900 font-bold mb-3 hover:text-primary flex items-center gap-2" href="#">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary">arrow_right</span>
+                                    Lineer Ray ve Arabalar
+                                </a>
+<ul class="space-y-2 pl-8 border-l border-slate-100">
+<li><a class="text-slate-500 hover:text-primary text-sm block transition-colors" href="#">HGH Serisi Ray ve Arabalar</a></li>
+<li><a class="text-slate-500 hover:text-primary text-sm block transition-colors" href="#">HGW Serisi Ray ve Arabalar</a></li>
+<li><a class="text-slate-500 hover:text-primary text-sm block transition-colors" href="#">MGN Minyatür Serisi</a></li>
+<li><a class="text-slate-500 hover:text-primary text-sm block transition-colors" href="#">EGH Alçak Seri</a></li>
+</ul>
+</div>
+<!-- Subcategory Group 3 -->
+<div class="group">
+<a class="block text-slate-900 font-bold mb-3 hover:text-primary flex items-center gap-2" href="#">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary">arrow_right</span>
+                                    İndüksiyonlu Miller
+                                </a>
+<ul class="space-y-2 pl-8 border-l border-slate-100">
+<li><a class="text-slate-500 hover:text-primary text-sm block transition-colors" href="#">Sert Krom Kaplı Miller</a></li>
+<li><a class="text-slate-500 hover:text-primary text-sm block transition-colors" href="#">Alt Destekli Miller (SBR)</a></li>
+<li><a class="text-slate-500 hover:text-primary text-sm block transition-colors" href="#">SBR Rulmanlar</a></li>
+<li><a class="text-slate-500 hover:text-primary text-sm block transition-colors" href="#">SC Serisi Rulmanlar</a></li>
+</ul>
+</div>
+<!-- Subcategory Group 4 -->
+<div class="group">
+<a class="block text-slate-900 font-bold mb-3 hover:text-primary flex items-center gap-2" href="#">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary">arrow_right</span>
+                                    Kramayer Dişliler
+                                </a>
+<ul class="space-y-2 pl-8 border-l border-slate-100">
+<li><a class="text-slate-500 hover:text-primary text-sm block transition-colors" href="#">Mod 1 Kramayer</a></li>
+<li><a class="text-slate-500 hover:text-primary text-sm block transition-colors" href="#">Mod 2 Kramayer</a></li>
+<li><a class="text-slate-500 hover:text-primary text-sm block transition-colors" href="#">Helis Dişli Sistemleri</a></li>
+<li><a class="text-slate-500 hover:text-primary text-sm block transition-colors" href="#">Pinyon Dişliler</a></li>
+</ul>
+</div>
+</div>
+</div>
+<!-- RIGHT COLUMN: Promo & Utils -->
+<div class="w-1/4 min-w-[300px] bg-slate-50 p-6 flex flex-col gap-6 border-l border-slate-100">
+<!-- Featured Banner -->
+<div class="rounded-xl overflow-hidden bg-white shadow-sm border border-slate-200 group cursor-pointer hover:shadow-md transition-shadow">
+<div class="h-32 bg-slate-200 relative overflow-hidden">
+<img alt="Haftanın Fırsatı Step Motor" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Industrial machine part close up with blue lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCA27pjk2rZjaOaBp9HvF0EAOm0WlTIHGV30CFinXKw9i4j1kPCNfePfGjeYqzgdCUB0WPak5mqigDv6I6meaYJjpHLqsjnHjL9HQ4rwCp8ke24mNTSV0Cvqx9btl4JSMMwLsx7FlKfBnpeTOtnTPE7VyMJXOS8Y4BMKkbIhYumZ53tgG4JdIBd3vgkRLBTB2pure3EL_d-P0RhuApafaann-Lc7dYkSZxVces0PrOt3SfevG0de3yE9yS2lIuVEhVxZVybIwY5F9r8"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<div class="absolute bottom-2 left-3">
+<span class="bg-primary text-white text-xs font-bold px-2 py-1 rounded">HAFTANIN FIRSATI</span>
+</div>
+</div>
+<div class="p-4">
+<h3 class="text-slate-900 font-bold mb-1 leading-tight">Step Motorlar</h3>
+<p class="text-slate-500 text-sm mb-3">Nema 23 serisinde %15'e varan indirimler.</p>
+<span class="text-primary text-sm font-bold flex items-center gap-1">
+                                    İncele <span class="material-symbols-outlined text-base">arrow_forward</span>
+</span>
+</div>
+</div>
+<!-- Quick Links Card -->
+<div class="rounded-xl bg-white shadow-sm border border-slate-200 p-5 flex-1">
+<h4 class="text-slate-900 font-bold mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">build</span>
+                                Hızlı Erişim
+                            </h4>
+<div class="space-y-3">
+<a class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 group transition-colors" href="#">
+<div class="bg-blue-50 text-primary rounded p-1.5 group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-xl">menu_book</span>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-semibold text-slate-800">Teknik Kataloglar</span>
+<span class="text-xs text-slate-500">PDF dökümanları inceleyin</span>
+</div>
+</a>
+<a class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 group transition-colors" href="#">
+<div class="bg-blue-50 text-primary rounded p-1.5 group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-xl">play_circle</span>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-semibold text-slate-800">Montaj Videoları</span>
+<span class="text-xs text-slate-500">Nasıl yapılır videoları</span>
+</div>
+</a>
+<a class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 group transition-colors" href="#">
+<div class="bg-blue-50 text-primary rounded p-1.5 group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-xl">calculate</span>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-semibold text-slate-800">Hesaplama Araçları</span>
+<span class="text-xs text-slate-500">Tork ve güç hesabı</span>
+</div>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Overlay Background Dimmer -->
+<div class="fixed inset-0 top-[152px] bg-black/40 z-30 backdrop-blur-sm"></div>
+</header>
+<!-- Main Content Placeholder to show context -->
+<main class="flex-1 bg-background-light p-8">
+<div class="layout-container mx-auto">
+<div class="bg-white rounded-xl p-8 border border-slate-200 h-96 flex items-center justify-center text-slate-400">
+<div class="text-center">
+<span class="material-symbols-outlined text-6xl mb-4">grid_view</span>
+<p class="text-xl">Sayfa İçeriği</p>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

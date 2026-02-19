@@ -1,0 +1,141 @@
+"use client";
+import { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { products, productFilterTabs } from "@/data/siteData";
+import MaterialIcon from "@/components/ui/MaterialIcon";
+
+const filterMap: Record<string, string[]> = {
+  "Tümü": [],
+  "Motorlar": ["step-motorlar", "spindle-motorlar"],
+  "Raylar": ["lineer-rulmanlar"],
+  "Sürücüler": ["cnc-kontrolculer"],
+};
+
+export default function FeaturedProducts() {
+  const [activeTab, setActiveTab] = useState("Tümü");
+
+  const filteredProducts =
+    activeTab === "Tümü"
+      ? products
+      : products.filter((p) => filterMap[activeTab]?.includes(p.category));
+
+  return (
+    <section className="py-16 bg-white border-t border-gray-100">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+          <div>
+            <h2 className="text-2xl sm:text-3xl font-bold text-text-main tracking-tight font-[family-name:var(--font-display)]">
+              Öne Çıkan Ürünler
+            </h2>
+            <p className="text-gray-500 mt-2">
+              Profesyonellerin en çok tercih ettiği ürünler.
+            </p>
+          </div>
+          {/* Filter Tabs */}
+          <div className="flex items-center gap-2 p-1 bg-gray-100 rounded-lg overflow-x-auto max-w-full">
+            {productFilterTabs.map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`px-4 py-2 rounded-md text-sm font-medium whitespace-nowrap transition-all ${
+                  activeTab === tab
+                    ? "bg-white shadow-sm text-primary"
+                    : "text-gray-500 hover:text-text-main hover:bg-white/50"
+                }`}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {filteredProducts.slice(0, 4).map((product) => {
+            const discountPercent = product.originalPrice
+              ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
+              : null;
+
+            return (
+              <div
+                key={product.id}
+                className="group bg-background-light rounded-xl border border-gray-200 overflow-hidden hover:shadow-xl hover:border-primary/30 transition-all duration-300 flex flex-col"
+              >
+                <Link
+                  href={`/urunler/${product.slug}`}
+                  className="relative aspect-square bg-white p-6 flex items-center justify-center overflow-hidden"
+                >
+                  <Image
+                    src={product.images[0]}
+                    alt={product.name}
+                    width={300}
+                    height={300}
+                    className="object-contain h-full w-full mix-blend-multiply group-hover:scale-110 transition-transform duration-300"
+                  />
+                  {discountPercent && (
+                    <div className="absolute top-3 left-3 bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded">
+                      -{discountPercent}%
+                    </div>
+                  )}
+                  {product.badge === "Yeni" && !discountPercent && (
+                    <div className="absolute top-3 left-3 bg-blue-600 text-white text-[10px] font-bold px-2 py-1 rounded">
+                      YENİ
+                    </div>
+                  )}
+                  <button className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0">
+                    <MaterialIcon icon="favorite" className="text-[20px]" />
+                  </button>
+                </Link>
+                <div className="p-5 flex flex-col flex-1">
+                  {/* Rating */}
+                  <div className="flex items-center gap-1 mb-2">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <MaterialIcon
+                        key={i}
+                        icon={i < Math.floor(product.rating) ? "star" : i < product.rating ? "star_half" : "star"}
+                        className={`text-[16px] ${i < product.rating ? "text-yellow-400" : "text-gray-300"}`}
+                      />
+                    ))}
+                    <span className="text-xs text-gray-500 ml-1">({product.reviewCount})</span>
+                  </div>
+                  <Link href={`/urunler/${product.slug}`}>
+                    <h3 className="font-bold text-text-main mb-1 group-hover:text-primary transition-colors font-[family-name:var(--font-display)]">
+                      {product.name}
+                    </h3>
+                  </Link>
+                  <p className="text-xs text-gray-400 mb-4 font-mono">SKU: {product.sku}</p>
+                  <div className="mt-auto flex items-center justify-between">
+                    <div>
+                      {product.originalPrice && (
+                        <p className="text-xs text-gray-400 line-through">
+                          {product.currency}{product.originalPrice.toLocaleString("tr-TR", { minimumFractionDigits: 2 })}
+                        </p>
+                      )}
+                      <p className="text-lg font-bold text-primary">
+                        {product.currency}{product.price.toLocaleString("tr-TR", { minimumFractionDigits: 2 })}
+                      </p>
+                    </div>
+                    <button className="size-10 rounded-lg bg-primary text-white flex items-center justify-center hover:bg-primary-dark transition-colors shadow-lg shadow-blue-500/30">
+                      <MaterialIcon icon="add_shopping_cart" className="text-[20px]" />
+                    </button>
+                  </div>
+                  {/* Stock indicator */}
+                  <div className="mt-3 flex items-center gap-1.5">
+                    <div className={`size-2 rounded-full ${product.inStock ? (product.stockCount <= 5 ? "bg-orange-400" : "bg-green-500") : "bg-red-500"}`} />
+                    <span className={`text-xs font-medium ${product.inStock ? (product.stockCount <= 5 ? "text-orange-500" : "text-green-600") : "text-red-500"}`}>
+                      {product.inStock
+                        ? product.stockCount <= 5
+                          ? `Son ${product.stockCount} Ürün`
+                          : "Stokta Var"
+                        : "Tükendi"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+
+<html lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CNC Otomasyon Mobil</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Noto+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0d59f2",
+                        "primary-dark": "#0a46c2",
+                        "background-light": "#f5f6f8",
+                        "background-dark": "#101622",
+                        "surface-light": "#ffffff",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "body": ["Noto Sans", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar hiding for clean mobile look */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen py-8 font-display">
+<!-- Mobile Device Simulation Container -->
+<div class="relative w-full max-w-[390px] h-[844px] bg-background-light overflow-hidden shadow-2xl rounded-[30px] border-[8px] border-gray-900 flex flex-col">
+<!-- Top Status Bar Simulation (Optional for realism) -->
+<div class="h-6 w-full bg-surface-light flex justify-between items-center px-6 text-[10px] font-bold text-gray-800 select-none">
+<span>9:41</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-[14px]">signal_cellular_alt</span>
+<span class="material-symbols-outlined text-[14px]">wifi</span>
+<span class="material-symbols-outlined text-[14px]">battery_full</span>
+</div>
+</div>
+<!-- Sticky Header -->
+<header class="bg-surface-light sticky top-0 z-40 border-b border-gray-100 px-4 py-3 flex items-center justify-between">
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined text-[28px]">precision_manufacturing</span>
+<h1 class="text-gray-900 text-lg font-bold tracking-tight">CNC Otomasyon</h1>
+</div>
+<button class="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-700">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</header>
+<!-- Main Scrollable Content -->
+<main class="flex-1 overflow-y-auto overflow-x-hidden pb-[80px] scrollbar-hide bg-background-light">
+<!-- Hero Section -->
+<section class="relative h-[320px] w-full bg-gray-900 flex flex-col justify-end p-6">
+<!-- Background Image -->
+<div class="absolute inset-0 z-0">
+<img alt="CNC machine spindle in operation close up" class="w-full h-full object-cover opacity-60" data-alt="Close up of a CNC machine spindle head with metal shavings" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5MB29_fWX3cR3F5uj6W8NGJ2yzdYKCU7U984oFV8t84fLckjj_fNiB69_lf1_Lsh78DdULr4YGwgOgV2vieckZrvX1W9JR9v8JUKXbiNycFqY0rtLYPOuGbzRQsosiM0lSx1AK48_s-wxzinhmDsPdPbKBFLX0NahFaO6MmJ_N-3oV9rI5abB3I1GpG36rRwJQa83boX3LYZKLMFOJNVgN8vtIAXbLdkk2ZwHA-zwo_hD54KKQByDyXAVNZivVTBA6uSgiTBHzook"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent"></div>
+</div>
+<!-- Content -->
+<div class="relative z-10 flex flex-col gap-3">
+<span class="inline-block px-2 py-1 bg-primary/90 text-white text-xs font-bold rounded w-max">Yeni Sezon</span>
+<h2 class="text-white text-3xl font-bold leading-tight">Profesyonel CNC Çözümleri</h2>
+<p class="text-gray-300 text-sm font-body">Yüksek performanslı spindle motorlar ve sürücüler ile üretiminizi hızlandırın.</p>
+<button class="mt-2 w-full bg-primary hover:bg-primary-dark text-white font-bold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2">
+<span>Kategorileri İncele</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</section>
+<!-- Categories Grid -->
+<section class="px-4 py-6">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-gray-900 text-lg font-bold">Popüler Kategoriler</h3>
+<a class="text-primary text-sm font-medium" href="#">Tümü</a>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<!-- Category Item 1 -->
+<a class="group relative aspect-[4/5] overflow-hidden rounded-xl bg-surface-light shadow-sm" href="#">
+<img alt="Electric motor component" class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Close up of a shiny electric motor" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDoYe64ktAdA66WfAbWtjmV6-3PrmmncMGd-LGvhtInB9aYWqKkHZxhCFpsEqIFjj1Ja5KI1_o9sZvFLsHWBVuW8uSBHZ3S0r_pVSBTkQea_6Y9008ncWlleJqAS75eB8pAgjrojqGhdsnMjqgsHJKcoiC-wEhm8dKbEsA_IRRLVB0aCCRm2K_OwXkOqHjp4lZSE4fywpLNxIF_XgUtTH2LJT_dbhV7KUxSYe1-EbT9h90p_ewjYUmoePddrXkc08hM0E4N1mD_grtG"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-3">
+<p class="text-white font-bold text-sm">Spindle Motorlar</p>
+</div>
+</a>
+<!-- Category Item 2 -->
+<a class="group relative aspect-[4/5] overflow-hidden rounded-xl bg-surface-light shadow-sm" href="#">
+<img alt="Electronic circuit board for stepper driver" class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Detailed electronic circuit board green" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAziPcWJQzPie8-z7_Ko0NlwWYYuwOYGdKtM9Zt7LhbVkgzRlCCE21wfDj4buxhfX8tUfpfaEXTpW_kILE75xvDauxFOmsQCib2PtWg_I7OzYbixwCs1BW6-K4T3dVRbXImF860fIvw_RookmWDh_3bl9jrY60eGYkPEv48f2kzOVtcaiTJ67GLnLuftvG1UzlWBWRxHNWmaGiZqvcIrSw5dU1MnE_IZsZGgEYCP5VFD4OrNTA01wmI1GQX3zjB0uKL7m-hDlM1DDCT"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-3">
+<p class="text-white font-bold text-sm">Step Sürücüler</p>
+</div>
+</a>
+<!-- Category Item 3 -->
+<a class="group relative aspect-[4/5] overflow-hidden rounded-xl bg-surface-light shadow-sm" href="#">
+<img alt="Industrial power supply unit" class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Metal industrial power supply box" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDuInaW35892UK0jWHPKGrun9_kN-FBlXHe2prHhLB6GqWK68QAar4WKx_521qehZVj0wjE4lj1Kxr2D9JL4pvuNEjDQ_6KtS-stIlPMkutRVqnwC28MWVWbc73kCaycc_CsjKZhS4iufPqeaXe8Qk0NiS5K9nfKNHTKWwpTYe3wtxdY_xFPGCf_3WLlgmO1AUtnd5Yt2LpLYKMBLZPdZQqA4KiadxKJC5MRvNCO1ZtbTLbwgNMuR7cXIYN5OaTKruq2r1kTKDL0rIy"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-3">
+<p class="text-white font-bold text-sm">Güç Kaynakları</p>
+</div>
+</a>
+<!-- Category Item 4 -->
+<a class="group flex flex-col items-center justify-center aspect-[4/5] rounded-xl bg-primary/5 border border-primary/10 hover:bg-primary/10 transition-colors" href="#">
+<div class="bg-white p-3 rounded-full shadow-sm mb-2 text-primary">
+<span class="material-symbols-outlined text-3xl">grid_view</span>
+</div>
+<p class="text-primary font-bold text-sm">Tümünü Gör</p>
+</a>
+</div>
+</section>
+<!-- Bestsellers Horizontal Scroll -->
+<section class="py-6 bg-surface-light">
+<div class="px-4 mb-4 flex items-center justify-between">
+<h3 class="text-gray-900 text-lg font-bold">Çok Satanlar</h3>
+<div class="flex gap-2">
+<button class="bg-gray-100 p-1 rounded-full text-gray-500 hover:text-primary"><span class="material-symbols-outlined text-sm">arrow_back</span></button>
+<button class="bg-gray-100 p-1 rounded-full text-gray-500 hover:text-primary"><span class="material-symbols-outlined text-sm">arrow_forward</span></button>
+</div>
+</div>
+<div class="flex overflow-x-auto gap-4 px-4 pb-4 scrollbar-hide snap-x snap-mandatory">
+<!-- Product Card 1 -->
+<div class="snap-start shrink-0 w-[160px] flex flex-col gap-2 group">
+<div class="relative w-full aspect-square bg-background-light rounded-xl overflow-hidden">
+<img alt="2.2kW Spindle Motor" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform" data-alt="Silver metal cylindrical spindle motor" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvNJyQ0bP5pH0XbHdGIvotrShfGuwrkZmEZ_T6Y6j0K69NXjW_yVTxBgzlkGo_p3g5eEIljbzhYigy-cFUpYTjIZsXp-Y3U0ezLB1DUXVd_fykVHsLIBAqr9nbJdp_Hqd_KimWqS6_vWVkaRw4Kjj59q2-enpr3jOghdpjD-8f7c1RvB1m_9cFi2n0gyPxPqP4dpfhIuq2u3OJYqFLVl_GmZZPMAuuqvOOtAPO9TizuWyX7tk9Jaor8ZuQ4dvAPVDEMcLh8r91AeCN"/>
+<button class="absolute top-2 right-2 bg-white/90 p-1.5 rounded-full text-gray-400 hover:text-red-500 shadow-sm">
+<span class="material-symbols-outlined text-[18px]">favorite</span>
+</button>
+</div>
+<div>
+<h4 class="text-sm font-medium text-gray-800 line-clamp-2 h-[40px] leading-tight">2.2kW Hava Soğutmalı Spindle</h4>
+<p class="text-primary font-bold mt-1">4.500 TL</p>
+</div>
+</div>
+<!-- Product Card 2 -->
+<div class="snap-start shrink-0 w-[160px] flex flex-col gap-2 group">
+<div class="relative w-full aspect-square bg-background-light rounded-xl overflow-hidden">
+<img alt="Nema 23 Stepper Motor" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform" data-alt="Black square stepper motor with wires" src="https://lh3.googleusercontent.com/aida-public/AB6AXuANWBuft5t00Dsh808Hy-TO_Gx7Z86A5Gr-D2dKhRKq1UeVwi3-aDNYxelWhVGT2MhrV782j926Gdxz4Cvx-jexfQo8loP3LtH1IvFNAxeCrqW-V1gdzp6jVFTQDMLUYETQBrneMowj_ghPY_8pVPdqmO-4jmDIMoIST2q6LW6vjSsP3MVH_mTypiKtfSSCaj2XSDsrJO63FR5N-6qYqXnLSU52gQ53miHJIwNr0GLaC8g6miB__xm8Fih-XUKr0QI8ulXK3vQJvxLF"/>
+<div class="absolute top-2 left-2 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">Indirim</div>
+</div>
+<div>
+<h4 class="text-sm font-medium text-gray-800 line-clamp-2 h-[40px] leading-tight">Nema 23 Step Motor 2.2Nm</h4>
+<div class="flex items-center gap-2 mt-1">
+<p class="text-primary font-bold">850 TL</p>
+<p class="text-gray-400 text-xs line-through decoration-1">950 TL</p>
+</div>
+</div>
+</div>
+<!-- Product Card 3 -->
+<div class="snap-start shrink-0 w-[160px] flex flex-col gap-2 group">
+<div class="relative w-full aspect-square bg-background-light rounded-xl overflow-hidden">
+<img alt="CNC Controller Board" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform" data-alt="Green electronic controller board with ports" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDug15u7Ftu-Pg4fuC9df_IVeLOojTfKP2EhrNBleo5KjvuIOEXn3Paf-NOEyciR8ZKDhUXkX7I7R-EGh2FsJVkqJ8jGAenmI6Bx04ZDLhjiqZo-DR2ajNtrE9SvrUaPLCcew2B6wQaHf2FQv9CxwO22r3WRdQ5TmaCQ3nViupS9ij7g0W1dMYCbwQGoKz8UJdAbeNVSy-IoBUd7deyiyt586cTQAT4GYGUx-90hcWJXViJpA3BEeMn0IfDoyEvTwYSJLp9wBSBqJKO"/>
+</div>
+<div>
+<h4 class="text-sm font-medium text-gray-800 line-clamp-2 h-[40px] leading-tight">Mach3 Kontrol Kartı 5 Eksen</h4>
+<p class="text-primary font-bold mt-1">1.200 TL</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Trust / Info Stack -->
+<section class="px-4 py-8 space-y-3">
+<div class="bg-white p-4 rounded-xl shadow-sm flex items-center gap-4 border border-gray-100">
+<div class="bg-blue-50 p-3 rounded-full text-primary">
+<span class="material-symbols-outlined">local_shipping</span>
+</div>
+<div>
+<h4 class="font-bold text-gray-900 text-sm">Hızlı Kargo</h4>
+<p class="text-xs text-gray-500 font-body">Saat 16:00'a kadar verilen siparişler aynı gün kargoda.</p>
+</div>
+</div>
+<div class="bg-white p-4 rounded-xl shadow-sm flex items-center gap-4 border border-gray-100">
+<div class="bg-green-50 p-3 rounded-full text-green-600">
+<span class="material-symbols-outlined">verified_user</span>
+</div>
+<div>
+<h4 class="font-bold text-gray-900 text-sm">Güvenli Alışveriş</h4>
+<p class="text-xs text-gray-500 font-body">256-bit SSL sertifikası ile %100 güvenli ödeme.</p>
+</div>
+</div>
+<div class="bg-white p-4 rounded-xl shadow-sm flex items-center gap-4 border border-gray-100">
+<div class="bg-orange-50 p-3 rounded-full text-orange-600">
+<span class="material-symbols-outlined">support_agent</span>
+</div>
+<div>
+<h4 class="font-bold text-gray-900 text-sm">Teknik Destek</h4>
+<p class="text-xs text-gray-500 font-body">Uzman mühendislerimizden ücretsiz teknik destek.</p>
+</div>
+</div>
+</section>
+<!-- Bottom Spacer for Nav -->
+<div class="h-6"></div>
+</main>
+<!-- Sticky Bottom Navigation -->
+<nav class="absolute bottom-0 w-full bg-surface-light border-t border-gray-200 flex justify-around items-center px-2 py-2 pb-5 z-50">
+<button class="flex flex-col items-center justify-center w-full gap-1 group">
+<span class="material-symbols-outlined text-gray-400 group-hover:text-primary transition-colors text-[24px]">search</span>
+<span class="text-[10px] font-bold text-gray-400 group-hover:text-primary transition-colors">Ara</span>
+</button>
+<button class="flex flex-col items-center justify-center w-full gap-1 group">
+<span class="material-symbols-outlined text-gray-400 group-hover:text-primary transition-colors text-[24px]">grid_view</span>
+<span class="text-[10px] font-bold text-gray-400 group-hover:text-primary transition-colors">Kategori</span>
+</button>
+<!-- Active State Example (Cart) -->
+<div class="relative w-full flex justify-center -top-6">
+<button class="absolute flex items-center justify-center w-14 h-14 bg-primary text-white rounded-full shadow-lg shadow-primary/40 border-4 border-white">
+<span class="material-symbols-outlined text-[24px]">shopping_cart</span>
+<span class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold h-5 w-5 rounded-full flex items-center justify-center border-2 border-white">2</span>
+</button>
+<span class="absolute -bottom-1 text-[10px] font-bold text-primary">Sepet</span>
+</div>
+<button class="flex flex-col items-center justify-center w-full gap-1 group">
+<span class="material-symbols-outlined text-gray-400 group-hover:text-primary transition-colors text-[24px]">favorite</span>
+<span class="text-[10px] font-bold text-gray-400 group-hover:text-primary transition-colors">Favoriler</span>
+</button>
+<button class="flex flex-col items-center justify-center w-full gap-1 group">
+<span class="material-symbols-outlined text-gray-400 group-hover:text-primary transition-colors text-[24px]">person</span>
+<span class="text-[10px] font-bold text-gray-400 group-hover:text-primary transition-colors">Hesabım</span>
+</button>
+</nav>
+<!-- Bottom Home Indicator for iPhone Simulation -->
+<div class="absolute bottom-1 left-1/2 -translate-x-1/2 w-[120px] h-[5px] bg-black/20 rounded-full z-50"></div>
+</div>
+</body></html>

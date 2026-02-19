@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+
+<html lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CNC Marketim - Ürünler</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Noto+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0d59f2",
+                        "primary-dark": "#0b4ecf",
+                        "background-light": "#f5f6f8",
+                        "background-dark": "#101622",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#1a2230",
+                        "border-light": "#e7ebf4",
+                        "border-dark": "#2a3441",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "body": ["Noto Sans", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for sidebar */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        /* Range slider styling */
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: #0d59f2;
+            cursor: pointer;
+            margin-top: -6px;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #e7ebf4;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-800 dark:text-slate-100 antialiased overflow-x-hidden">
+<!-- Header / Navbar -->
+<div class="relative flex w-full flex-col bg-surface-light dark:bg-surface-dark border-b border-border-light dark:border-border-dark group/design-root z-50">
+<div class="layout-container flex h-full grow flex-col">
+<div class="flex flex-1 justify-center">
+<div class="layout-content-container flex flex-col w-full max-w-[1440px] px-4 md:px-10">
+<header class="flex items-center justify-between whitespace-nowrap py-4">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-4 text-slate-900 dark:text-white">
+<div class="size-8 text-primary">
+<svg class="w-full h-full" fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M39.475 21.6262C40.358 21.4363 40.6863 21.5589 40.7581 21.5934C40.7876 21.655 40.8547 21.857 40.8082 22.3336C40.7408 23.0255 40.4502 24.0046 39.8572 25.2301C38.6799 27.6631 36.5085 30.6631 33.5858 33.5858C30.6631 36.5085 27.6632 38.6799 25.2301 39.8572C24.0046 40.4502 23.0255 40.7407 22.3336 40.8082C21.8571 40.8547 21.6551 40.7875 21.5934 40.7581C21.5589 40.6863 21.4363 40.358 21.6262 39.475C21.8562 38.4054 22.4689 36.9657 23.5038 35.2817C24.7575 33.2417 26.5497 30.9744 28.7621 28.762C30.9744 26.5497 33.2417 24.7574 35.2817 23.5037C36.9657 22.4689 38.4054 21.8562 39.475 21.6262ZM4.41189 29.2403L18.7597 43.5881C19.8813 44.7097 21.4027 44.9179 22.7217 44.7893C24.0585 44.659 25.5148 44.1631 26.9723 43.4579C29.9052 42.0387 33.2618 39.5667 36.4142 36.4142C39.5667 33.2618 42.0387 29.9052 43.4579 26.9723C44.1631 25.5148 44.659 24.0585 44.7893 22.7217C44.9179 21.4027 44.7097 19.8813 43.5881 18.7597L29.2403 4.41187C27.8527 3.02428 25.8765 3.02573 24.2861 3.36776C22.6081 3.72863 20.7334 4.58419 18.8396 5.74801C16.4978 7.18716 13.9881 9.18353 11.5858 11.5858C9.18354 13.988 7.18717 16.4978 5.74802 18.8396C4.58421 20.7334 3.72865 22.6081 3.36778 24.2861C3.02574 25.8765 3.02429 27.8527 4.41189 29.2403Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+<h2 class="text-xl font-bold leading-tight tracking-[-0.015em]">CNC Marketim</h2>
+</div>
+<!-- Search Bar -->
+<label class="hidden lg:flex flex-col min-w-80 h-10">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full bg-background-light dark:bg-background-dark border border-transparent focus-within:border-primary/50 transition-colors">
+<div class="text-slate-500 flex items-center justify-center pl-4">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input class="flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg bg-transparent text-slate-900 dark:text-white focus:outline-0 focus:ring-0 border-none h-full placeholder:text-slate-500 px-3 text-sm font-normal leading-normal" placeholder="Parça no, ürün adı veya marka arayın..." value=""/>
+</div>
+</label>
+</div>
+<!-- Nav Links & Actions -->
+<div class="flex flex-1 justify-end items-center gap-6">
+<div class="hidden xl:flex items-center gap-6">
+<a class="text-slate-700 dark:text-slate-300 hover:text-primary transition-colors text-sm font-medium" href="#">Ürünler</a>
+<a class="text-slate-700 dark:text-slate-300 hover:text-primary transition-colors text-sm font-medium" href="#">Markalar</a>
+<a class="text-slate-700 dark:text-slate-300 hover:text-primary transition-colors text-sm font-medium" href="#">Hizmetler</a>
+</div>
+<div class="flex items-center gap-3">
+<button class="hidden sm:flex items-center justify-center rounded-lg h-10 px-4 bg-background-light dark:bg-surface-dark border border-border-light dark:border-border-dark text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-sm font-bold">
+<span>Giriş Yap</span>
+</button>
+<button class="relative flex items-center justify-center rounded-lg h-10 px-4 bg-primary hover:bg-primary-dark transition-colors text-white text-sm font-bold shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined mr-2 text-[20px]">shopping_cart</span>
+<span class="hidden sm:inline">Sepetim (3)</span>
+<span class="sm:hidden">3</span>
+</button>
+</div>
+</div>
+</header>
+</div>
+</div>
+</div>
+</div>
+<!-- Main Content Area -->
+<main class="w-full max-w-[1440px] mx-auto px-4 md:px-10 py-8">
+<!-- Breadcrumbs & Title -->
+<div class="mb-8">
+<div class="flex flex-wrap items-center gap-2 mb-4 text-sm text-slate-500 dark:text-slate-400">
+<a class="hover:text-primary transition-colors" href="#">Ana Sayfa</a>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<a class="hover:text-primary transition-colors" href="#">Otomasyon</a>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-slate-900 dark:text-white font-medium">Servo Motorlar ve Sürücüler</span>
+</div>
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<h1 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white tracking-tight mb-2">Servo Motorlar ve Sürücüler</h1>
+<p class="text-slate-600 dark:text-slate-400 max-w-2xl">Yüksek hassasiyetli CNC uygulamaları için endüstriyel servo sistemler, motorlar ve sürücü kitleri.</p>
+</div>
+<div class="flex items-center gap-3">
+<div class="relative group">
+<button class="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-lg text-sm font-medium text-slate-700 dark:text-slate-200 shadow-sm hover:border-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">sort</span>
+<span>Sırala: Önerilen</span>
+</button>
+<!-- Dropdown content would go here -->
+</div>
+<button class="lg:hidden flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-lg text-sm font-medium text-slate-700 dark:text-slate-200 shadow-sm">
+<span class="material-symbols-outlined text-[20px]">filter_list</span>
+                        Filtreler
+                   </button>
+</div>
+</div>
+<!-- Active Filters (Chips) -->
+<div class="flex flex-wrap gap-2 mt-6">
+<div class="flex items-center gap-2 px-3 py-1.5 bg-primary/10 border border-primary/20 rounded-full text-sm font-medium text-primary cursor-pointer hover:bg-primary/20 transition-colors">
+<span>Marka: Delta</span>
+<span class="material-symbols-outlined text-[16px]">close</span>
+</div>
+<div class="flex items-center gap-2 px-3 py-1.5 bg-primary/10 border border-primary/20 rounded-full text-sm font-medium text-primary cursor-pointer hover:bg-primary/20 transition-colors">
+<span>Güç: 750W</span>
+<span class="material-symbols-outlined text-[16px]">close</span>
+</div>
+<button class="text-sm text-slate-500 hover:text-primary font-medium underline decoration-slate-300 underline-offset-4 ml-2">Tümünü Temizle</button>
+</div>
+</div>
+<div class="flex gap-8 items-start">
+<!-- Sidebar Filters (Desktop) -->
+<aside class="hidden lg:block w-72 shrink-0 space-y-8 sticky top-4">
+<!-- Category Section -->
+<div class="border-b border-border-light dark:border-border-dark pb-6">
+<h3 class="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white mb-4">Kategoriler</h3>
+<ul class="space-y-2.5">
+<li>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="form-checkbox rounded border-slate-300 text-primary focus:ring-primary focus:ring-offset-0 bg-transparent size-4" type="checkbox"/>
+<span class="text-sm text-slate-700 dark:text-slate-300 group-hover:text-primary transition-colors">AC Servo Motorlar</span>
+<span class="ml-auto text-xs text-slate-400">124</span>
+</label>
+</li>
+<li>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="form-checkbox rounded border-slate-300 text-primary focus:ring-primary focus:ring-offset-0 bg-transparent size-4" type="checkbox"/>
+<span class="text-sm text-slate-900 dark:text-white font-medium">Servo Sürücüler</span>
+<span class="ml-auto text-xs text-slate-400">86</span>
+</label>
+</li>
+<li>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="form-checkbox rounded border-slate-300 text-primary focus:ring-primary focus:ring-offset-0 bg-transparent size-4" type="checkbox"/>
+<span class="text-sm text-slate-700 dark:text-slate-300 group-hover:text-primary transition-colors">Frenli Motorlar</span>
+<span class="ml-auto text-xs text-slate-400">42</span>
+</label>
+</li>
+<li>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="form-checkbox rounded border-slate-300 text-primary focus:ring-primary focus:ring-offset-0 bg-transparent size-4" type="checkbox"/>
+<span class="text-sm text-slate-700 dark:text-slate-300 group-hover:text-primary transition-colors">Redüktörlü Modeller</span>
+<span class="ml-auto text-xs text-slate-400">18</span>
+</label>
+</li>
+</ul>
+</div>
+<!-- Price Range -->
+<div class="border-b border-border-light dark:border-border-dark pb-6">
+<h3 class="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white mb-4">Fiyat Aralığı</h3>
+<div class="px-1 mb-4">
+<input class="w-full h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-primary" max="50000" min="0" type="range"/>
+</div>
+<div class="flex items-center gap-3">
+<div class="relative flex-1">
+<span class="absolute left-3 top-2.5 text-slate-400 text-xs">Min</span>
+<input class="w-full pl-3 pt-5 pb-1 pr-2 text-sm bg-background-light dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-md focus:border-primary focus:ring-0" type="number" value="1000"/>
+</div>
+<span class="text-slate-400">-</span>
+<div class="relative flex-1">
+<span class="absolute left-3 top-2.5 text-slate-400 text-xs">Max</span>
+<input class="w-full pl-3 pt-5 pb-1 pr-2 text-sm bg-background-light dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-md focus:border-primary focus:ring-0" type="number" value="45000"/>
+</div>
+<button class="p-2 bg-primary/10 hover:bg-primary text-primary hover:text-white rounded-md transition-colors">
+<span class="material-symbols-outlined text-[20px]">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Technical Specs (Accordion Style) -->
+<div class="border-b border-border-light dark:border-border-dark pb-6">
+<div class="flex items-center justify-between cursor-pointer mb-4 group">
+<h3 class="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white group-hover:text-primary transition-colors">Güç (kW)</h3>
+<span class="material-symbols-outlined text-slate-400 text-[20px]">expand_less</span>
+</div>
+<div class="grid grid-cols-2 gap-2">
+<button class="px-3 py-2 text-xs font-medium bg-background-light dark:bg-surface-dark border border-border-light dark:border-border-dark rounded hover:border-primary hover:text-primary transition-colors">0.4 kW</button>
+<button class="px-3 py-2 text-xs font-medium bg-primary text-white border border-primary rounded shadow-sm">0.75 kW</button>
+<button class="px-3 py-2 text-xs font-medium bg-background-light dark:bg-surface-dark border border-border-light dark:border-border-dark rounded hover:border-primary hover:text-primary transition-colors">1.0 kW</button>
+<button class="px-3 py-2 text-xs font-medium bg-background-light dark:bg-surface-dark border border-border-light dark:border-border-dark rounded hover:border-primary hover:text-primary transition-colors">1.5 kW</button>
+<button class="px-3 py-2 text-xs font-medium bg-background-light dark:bg-surface-dark border border-border-light dark:border-border-dark rounded hover:border-primary hover:text-primary transition-colors">2.0 kW</button>
+<button class="px-3 py-2 text-xs font-medium bg-background-light dark:bg-surface-dark border border-border-light dark:border-border-dark rounded hover:border-primary hover:text-primary transition-colors">3.0 kW+</button>
+</div>
+</div>
+<!-- Brand Filter -->
+<div class="pb-6">
+<h3 class="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white mb-4">Markalar</h3>
+<div class="space-y-2">
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="form-checkbox rounded border-slate-300 text-primary focus:ring-primary focus:ring-offset-0 bg-transparent size-4" type="checkbox"/>
+<span class="text-sm text-slate-700 dark:text-slate-300 group-hover:text-primary transition-colors">Delta Electronics</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="form-checkbox rounded border-slate-300 text-primary focus:ring-primary focus:ring-offset-0 bg-transparent size-4" type="checkbox"/>
+<span class="text-sm text-slate-700 dark:text-slate-300 group-hover:text-primary transition-colors">Mitsubishi Electric</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="form-checkbox rounded border-slate-300 text-primary focus:ring-primary focus:ring-offset-0 bg-transparent size-4" type="checkbox"/>
+<span class="text-sm text-slate-700 dark:text-slate-300 group-hover:text-primary transition-colors">Siemens</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="form-checkbox rounded border-slate-300 text-primary focus:ring-primary focus:ring-offset-0 bg-transparent size-4" type="checkbox"/>
+<span class="text-sm text-slate-700 dark:text-slate-300 group-hover:text-primary transition-colors">Yaskawa</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="form-checkbox rounded border-slate-300 text-primary focus:ring-primary focus:ring-offset-0 bg-transparent size-4" type="checkbox"/>
+<span class="text-sm text-slate-700 dark:text-slate-300 group-hover:text-primary transition-colors">Panasonic</span>
+</label>
+</div>
+</div>
+<!-- CTA Sidebar -->
+<div class="bg-slate-900 rounded-xl p-6 text-white relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary/20 rounded-full blur-2xl -mr-10 -mt-10"></div>
+<h4 class="text-lg font-bold mb-2 relative z-10">Toplu Alım mı Yapacaksınız?</h4>
+<p class="text-slate-300 text-sm mb-4 relative z-10">Projeleriniz için özel fiyat teklifi alın.</p>
+<button class="w-full py-2 bg-primary hover:bg-primary-dark text-white rounded-lg text-sm font-bold transition-colors relative z-10">Teklif İste</button>
+</div>
+</aside>
+<!-- Product Grid -->
+<div class="flex-1">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Product Card 1 -->
+<div class="group bg-white dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-xl overflow-hidden hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 flex flex-col">
+<div class="relative p-4 bg-background-light dark:bg-[#151c28] flex items-center justify-center h-48 group-hover:bg-white dark:group-hover:bg-surface-dark transition-colors">
+<div class="absolute top-3 left-3 bg-green-500 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wide">Stokta</div>
+<button class="absolute top-3 right-3 text-slate-400 hover:text-red-500 transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+<!-- Image -->
+<img class="h-32 object-contain mix-blend-multiply dark:mix-blend-normal" data-alt="Industrial servo motor silver metal body" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA5AmJwI9W5TG2lhpBtJrQm0e2MyD2e0Sqth6NqOjwxEQGdSAWKgsRach2eJuAkBCabnA2acXHOAmhHye1EeagxFahOi_2exlhRlSRCp7w1fRGXfH-FCfqsOXc9FtYQL8Mja-J94ulQiCK04gs5X7QmTkGr6XUKlLDhv5dTpSr3XpGy-bZE9Mh2HF5TpeRtjclHHWjDbG1KI2eQMtwACJmXU8PH16V3E9NUyJjDTD4rHckDYsKqXcgHCK-PpmuGQYwrPX9ZWXN7dVTW"/>
+</div>
+<div class="p-5 flex flex-col flex-1">
+<div class="mb-1 text-xs font-semibold text-primary uppercase tracking-wider">Delta Electronics</div>
+<h3 class="text-base font-bold text-slate-900 dark:text-white mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                                ASDA-B2 Serisi 750W Servo Sürücü Seti
+                            </h3>
+<div class="text-xs text-slate-500 mb-4 font-mono">SKU: ASD-B2-0721-B</div>
+<!-- Technical Mini Specs -->
+<div class="grid grid-cols-2 gap-y-2 gap-x-4 mb-5 text-sm">
+<div class="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined text-[16px] text-slate-400">bolt</span>
+<span>0.75 kW</span>
+</div>
+<div class="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined text-[16px] text-slate-400">speed</span>
+<span>3000 RPM</span>
+</div>
+<div class="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined text-[16px] text-slate-400">settings_input_component</span>
+<span>220V AC</span>
+</div>
+<div class="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined text-[16px] text-slate-400">straighten</span>
+<span>80mm</span>
+</div>
+</div>
+<div class="mt-auto pt-4 border-t border-border-light dark:border-border-dark flex items-center justify-between">
+<div>
+<span class="block text-lg font-bold text-slate-900 dark:text-white">₺12.450</span>
+<span class="text-xs text-slate-400">+ KDV</span>
+</div>
+<button class="size-10 flex items-center justify-center rounded-lg bg-primary text-white hover:bg-primary-dark transition-colors shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-[20px]">add_shopping_cart</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Product Card 2 -->
+<div class="group bg-white dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-xl overflow-hidden hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 flex flex-col">
+<div class="relative p-4 bg-background-light dark:bg-[#151c28] flex items-center justify-center h-48 group-hover:bg-white dark:group-hover:bg-surface-dark transition-colors">
+<div class="absolute top-3 left-3 bg-amber-500 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wide">Son 2 Adet</div>
+<button class="absolute top-3 right-3 text-slate-400 hover:text-red-500 transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+<img class="h-32 object-contain mix-blend-multiply dark:mix-blend-normal" data-alt="Compact industrial servo drive unit grey" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMOoiyzHi_-2rdX_ziShjvlq5UxcNNkJeZJZWKjt2xD_Y3LFgkOXmgQJNLekm5kOrIUwkcEaVTb-04Y0Z4YNqJOGw2Zzx6pv482SSvbEMOd0atopMyIMWmhSwUUwNy-KMjRzOd_-c6DQyYa3ObeYBCHspWHNMEMEqgBSRQcegreWMk-h_BspukodSV7mTpN7vANc_BQNl_u1CCBHXF9tmy2yL6NRcUi1KDiXtOBOQoYcMLahK0Sp-OIknejuvYhVNT3k2dJXhmg9NK"/>
+</div>
+<div class="p-5 flex flex-col flex-1">
+<div class="mb-1 text-xs font-semibold text-primary uppercase tracking-wider">Mitsubishi</div>
+<h3 class="text-base font-bold text-slate-900 dark:text-white mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                                MR-J4 Serisi 400W Servo Amplifikatör
+                            </h3>
+<div class="text-xs text-slate-500 mb-4 font-mono">SKU: MR-J4-40A</div>
+<div class="grid grid-cols-2 gap-y-2 gap-x-4 mb-5 text-sm">
+<div class="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined text-[16px] text-slate-400">bolt</span>
+<span>0.4 kW</span>
+</div>
+<div class="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined text-[16px] text-slate-400">memory</span>
+<span>22-bit Enc</span>
+</div>
+<div class="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined text-[16px] text-slate-400">settings_input_component</span>
+<span>200V</span>
+</div>
+<div class="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined text-[16px] text-slate-400">wifi</span>
+<span>EtherCAT</span>
+</div>
+</div>
+<div class="mt-auto pt-4 border-t border-border-light dark:border-border-dark flex items-center justify-between">
+<div>
+<span class="block text-lg font-bold text-slate-900 dark:text-white">₺9.850</span>
+<span class="text-xs text-slate-400">+ KDV</span>
+</div>
+<button class="size-10 flex items-center justify-center rounded-lg bg-primary text-white hover:bg-primary-dark transition-colors shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-[20px]">add_shopping_cart</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Product Card 3 -->
+<div class="group bg-white dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-xl overflow-hidden hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 flex flex-col">
+<div class="relative p-4 bg-background-light dark:bg-[#151c28] flex items-center justify-center h-48 group-hover:bg-white dark:group-hover:bg-surface-dark transition-colors">
+<div class="absolute top-3 left-3 bg-slate-500 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wide">Ön Sipariş</div>
+<button class="absolute top-3 right-3 text-slate-400 hover:text-red-500 transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+<img class="h-32 object-contain mix-blend-multiply dark:mix-blend-normal" data-alt="Heavy duty industrial electric motor close up" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRGbs4PghHcKUtgEdYKnTJllganoXeUBzHei3vd1cGkbhwLhM-Fbh6bp2ShJAXscmkbQQ0EjMMAwnJIYoKRKMjuunibBpZlbdCh65Oi6rYgVkJ7D-B_ozFaew3CuOD4z8HcJzQ4ggv25m1jAymSOS29uvcS1ugdyzpG6Lxc7YxboW96FtnUaLaqSCGuXUGV5LsUXAP94Kzd3OZJdhe00RiLTkqtuUIHOd8VvofUW3P6AfcJubqr62JjzcQjtT7y564_1JEzzC8qLf2"/>
+</div>
+<div class="p-5 flex flex-col flex-1">
+<div class="mb-1 text-xs font-semibold text-primary uppercase tracking-wider">Siemens</div>
+<h3 class="text-base font-bold text-slate-900 dark:text-white mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                                Sinamics V90 Servo Drive 1.5kW 3-Faz
+                            </h3>
+<div class="text-xs text-slate-500 mb-4 font-mono">SKU: 6SL3210-5FE11</div>
+<div class="grid grid-cols-2 gap-y-2 gap-x-4 mb-5 text-sm">
+<div class="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined text-[16px] text-slate-400">bolt</span>
+<span>1.5 kW</span>
+</div>
+<div class="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined text-[16px] text-slate-400">speed</span>
+<span>2000 RPM</span>
+</div>
+<div class="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined text-[16px] text-slate-400">settings_input_component</span>
+<span>400V</span>
+</div>
+<div class="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined text-[16px] text-slate-400">cable</span>
+<span>Profinet</span>
+</div>
+</div>
+<div class="mt-auto pt-4 border-t border-border-light dark:border-border-dark flex items-center justify-between">
+<div>
+<span class="block text-lg font-bold text-slate-900 dark:text-white">₺18.200</span>
+<span class="text-xs text-slate-400">+ KDV</span>
+</div>
+<button class="size-10 flex items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-400 cursor-not-allowed">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Product Card 4 -->
+<div class="group bg-white dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-xl overflow-hidden hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 flex flex-col">
+<div class="relative p-4 bg-background-light dark:bg-[#151c28] flex items-center justify-center h-48 group-hover:bg-white dark:group-hover:bg-surface-dark transition-colors">
+<div class="absolute top-3 left-3 bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wide">%15 İndirim</div>
+<button class="absolute top-3 right-3 text-slate-400 hover:text-red-500 transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+<img class="h-32 object-contain mix-blend-multiply dark:mix-blend-normal" data-alt="Small electronic component circuit board macro" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcCcK0fh5AhrRCVbgZbKqS56N7c8JCeMXqU0m4JvS8-WXJF9I0rad6RUVZDaaSk2L1bxyZXq5yDuLFgOmpzgwwNCJ9I1uzs2E1bOrwcYba24ZNJmhWretNwM5R7b9bDXHptiDhm7ugrzyTSYdMDvs-jtIr5QkHm0wYwatG951H34LMjWY7XCfuMq7BSHsGYsp-gAxY6NWTIrTPdXmPOr-CpN8uKbzY0QxExvC8yntgOUzW1xMJ71w8k6lOsFYc0adsjf6BW5mDix9V"/>
+</div>
+<div class="p-5 flex flex-col flex-1">
+<div class="mb-1 text-xs font-semibold text-primary uppercase tracking-wider">Panasonic</div>
+<h3 class="text-base font-bold text-slate-900 dark:text-white mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                                Minas A6 Aile Servo Motor 200W
+                            </h3>
+<div class="text-xs text-slate-500 mb-4 font-mono">SKU: MHMF022L1U2M</div>
+<div class="grid grid-cols-2 gap-y-2 gap-x-4 mb-5 text-sm">
+<div class="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined text-[16px] text-slate-400">bolt</span>
+<span>0.2 kW</span>
+</div>
+<div class="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined text-[16px] text-slate-400">speed</span>
+<span>3000 RPM</span>
+</div>
+<div class="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined text-[16px] text-slate-400">settings_input_component</span>
+<span>200V</span>
+</div>
+<div class="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined text-[16px] text-slate-400">straighten</span>
+<span>60mm</span>
+</div>
+</div>
+<div class="mt-auto pt-4 border-t border-border-light dark:border-border-dark flex items-center justify-between">
+<div>
+<div class="flex items-center gap-2">
+<span class="block text-lg font-bold text-slate-900 dark:text-white">₺6.500</span>
+<span class="text-xs text-slate-400 line-through">₺7.650</span>
+</div>
+<span class="text-xs text-slate-400">+ KDV</span>
+</div>
+<button class="size-10 flex items-center justify-center rounded-lg bg-primary text-white hover:bg-primary-dark transition-colors shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-[20px]">add_shopping_cart</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Product Card 5 -->
+<div class="group bg-white dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-xl overflow-hidden hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 flex flex-col">
+<div class="relative p-4 bg-background-light dark:bg-[#151c28] flex items-center justify-center h-48 group-hover:bg-white dark:group-hover:bg-surface-dark transition-colors">
+<div class="absolute top-3 left-3 bg-green-500 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wide">Stokta</div>
+<button class="absolute top-3 right-3 text-slate-400 hover:text-red-500 transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+<img class="h-32 object-contain mix-blend-multiply dark:mix-blend-normal" data-alt="Generic industrial machinery part metallic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAAJIZUN8OXpCeZ3YcgWe0YcPsv3GzE3sFNYkmCVE36cvsmVEZ_129ycZph9rs8hvcVdqf1pgbpSZtbhp7lyktMu-7F5wgtoiBvzIG08JqF7uSF7Bi-Cf5eVOmLigmQgtdsnOEt-LAtbRznxxLNShzf84t8TuIYfDCqtQE4Z15W0-Qc2Bh5RIzd9yglZ-lBd_MiOlzV0EIdTp6F4ELNJRzRj3U72cqgi5-MZ8FLllLuaAZ83554lp1j5YgqXGDZTmptct8zL-v8I5-d"/>
+</div>
+<div class="p-5 flex flex-col flex-1">
+<div class="mb-1 text-xs font-semibold text-primary uppercase tracking-wider">Delta Electronics</div>
+<h3 class="text-base font-bold text-slate-900 dark:text-white mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                                ECMA Serisi Frenli Servo Motor 1kW
+                            </h3>
+<div class="text-xs text-slate-500 mb-4 font-mono">SKU: ECMA-C21010RS</div>
+<div class="grid grid-cols-2 gap-y-2 gap-x-4 mb-5 text-sm">
+<div class="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined text-[16px] text-slate-400">bolt</span>
+<span>1.0 kW</span>
+</div>
+<div class="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined text-[16px] text-slate-400">speed</span>
+<span>2000 RPM</span>
+</div>
+<div class="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined text-[16px] text-slate-400">settings_input_component</span>
+<span>220V</span>
+</div>
+<div class="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined text-[16px] text-slate-400">lock</span>
+<span>Frenli</span>
+</div>
+</div>
+<div class="mt-auto pt-4 border-t border-border-light dark:border-border-dark flex items-center justify-between">
+<div>
+<span class="block text-lg font-bold text-slate-900 dark:text-white">₺14.100</span>
+<span class="text-xs text-slate-400">+ KDV</span>
+</div>
+<button class="size-10 flex items-center justify-center rounded-lg bg-primary text-white hover:bg-primary-dark transition-colors shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-[20px]">add_shopping_cart</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Product Card 6 -->
+<div class="group bg-white dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-xl overflow-hidden hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 flex flex-col">
+<div class="relative p-4 bg-background-light dark:bg-[#151c28] flex items-center justify-center h-48 group-hover:bg-white dark:group-hover:bg-surface-dark transition-colors">
+<div class="absolute top-3 left-3 bg-green-500 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wide">Stokta</div>
+<button class="absolute top-3 right-3 text-slate-400 hover:text-red-500 transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+<img class="h-32 object-contain mix-blend-multiply dark:mix-blend-normal" data-alt="Industrial automation controller unit white" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhcT6dQB_BgoS0xcs3NZcasvtZxgF4phVcX_QuLT82FxrKAvzS7ro0Ol3tBJwdu2cbCAxYBN_uAWfL4aXh8WaT7NQv7edMgRu6CrU3PKnszNQYgx8Itd2ura8RbHWnCtQl112eInZY2O1ZFQUcJX2wunMfas3iGe0Y5Bd-zZjIj1B-P1rYSiVYZdtqLsyJO295WqFC6ftLCDzg8oH5nfgtgkA6VCEWN5EEwRjB1NxjsjTevvWwpyCCw5FVLVEQWEUzjyd4vCAb1w93"/>
+</div>
+<div class="p-5 flex flex-col flex-1">
+<div class="mb-1 text-xs font-semibold text-primary uppercase tracking-wider">Yaskawa</div>
+<h3 class="text-base font-bold text-slate-900 dark:text-white mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                                Sigma-7 Serisi Servo Pack Sürücü
+                            </h3>
+<div class="text-xs text-slate-500 mb-4 font-mono">SKU: SGD7S-2R8A00A</div>
+<div class="grid grid-cols-2 gap-y-2 gap-x-4 mb-5 text-sm">
+<div class="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined text-[16px] text-slate-400">bolt</span>
+<span>0.4 kW</span>
+</div>
+<div class="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined text-[16px] text-slate-400">speed</span>
+<span>-</span>
+</div>
+<div class="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined text-[16px] text-slate-400">settings_input_component</span>
+<span>200V</span>
+</div>
+<div class="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined text-[16px] text-slate-400">wifi</span>
+<span>Mechatrolink</span>
+</div>
+</div>
+<div class="mt-auto pt-4 border-t border-border-light dark:border-border-dark flex items-center justify-between">
+<div>
+<span class="block text-lg font-bold text-slate-900 dark:text-white">₺11.250</span>
+<span class="text-xs text-slate-400">+ KDV</span>
+</div>
+<button class="size-10 flex items-center justify-center rounded-lg bg-primary text-white hover:bg-primary-dark transition-colors shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-[20px]">add_shopping_cart</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Pagination -->
+<div class="mt-12 flex justify-center">
+<nav class="flex items-center gap-2">
+<button class="size-10 flex items-center justify-center rounded-lg border border-border-light dark:border-border-dark bg-white dark:bg-surface-dark text-slate-500 hover:text-primary hover:border-primary transition-colors">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="size-10 flex items-center justify-center rounded-lg bg-primary text-white font-bold">1</button>
+<button class="size-10 flex items-center justify-center rounded-lg border border-border-light dark:border-border-dark bg-white dark:bg-surface-dark text-slate-700 dark:text-slate-300 font-medium hover:border-primary hover:text-primary transition-colors">2</button>
+<button class="size-10 flex items-center justify-center rounded-lg border border-border-light dark:border-border-dark bg-white dark:bg-surface-dark text-slate-700 dark:text-slate-300 font-medium hover:border-primary hover:text-primary transition-colors">3</button>
+<div class="px-2 text-slate-400">...</div>
+<button class="size-10 flex items-center justify-center rounded-lg border border-border-light dark:border-border-dark bg-white dark:bg-surface-dark text-slate-700 dark:text-slate-300 font-medium hover:border-primary hover:text-primary transition-colors">8</button>
+<button class="size-10 flex items-center justify-center rounded-lg border border-border-light dark:border-border-dark bg-white dark:bg-surface-dark text-slate-500 hover:text-primary hover:border-primary transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</nav>
+</div>
+</div>
+</div>
+</main>
+<!-- Sticky Bulk Action Bar (Bottom) -->
+<div class="fixed bottom-0 left-0 w-full bg-white dark:bg-surface-dark border-t border-border-light dark:border-border-dark p-4 shadow-2xl z-40 transform transition-transform">
+<div class="max-w-[1440px] mx-auto px-4 flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="hidden sm:flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+<span class="material-symbols-outlined">inventory_2</span>
+</div>
+<div>
+<p class="font-bold text-slate-900 dark:text-white text-sm">Toplu Sipariş Listesi Oluşturun</p>
+<p class="text-xs text-slate-500">Çoklu ürün alımlarında Excel listesi yükleyerek hızlı teklif alın.</p>
+</div>
+</div>
+<div class="flex gap-3">
+<button class="hidden sm:block px-4 py-2 text-sm font-bold text-slate-700 dark:text-slate-300 hover:text-primary transition-colors">Daha Sonra</button>
+<button class="px-6 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-lg text-sm font-bold hover:opacity-90 transition-opacity flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">upload_file</span>
+                    Liste Yükle
+                 </button>
+</div>
+</div>
+</div>
+<div class="h-20"></div> <!-- Spacer for sticky footer -->
+</body></html>

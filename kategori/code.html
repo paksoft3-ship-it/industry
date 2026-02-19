@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+
+<html lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kategori Rehberi - CNC Market</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Noto+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0d7ff2",
+                        "background-light": "#f5f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "body": ["Noto Sans", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for sidebar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #e2e8f0;
+            border-radius: 20px;
+        }
+        .group:hover .group-hover\:opacity-100 {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased min-h-screen flex flex-col">
+<!-- Top Navigation -->
+<header class="sticky top-0 z-50 w-full bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm">
+<div class="max-w-[1440px] mx-auto px-6 h-16 flex items-center justify-between gap-8">
+<!-- Logo Area -->
+<div class="flex items-center gap-8">
+<a class="flex items-center gap-3 text-slate-900 dark:text-white group" href="#">
+<div class="w-8 h-8 bg-primary rounded flex items-center justify-center text-white">
+<span class="material-symbols-outlined">precision_manufacturing</span>
+</div>
+<span class="text-xl font-bold tracking-tight">CNC Market</span>
+</a>
+<!-- Desktop Menu -->
+<nav class="hidden lg:flex items-center gap-8 ml-4">
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Ürünler</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Markalar</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Çözümler</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Destek</a>
+</nav>
+</div>
+<!-- Search Bar -->
+<div class="flex-1 max-w-xl hidden md:block">
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input class="block w-full pl-10 pr-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm placeholder:text-slate-400 transition-all" placeholder="Parça numarası, ürün adı veya kategori ara..." type="text"/>
+<div class="absolute inset-y-0 right-0 flex items-center pr-2">
+<kbd class="hidden lg:inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-medium text-slate-400 bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded">⌘K</kbd>
+</div>
+</div>
+</div>
+<!-- User Actions -->
+<div class="flex items-center gap-3">
+<button class="flex items-center gap-2 px-3 py-2 text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
+<span class="material-symbols-outlined text-[20px]">person</span>
+<span class="hidden sm:inline">Giriş Yap</span>
+</button>
+<button class="flex items-center gap-2 px-3 py-2 text-sm font-bold text-white bg-primary hover:bg-primary/90 rounded-lg shadow-sm shadow-primary/30 transition-all active:scale-95">
+<span class="material-symbols-outlined text-[20px]">shopping_cart</span>
+<span class="hidden sm:inline">Sepetim</span>
+<span class="ml-1 bg-white/20 px-1.5 py-0.5 rounded text-[10px]">0</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content Layout -->
+<main class="flex-1 w-full max-w-[1440px] mx-auto px-6 py-6 flex gap-8">
+<!-- Sticky Left Sidebar -->
+<aside class="w-64 hidden lg:flex flex-col gap-6 sticky top-24 h-[calc(100vh-8rem)]">
+<!-- Sidebar Header -->
+<div class="pb-2 border-b border-slate-200 dark:border-slate-700">
+<h2 class="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Gruplar</h2>
+</div>
+<!-- Scrollable Navigation -->
+<nav class="flex-1 overflow-y-auto custom-scrollbar pr-2 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/10 text-primary font-medium transition-colors" href="#hareket-kontrol">
+<span class="material-symbols-outlined text-[20px] fill-1">motion_mode</span>
+<span class="text-sm">Hareket Kontrol</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors group" href="#mekanik">
+<span class="material-symbols-outlined text-[20px] text-slate-400 group-hover:text-primary transition-colors">settings_suggest</span>
+<span class="text-sm font-medium">Mekanik Aksam</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors group" href="#spindle">
+<span class="material-symbols-outlined text-[20px] text-slate-400 group-hover:text-primary transition-colors">speed</span>
+<span class="text-sm font-medium">Spindle &amp; İnverter</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors group" href="#reduktor">
+<span class="material-symbols-outlined text-[20px] text-slate-400 group-hover:text-primary transition-colors">hdr_strong</span>
+<span class="text-sm font-medium">Redüktörler</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors group" href="#cnc-kontrol">
+<span class="material-symbols-outlined text-[20px] text-slate-400 group-hover:text-primary transition-colors">developer_board</span>
+<span class="text-sm font-medium">Kontrol Üniteleri</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors group" href="#sensorler">
+<span class="material-symbols-outlined text-[20px] text-slate-400 group-hover:text-primary transition-colors">sensors</span>
+<span class="text-sm font-medium">Sensörler</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors group" href="#pano">
+<span class="material-symbols-outlined text-[20px] text-slate-400 group-hover:text-primary transition-colors">electric_bolt</span>
+<span class="text-sm font-medium">Pano Malzemeleri</span>
+</a>
+</nav>
+<!-- Sidebar Footer Ad -->
+<div class="mt-auto p-4 bg-slate-900 rounded-xl relative overflow-hidden group cursor-pointer">
+<div class="absolute top-0 right-0 p-2 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-6xl text-white">support_agent</span>
+</div>
+<h3 class="text-white font-bold text-lg mb-1 relative z-10">Proje Desteği</h3>
+<p class="text-slate-400 text-xs mb-3 relative z-10">Mühendislerimizden ücretsiz proje danışmanlığı alın.</p>
+<span class="text-primary text-xs font-bold flex items-center gap-1 relative z-10">
+                    Randevu Al <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</span>
+</div>
+</aside>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col gap-8 min-w-0">
+<!-- Breadcrumbs & Header -->
+<div class="flex flex-col gap-4">
+<nav class="flex items-center gap-2 text-sm text-slate-500">
+<a class="hover:text-primary transition-colors" href="#">Ana Sayfa</a>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="font-medium text-slate-900 dark:text-slate-100">Kategoriler</span>
+</nav>
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<h1 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white tracking-tight mb-2">Kategoriler</h1>
+<p class="text-slate-500 dark:text-slate-400 max-w-2xl text-lg">Endüstriyel otomasyon ve CNC projeleriniz için 12.000+ ürün çeşidi ve kapsamlı teknik rehber.</p>
+</div>
+</div>
+<!-- Filter Chips -->
+<div class="flex flex-wrap gap-2 py-2">
+<button class="px-4 py-1.5 rounded-full text-sm font-medium bg-primary text-white shadow-sm ring-1 ring-primary">Tümü</button>
+<button class="px-4 py-1.5 rounded-full text-sm font-medium bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 ring-1 ring-slate-200 dark:ring-slate-700 hover:ring-primary hover:text-primary transition-all">Servo Sistemler</button>
+<button class="px-4 py-1.5 rounded-full text-sm font-medium bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 ring-1 ring-slate-200 dark:ring-slate-700 hover:ring-primary hover:text-primary transition-all">Step Motorlar</button>
+<button class="px-4 py-1.5 rounded-full text-sm font-medium bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 ring-1 ring-slate-200 dark:ring-slate-700 hover:ring-primary hover:text-primary transition-all">Spindle</button>
+<button class="px-4 py-1.5 rounded-full text-sm font-medium bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 ring-1 ring-slate-200 dark:ring-slate-700 hover:ring-primary hover:text-primary transition-all">Ray &amp; Araba</button>
+<button class="px-4 py-1.5 rounded-full text-sm font-medium bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 ring-1 ring-slate-200 dark:ring-slate-700 hover:ring-primary hover:text-primary transition-all">Vidalı Mil</button>
+</div>
+</div>
+<!-- Content Section A: Hareket Kontrol -->
+<section class="flex flex-col gap-6 scroll-mt-28" id="hareket-kontrol">
+<div class="flex items-center gap-4 pb-2 border-b border-slate-200 dark:border-slate-700">
+<div class="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">motion_mode</span>
+</div>
+<div>
+<h2 class="text-xl font-bold text-slate-900 dark:text-white">Hareket Kontrol Sistemleri</h2>
+<p class="text-sm text-slate-500">Yüksek hassasiyetli pozisyonlama ve hız kontrolü</p>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Category Card 1 -->
+<div class="group bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-5 hover:shadow-lg hover:border-primary/30 transition-all duration-300 flex flex-col h-full relative overflow-hidden">
+<div class="flex justify-between items-start mb-4">
+<div class="w-12 h-12 bg-slate-50 dark:bg-slate-700 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-300 group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[28px]">electric_meter</span>
+</div>
+<span class="bg-blue-50 dark:bg-blue-900/30 text-primary text-xs font-bold px-2.5 py-1 rounded">Hareket</span>
+</div>
+<h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2 group-hover:text-primary transition-colors">Servo Motorlar</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400 mb-6 line-clamp-2 flex-1">Yüksek tork ve hız gerektiren uygulamalar için AC servo motor ve sürücü setleri.</p>
+<div class="flex items-center justify-between mt-auto">
+<div class="flex flex-col">
+<span class="text-xs text-slate-400 font-medium">120+ Ürün</span>
+</div>
+<button class="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white text-sm font-bold rounded-lg group-hover:bg-primary group-hover:text-white transition-colors">İncele</button>
+</div>
+<!-- Hover Overlay Links -->
+<div class="absolute inset-x-0 bottom-0 bg-white dark:bg-slate-800 border-t border-slate-100 dark:border-slate-700 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex gap-4">
+<a class="flex-1 text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-primary flex items-center justify-center gap-1 bg-slate-50 dark:bg-slate-700/50 py-2 rounded" href="#">
+<span class="material-symbols-outlined text-[16px]">trending_up</span> Popüler
+                            </a>
+<a class="flex-1 text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-primary flex items-center justify-center gap-1 bg-slate-50 dark:bg-slate-700/50 py-2 rounded" href="#">
+<span class="material-symbols-outlined text-[16px]">new_releases</span> Yeni
+                            </a>
+</div>
+</div>
+<!-- Category Card 2 -->
+<div class="group bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-5 hover:shadow-lg hover:border-primary/30 transition-all duration-300 flex flex-col h-full relative overflow-hidden">
+<div class="flex justify-between items-start mb-4">
+<div class="w-12 h-12 bg-slate-50 dark:bg-slate-700 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-300 group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[28px]">memory</span>
+</div>
+<span class="bg-blue-50 dark:bg-blue-900/30 text-primary text-xs font-bold px-2.5 py-1 rounded">Hareket</span>
+</div>
+<h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2 group-hover:text-primary transition-colors">Step Motorlar</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400 mb-6 line-clamp-2 flex-1">Ekonomik ve hassas konumlandırma çözümleri. NEMA 17, 23, 34 serileri.</p>
+<div class="flex items-center justify-between mt-auto">
+<div class="flex flex-col">
+<span class="text-xs text-slate-400 font-medium">85+ Ürün</span>
+</div>
+<button class="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white text-sm font-bold rounded-lg group-hover:bg-primary group-hover:text-white transition-colors">İncele</button>
+</div>
+<!-- Hover Overlay Links -->
+<div class="absolute inset-x-0 bottom-0 bg-white dark:bg-slate-800 border-t border-slate-100 dark:border-slate-700 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex gap-4">
+<a class="flex-1 text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-primary flex items-center justify-center gap-1 bg-slate-50 dark:bg-slate-700/50 py-2 rounded" href="#">
+<span class="material-symbols-outlined text-[16px]">trending_up</span> Popüler
+                            </a>
+<a class="flex-1 text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-primary flex items-center justify-center gap-1 bg-slate-50 dark:bg-slate-700/50 py-2 rounded" href="#">
+<span class="material-symbols-outlined text-[16px]">new_releases</span> Yeni
+                            </a>
+</div>
+</div>
+<!-- Category Card 3 -->
+<div class="group bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-5 hover:shadow-lg hover:border-primary/30 transition-all duration-300 flex flex-col h-full relative overflow-hidden">
+<div class="flex justify-between items-start mb-4">
+<div class="w-12 h-12 bg-slate-50 dark:bg-slate-700 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-300 group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[28px]">router</span>
+</div>
+<span class="bg-blue-50 dark:bg-blue-900/30 text-primary text-xs font-bold px-2.5 py-1 rounded">Sürücü</span>
+</div>
+<h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2 group-hover:text-primary transition-colors">Motor Sürücüleri</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400 mb-6 line-clamp-2 flex-1">Step ve servo motorlar için dijital, analog kontrol sürücüleri.</p>
+<div class="flex items-center justify-between mt-auto">
+<div class="flex flex-col">
+<span class="text-xs text-slate-400 font-medium">45+ Ürün</span>
+</div>
+<button class="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white text-sm font-bold rounded-lg group-hover:bg-primary group-hover:text-white transition-colors">İncele</button>
+</div>
+<!-- Hover Overlay Links -->
+<div class="absolute inset-x-0 bottom-0 bg-white dark:bg-slate-800 border-t border-slate-100 dark:border-slate-700 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex gap-4">
+<a class="flex-1 text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-primary flex items-center justify-center gap-1 bg-slate-50 dark:bg-slate-700/50 py-2 rounded" href="#">
+<span class="material-symbols-outlined text-[16px]">trending_up</span> Popüler
+                            </a>
+<a class="flex-1 text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-primary flex items-center justify-center gap-1 bg-slate-50 dark:bg-slate-700/50 py-2 rounded" href="#">
+<span class="material-symbols-outlined text-[16px]">new_releases</span> Yeni
+                            </a>
+</div>
+</div>
+</div>
+</section>
+<!-- Content Section B: Mekanik Aksam -->
+<section class="flex flex-col gap-6 scroll-mt-28" id="mekanik">
+<div class="flex items-center gap-4 pb-2 border-b border-slate-200 dark:border-slate-700">
+<div class="w-10 h-10 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center text-emerald-600">
+<span class="material-symbols-outlined">settings_suggest</span>
+</div>
+<div>
+<h2 class="text-xl font-bold text-slate-900 dark:text-white">Mekanik Aksamlar</h2>
+<p class="text-sm text-slate-500">Doğrusal hareket ve güç aktarım elemanları</p>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Category Card 4 -->
+<div class="group bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-5 hover:shadow-lg hover:border-primary/30 transition-all duration-300 flex flex-col h-full relative overflow-hidden">
+<div class="flex justify-between items-start mb-4">
+<div class="w-12 h-12 bg-slate-50 dark:bg-slate-700 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-300 group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[28px]">straight</span>
+</div>
+<span class="bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 text-xs font-bold px-2.5 py-1 rounded">Mekanik</span>
+</div>
+<h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2 group-hover:text-primary transition-colors">Vidalı Miller</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400 mb-6 line-clamp-2 flex-1">C7 ve C5 hassasiyet sınıfında haddelenmiş ve taşlanmış vidalı miller.</p>
+<div class="flex items-center justify-between mt-auto">
+<div class="flex flex-col">
+<span class="text-xs text-slate-400 font-medium">200+ Boyut</span>
+</div>
+<button class="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white text-sm font-bold rounded-lg group-hover:bg-primary group-hover:text-white transition-colors">İncele</button>
+</div>
+<!-- Hover Overlay Links -->
+<div class="absolute inset-x-0 bottom-0 bg-white dark:bg-slate-800 border-t border-slate-100 dark:border-slate-700 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex gap-4">
+<a class="flex-1 text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-primary flex items-center justify-center gap-1 bg-slate-50 dark:bg-slate-700/50 py-2 rounded" href="#">
+<span class="material-symbols-outlined text-[16px]">trending_up</span> Popüler
+                            </a>
+<a class="flex-1 text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-primary flex items-center justify-center gap-1 bg-slate-50 dark:bg-slate-700/50 py-2 rounded" href="#">
+<span class="material-symbols-outlined text-[16px]">new_releases</span> Yeni
+                            </a>
+</div>
+</div>
+<!-- Category Card 5 -->
+<div class="group bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-5 hover:shadow-lg hover:border-primary/30 transition-all duration-300 flex flex-col h-full relative overflow-hidden">
+<div class="flex justify-between items-start mb-4">
+<div class="w-12 h-12 bg-slate-50 dark:bg-slate-700 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-300 group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[28px]">linear_scale</span>
+</div>
+<span class="bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 text-xs font-bold px-2.5 py-1 rounded">Mekanik</span>
+</div>
+<h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2 group-hover:text-primary transition-colors">Lineer Raylar</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400 mb-6 line-clamp-2 flex-1">Yüksek yük kapasiteli lineer kızak ve araba sistemleri.</p>
+<div class="flex items-center justify-between mt-auto">
+<div class="flex flex-col">
+<span class="text-xs text-slate-400 font-medium">150+ Ürün</span>
+</div>
+<button class="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white text-sm font-bold rounded-lg group-hover:bg-primary group-hover:text-white transition-colors">İncele</button>
+</div>
+<!-- Hover Overlay Links -->
+<div class="absolute inset-x-0 bottom-0 bg-white dark:bg-slate-800 border-t border-slate-100 dark:border-slate-700 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex gap-4">
+<a class="flex-1 text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-primary flex items-center justify-center gap-1 bg-slate-50 dark:bg-slate-700/50 py-2 rounded" href="#">
+<span class="material-symbols-outlined text-[16px]">trending_up</span> Popüler
+                            </a>
+<a class="flex-1 text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-primary flex items-center justify-center gap-1 bg-slate-50 dark:bg-slate-700/50 py-2 rounded" href="#">
+<span class="material-symbols-outlined text-[16px]">new_releases</span> Yeni
+                            </a>
+</div>
+</div>
+<!-- Category Card 6 -->
+<div class="group bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-5 hover:shadow-lg hover:border-primary/30 transition-all duration-300 flex flex-col h-full relative overflow-hidden">
+<div class="flex justify-between items-start mb-4">
+<div class="w-12 h-12 bg-slate-50 dark:bg-slate-700 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-300 group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[28px]">settings</span>
+</div>
+<span class="bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 text-xs font-bold px-2.5 py-1 rounded">Aktarım</span>
+</div>
+<h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2 group-hover:text-primary transition-colors">Kaplinler</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400 mb-6 line-clamp-2 flex-1">Motor ve mil bağlantısı için boşluksuz esnek kaplinler.</p>
+<div class="flex items-center justify-between mt-auto">
+<div class="flex flex-col">
+<span class="text-xs text-slate-400 font-medium">80+ Çeşit</span>
+</div>
+<button class="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white text-sm font-bold rounded-lg group-hover:bg-primary group-hover:text-white transition-colors">İncele</button>
+</div>
+<!-- Hover Overlay Links -->
+<div class="absolute inset-x-0 bottom-0 bg-white dark:bg-slate-800 border-t border-slate-100 dark:border-slate-700 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex gap-4">
+<a class="flex-1 text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-primary flex items-center justify-center gap-1 bg-slate-50 dark:bg-slate-700/50 py-2 rounded" href="#">
+<span class="material-symbols-outlined text-[16px]">trending_up</span> Popüler
+                            </a>
+<a class="flex-1 text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-primary flex items-center justify-center gap-1 bg-slate-50 dark:bg-slate-700/50 py-2 rounded" href="#">
+<span class="material-symbols-outlined text-[16px]">new_releases</span> Yeni
+                            </a>
+</div>
+</div>
+</div>
+</section>
+<!-- Content Section C: Spindle & Inverter -->
+<section class="flex flex-col gap-6 scroll-mt-28" id="spindle">
+<div class="flex items-center gap-4 pb-2 border-b border-slate-200 dark:border-slate-700">
+<div class="w-10 h-10 rounded-lg bg-orange-50 dark:bg-orange-900/20 flex items-center justify-center text-orange-600">
+<span class="material-symbols-outlined">speed</span>
+</div>
+<div>
+<h2 class="text-xl font-bold text-slate-900 dark:text-white">Spindle &amp; İnverter</h2>
+<p class="text-sm text-slate-500">Yüksek devirli işleme motorları ve sürücüleri</p>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Category Card 7 -->
+<div class="group bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-5 hover:shadow-lg hover:border-primary/30 transition-all duration-300 flex flex-col h-full relative overflow-hidden">
+<div class="flex justify-between items-start mb-4">
+<div class="w-12 h-12 bg-slate-50 dark:bg-slate-700 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-300 group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[28px]">cyclone</span>
+</div>
+<span class="bg-orange-50 dark:bg-orange-900/30 text-orange-600 text-xs font-bold px-2.5 py-1 rounded">Motor</span>
+</div>
+<h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2 group-hover:text-primary transition-colors">Spindle Motorlar</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400 mb-6 line-clamp-2 flex-1">Hava ve su soğutmalı yüksek devirli CNC spindle motor seçenekleri.</p>
+<div class="flex items-center justify-between mt-auto">
+<div class="flex flex-col">
+<span class="text-xs text-slate-400 font-medium">60+ Model</span>
+</div>
+<button class="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white text-sm font-bold rounded-lg group-hover:bg-primary group-hover:text-white transition-colors">İncele</button>
+</div>
+<!-- Hover Overlay Links -->
+<div class="absolute inset-x-0 bottom-0 bg-white dark:bg-slate-800 border-t border-slate-100 dark:border-slate-700 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex gap-4">
+<a class="flex-1 text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-primary flex items-center justify-center gap-1 bg-slate-50 dark:bg-slate-700/50 py-2 rounded" href="#">
+<span class="material-symbols-outlined text-[16px]">trending_up</span> Popüler
+                            </a>
+<a class="flex-1 text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-primary flex items-center justify-center gap-1 bg-slate-50 dark:bg-slate-700/50 py-2 rounded" href="#">
+<span class="material-symbols-outlined text-[16px]">new_releases</span> Yeni
+                            </a>
+</div>
+</div>
+<!-- Category Card 8 -->
+<div class="group bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-5 hover:shadow-lg hover:border-primary/30 transition-all duration-300 flex flex-col h-full relative overflow-hidden">
+<div class="flex justify-between items-start mb-4">
+<div class="w-12 h-12 bg-slate-50 dark:bg-slate-700 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-300 group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[28px]">bolt</span>
+</div>
+<span class="bg-orange-50 dark:bg-orange-900/30 text-orange-600 text-xs font-bold px-2.5 py-1 rounded">Sürücü</span>
+</div>
+<h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2 group-hover:text-primary transition-colors">Hız Kontrol Cihazları</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400 mb-6 line-clamp-2 flex-1">Vektör kontrollü AC motor hız kontrol inverterleri.</p>
+<div class="flex items-center justify-between mt-auto">
+<div class="flex flex-col">
+<span class="text-xs text-slate-400 font-medium">50+ Ürün</span>
+</div>
+<button class="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white text-sm font-bold rounded-lg group-hover:bg-primary group-hover:text-white transition-colors">İncele</button>
+</div>
+<!-- Hover Overlay Links -->
+<div class="absolute inset-x-0 bottom-0 bg-white dark:bg-slate-800 border-t border-slate-100 dark:border-slate-700 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex gap-4">
+<a class="flex-1 text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-primary flex items-center justify-center gap-1 bg-slate-50 dark:bg-slate-700/50 py-2 rounded" href="#">
+<span class="material-symbols-outlined text-[16px]">trending_up</span> Popüler
+                            </a>
+<a class="flex-1 text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-primary flex items-center justify-center gap-1 bg-slate-50 dark:bg-slate-700/50 py-2 rounded" href="#">
+<span class="material-symbols-outlined text-[16px]">new_releases</span> Yeni
+                            </a>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer Spacer -->
+<div class="h-20"></div>
+</div>
+</main>
+<!-- Floating Action Button -->
+<button class="fixed bottom-8 right-8 z-50 flex items-center gap-2 bg-primary hover:bg-primary/90 text-white pl-4 pr-5 py-3 rounded-full shadow-lg shadow-primary/40 hover:-translate-y-1 transition-all group">
+<span class="material-symbols-outlined text-[24px]">support_agent</span>
+<span class="font-bold text-sm">Teknik Destek</span>
+</button>
+</body></html>

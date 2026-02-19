@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+
+<html lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CNC Otomasyon Tasarım Sistemi</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0d59f2",
+                        "primary-dark": "#0a47c2",
+                        "secondary": "#f05623", // Safety Orange
+                        "background-light": "#f8f9fc",
+                        "background-dark": "#101622",
+                        "neutral-surface": "#ffffff",
+                        "neutral-border": "#e2e8f0",
+                        "neutral-text": "#64748b",
+                        "dark-text": "#0f172a",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-dark-text font-display min-h-screen flex flex-col antialiased">
+<!-- Top Navigation / Header -->
+<header class="sticky top-0 z-50 bg-neutral-surface/80 backdrop-blur-md border-b border-neutral-border">
+<div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="bg-primary/10 p-2 rounded-lg text-primary">
+<span class="material-symbols-outlined !text-3xl">precision_manufacturing</span>
+</div>
+<div>
+<h1 class="text-xl font-bold tracking-tight text-dark-text">CNC Otomasyon</h1>
+<p class="text-xs font-medium text-neutral-text uppercase tracking-widest">Tasarım Sistemi v1.2</p>
+</div>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-neutral-text hover:text-primary transition-colors">
+<span class="material-symbols-outlined !text-[20px]">description</span>
+                    Dokümantasyon
+                </button>
+<button class="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg text-sm font-bold hover:bg-primary-dark transition-colors shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined !text-[20px]">download</span>
+                    Varlıkları İndir
+                </button>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-grow w-full max-w-7xl mx-auto px-6 py-12 grid grid-cols-12 gap-10">
+<!-- Sidebar Navigation -->
+<aside class="col-span-12 lg:col-span-3 hidden lg:block">
+<nav class="sticky top-28 space-y-8">
+<div>
+<h3 class="text-xs font-bold text-neutral-text uppercase tracking-widest mb-4 px-2">Temeller</h3>
+<ul class="space-y-1">
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 text-primary font-medium" href="#typography">
+<span class="material-symbols-outlined !text-[20px]">text_fields</span>
+                                Tipografi
+                            </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-neutral-text hover:bg-neutral-surface hover:text-dark-text transition-colors font-medium" href="#colors">
+<span class="material-symbols-outlined !text-[20px]">palette</span>
+                                Renk Paleti
+                            </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-neutral-text hover:bg-neutral-surface hover:text-dark-text transition-colors font-medium" href="#grid">
+<span class="material-symbols-outlined !text-[20px]">grid_4x4</span>
+                                Izgara ve Düzen
+                            </a>
+</li>
+</ul>
+</div>
+<div>
+<h3 class="text-xs font-bold text-neutral-text uppercase tracking-widest mb-4 px-2">Bileşenler</h3>
+<ul class="space-y-1">
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-neutral-text hover:bg-neutral-surface hover:text-dark-text transition-colors font-medium" href="#buttons">
+<span class="material-symbols-outlined !text-[20px]">smart_button</span>
+                                Butonlar
+                            </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-neutral-text hover:bg-neutral-surface hover:text-dark-text transition-colors font-medium" href="#inputs">
+<span class="material-symbols-outlined !text-[20px]">input</span>
+                                Form Elemanları
+                            </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-neutral-text hover:bg-neutral-surface hover:text-dark-text transition-colors font-medium" href="#cards">
+<span class="material-symbols-outlined !text-[20px]">view_agenda</span>
+                                Kartlar ve Paneller
+                            </a>
+</li>
+</ul>
+</div>
+</nav>
+</aside>
+<!-- Style Guide Content -->
+<div class="col-span-12 lg:col-span-9 flex flex-col gap-16">
+<!-- Intro Section -->
+<section>
+<div class="bg-gradient-to-r from-primary/5 to-transparent p-8 rounded-2xl border border-primary/10">
+<h2 class="text-3xl font-bold text-dark-text mb-4">CNC Endüstriyel Arayüz Sistemi</h2>
+<p class="text-lg text-neutral-text max-w-3xl leading-relaxed">
+                        Endüstriyel parça satışı ve otomasyon yönetimi için geliştirilmiş, teknik hassasiyeti modern kullanıcı deneyimi ile birleştiren tasarım dili. Bu rehber, tutarlı ve ölçeklenebilir arayüzler oluşturmak için temel yapı taşlarını içerir.
+                    </p>
+</div>
+</section>
+<!-- Colors Section -->
+<section class="scroll-mt-28" id="colors">
+<div class="flex items-center gap-4 mb-8 pb-4 border-b border-neutral-border">
+<span class="material-symbols-outlined text-primary !text-3xl">palette</span>
+<h2 class="text-2xl font-bold text-dark-text">Renk Paleti</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Primary -->
+<div class="space-y-3">
+<div class="aspect-video rounded-xl bg-primary shadow-lg shadow-primary/20 flex items-end p-4">
+<span class="text-white font-bold">Primary Blue</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="font-bold text-dark-text">Elektrik Mavisi</span>
+<span class="font-mono text-neutral-text">#0D59F2</span>
+</div>
+<p class="text-xs text-neutral-text">Ana aksiyonlar, bağlantılar ve aktif durumlar için.</p>
+</div>
+<!-- Secondary -->
+<div class="space-y-3">
+<div class="aspect-video rounded-xl bg-secondary shadow-lg shadow-secondary/20 flex items-end p-4">
+<span class="text-white font-bold">Safety Orange</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="font-bold text-dark-text">Güvenlik Turuncusu</span>
+<span class="font-mono text-neutral-text">#F05623</span>
+</div>
+<p class="text-xs text-neutral-text">Dikkat gerektiren uyarılar ve vurgular.</p>
+</div>
+<!-- Dark Neutral -->
+<div class="space-y-3">
+<div class="aspect-video rounded-xl bg-background-dark shadow-lg flex items-end p-4 border border-neutral-200">
+<span class="text-white font-bold">Graphite</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="font-bold text-dark-text">Grafit Siyah</span>
+<span class="font-mono text-neutral-text">#101622</span>
+</div>
+<p class="text-xs text-neutral-text">Başlıklar ve ana gövde metinleri.</p>
+</div>
+<!-- Surface -->
+<div class="space-y-3">
+<div class="aspect-video rounded-xl bg-white shadow-sm border border-neutral-border flex items-end p-4">
+<span class="text-dark-text font-bold">Surface White</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="font-bold text-dark-text">Yüzey Beyazı</span>
+<span class="font-mono text-neutral-text">#FFFFFF</span>
+</div>
+<p class="text-xs text-neutral-text">Kartlar, paneller ve giriş alanları.</p>
+</div>
+</div>
+<!-- Functional Colors -->
+<div class="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
+<div class="flex items-center gap-3 p-3 bg-white rounded-lg border border-neutral-border">
+<div class="w-10 h-10 rounded-full bg-emerald-500"></div>
+<div>
+<div class="text-sm font-bold">Başarılı</div>
+<div class="text-xs font-mono text-neutral-text">#10B981</div>
+</div>
+</div>
+<div class="flex items-center gap-3 p-3 bg-white rounded-lg border border-neutral-border">
+<div class="w-10 h-10 rounded-full bg-amber-400"></div>
+<div>
+<div class="text-sm font-bold">Uyarı</div>
+<div class="text-xs font-mono text-neutral-text">#FBBF24</div>
+</div>
+</div>
+<div class="flex items-center gap-3 p-3 bg-white rounded-lg border border-neutral-border">
+<div class="w-10 h-10 rounded-full bg-red-500"></div>
+<div>
+<div class="text-sm font-bold">Hata</div>
+<div class="text-xs font-mono text-neutral-text">#EF4444</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Typography Section -->
+<section class="scroll-mt-28" id="typography">
+<div class="flex items-center gap-4 mb-8 pb-4 border-b border-neutral-border">
+<span class="material-symbols-outlined text-primary !text-3xl">text_fields</span>
+<h2 class="text-2xl font-bold text-dark-text">Tipografi</h2>
+</div>
+<div class="bg-white rounded-xl p-8 border border-neutral-border shadow-sm">
+<div class="grid grid-cols-12 gap-6 items-baseline mb-8 border-b border-neutral-100 pb-8">
+<div class="col-span-3 text-neutral-text text-sm font-mono">H1 / Bold / 48px</div>
+<div class="col-span-9">
+<h1 class="text-5xl font-bold tracking-tight text-dark-text">CNC Otomasyon Sistemleri</h1>
+</div>
+</div>
+<div class="grid grid-cols-12 gap-6 items-baseline mb-8 border-b border-neutral-100 pb-8">
+<div class="col-span-3 text-neutral-text text-sm font-mono">H2 / Bold / 36px</div>
+<div class="col-span-9">
+<h2 class="text-4xl font-bold tracking-tight text-dark-text">Endüstriyel Yedek Parça</h2>
+</div>
+</div>
+<div class="grid grid-cols-12 gap-6 items-baseline mb-8 border-b border-neutral-100 pb-8">
+<div class="col-span-3 text-neutral-text text-sm font-mono">H3 / SemiBold / 24px</div>
+<div class="col-span-9">
+<h3 class="text-2xl font-semibold text-dark-text">Sipariş Detayları ve Onay</h3>
+</div>
+</div>
+<div class="grid grid-cols-12 gap-6 items-baseline mb-8 border-b border-neutral-100 pb-8">
+<div class="col-span-3 text-neutral-text text-sm font-mono">Body / Regular / 16px</div>
+<div class="col-span-9">
+<p class="text-base text-neutral-text leading-relaxed">
+                                Endüstriyel üretim süreçlerinde hassasiyet her şeydir. CNC makinelerinizin performansı, kullandığınız parçaların kalitesiyle doğru orantılıdır. Sistemimiz, en yüksek standartlarda test edilmiş parçaları tedarik etmenizi sağlar.
+                            </p>
+</div>
+</div>
+<div class="grid grid-cols-12 gap-6 items-baseline">
+<div class="col-span-3 text-neutral-text text-sm font-mono">Caption / Medium / 14px</div>
+<div class="col-span-9">
+<p class="text-sm font-medium text-neutral-text uppercase tracking-wide">
+                                Son Güncelleme: 24 Ekim 2023
+                            </p>
+</div>
+</div>
+</div>
+</section>
+<!-- Buttons Section -->
+<section class="scroll-mt-28" id="buttons">
+<div class="flex items-center gap-4 mb-8 pb-4 border-b border-neutral-border">
+<span class="material-symbols-outlined text-primary !text-3xl">smart_button</span>
+<h2 class="text-2xl font-bold text-dark-text">Butonlar</h2>
+</div>
+<div class="bg-white rounded-xl border border-neutral-border shadow-sm overflow-hidden">
+<div class="p-6 grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Primary Column -->
+<div class="space-y-4">
+<h4 class="text-sm font-bold text-neutral-text uppercase tracking-wider mb-4">Birincil (Primary)</h4>
+<button class="w-full flex items-center justify-center gap-2 h-11 px-6 bg-primary text-white rounded-lg text-sm font-bold hover:bg-primary-dark transition-all active:scale-95">
+                                Sepete Ekle
+                            </button>
+<button class="w-full flex items-center justify-center gap-2 h-11 px-6 bg-primary text-white rounded-lg text-sm font-bold hover:bg-primary-dark transition-all">
+<span class="material-symbols-outlined !text-[18px]">shopping_cart</span>
+                                İkonlu Buton
+                            </button>
+<button class="w-full flex items-center justify-center gap-2 h-11 px-6 bg-primary/50 text-white/80 cursor-not-allowed rounded-lg text-sm font-bold" disabled="">
+                                Pasif Durum
+                            </button>
+</div>
+<!-- Secondary Column -->
+<div class="space-y-4">
+<h4 class="text-sm font-bold text-neutral-text uppercase tracking-wider mb-4">İkincil (Secondary)</h4>
+<button class="w-full flex items-center justify-center gap-2 h-11 px-6 bg-neutral-100 text-dark-text rounded-lg text-sm font-bold hover:bg-neutral-200 transition-all border border-transparent">
+                                Detayları Gör
+                            </button>
+<button class="w-full flex items-center justify-center gap-2 h-11 px-6 bg-neutral-100 text-dark-text rounded-lg text-sm font-bold hover:bg-neutral-200 transition-all border border-transparent">
+<span class="material-symbols-outlined !text-[18px]">visibility</span>
+                                Önizleme
+                            </button>
+<button class="w-full flex items-center justify-center gap-2 h-11 px-6 bg-neutral-50 text-neutral-300 cursor-not-allowed rounded-lg text-sm font-bold border border-neutral-100" disabled="">
+                                Pasif Durum
+                            </button>
+</div>
+<!-- Outline Column -->
+<div class="space-y-4">
+<h4 class="text-sm font-bold text-neutral-text uppercase tracking-wider mb-4">Dış Hat (Outline)</h4>
+<button class="w-full flex items-center justify-center gap-2 h-11 px-6 bg-transparent text-primary border-2 border-primary/20 rounded-lg text-sm font-bold hover:border-primary hover:bg-primary/5 transition-all">
+                                Vazgeç
+                            </button>
+<button class="w-full flex items-center justify-center gap-2 h-11 px-6 bg-transparent text-primary border-2 border-primary/20 rounded-lg text-sm font-bold hover:border-primary hover:bg-primary/5 transition-all">
+<span class="material-symbols-outlined !text-[18px]">file_download</span>
+                                PDF İndir
+                            </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Inputs Section -->
+<section class="scroll-mt-28" id="inputs">
+<div class="flex items-center gap-4 mb-8 pb-4 border-b border-neutral-border">
+<span class="material-symbols-outlined text-primary !text-3xl">input</span>
+<h2 class="text-2xl font-bold text-dark-text">Form ve Girişler</h2>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+<!-- Standard Inputs -->
+<div class="bg-white p-8 rounded-xl border border-neutral-border shadow-sm space-y-6">
+<h4 class="text-sm font-bold text-neutral-text uppercase tracking-wider mb-2">Metin Girişleri</h4>
+<!-- Default -->
+<div class="space-y-1.5">
+<label class="text-sm font-bold text-dark-text">Parça Numarası</label>
+<input class="w-full h-11 px-4 rounded-lg border border-neutral-300 bg-white text-dark-text placeholder-neutral-400 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all" placeholder="Örn: CNC-2024-X" type="text"/>
+<p class="text-xs text-neutral-500">Stok kodu veya parça numarası giriniz.</p>
+</div>
+<!-- Active/Filled -->
+<div class="space-y-1.5">
+<label class="text-sm font-bold text-dark-text">Firma Adı</label>
+<input class="w-full h-11 px-4 rounded-lg border border-primary bg-primary/5 text-dark-text focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all" type="text" value="Öztürk Makina Sanayi"/>
+</div>
+<!-- Error -->
+<div class="space-y-1.5">
+<label class="text-sm font-bold text-red-600">E-posta Adresi</label>
+<div class="relative">
+<input class="w-full h-11 px-4 rounded-lg border border-red-500 bg-red-50 text-red-900 placeholder-red-300 focus:border-red-500 focus:ring-2 focus:ring-red-200 outline-none transition-all" type="email" value="hatali-eposta"/>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-red-500">error</span>
+</div>
+<p class="text-xs text-red-500 font-medium">Lütfen geçerli bir e-posta adresi giriniz.</p>
+</div>
+</div>
+<!-- Selects & Checks -->
+<div class="bg-white p-8 rounded-xl border border-neutral-border shadow-sm space-y-6">
+<h4 class="text-sm font-bold text-neutral-text uppercase tracking-wider mb-2">Seçim Elemanları</h4>
+<!-- Select -->
+<div class="space-y-1.5">
+<label class="text-sm font-bold text-dark-text">Kategori Seçimi</label>
+<div class="relative">
+<select class="w-full h-11 pl-4 pr-10 rounded-lg border border-neutral-300 bg-white text-dark-text appearance-none focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none cursor-pointer">
+<option>Freze Uçları</option>
+<option>Motor Sürücüleri</option>
+<option>Sensörler</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 pointer-events-none">expand_more</span>
+</div>
+</div>
+<!-- Checkbox & Radio -->
+<div class="pt-4 space-y-4">
+<div class="flex items-center gap-3">
+<div class="w-5 h-5 rounded border border-neutral-300 flex items-center justify-center cursor-pointer hover:border-primary peer-checked:bg-primary bg-primary border-primary">
+<span class="material-symbols-outlined text-white !text-sm">check</span>
+</div>
+<span class="text-sm text-dark-text font-medium">Stokta olanları göster</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-5 h-5 rounded border border-neutral-300 flex items-center justify-center cursor-pointer bg-white"></div>
+<span class="text-sm text-neutral-text">Tükendi (Pasif)</span>
+</div>
+<hr class="border-neutral-100 my-2"/>
+<div class="flex items-center gap-3">
+<div class="w-5 h-5 rounded-full border-[6px] border-primary bg-white cursor-pointer"></div>
+<span class="text-sm text-dark-text font-medium">Yurtiçi Kargo</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-5 h-5 rounded-full border border-neutral-300 bg-white cursor-pointer"></div>
+<span class="text-sm text-neutral-text">Aras Kargo</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Navigation & Components Section -->
+<section class="scroll-mt-28 mb-20" id="cards">
+<div class="flex items-center gap-4 mb-8 pb-4 border-b border-neutral-border">
+<span class="material-symbols-outlined text-primary !text-3xl">view_agenda</span>
+<h2 class="text-2xl font-bold text-dark-text">Navigasyon ve Geri Bildirim</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Tabs & Accordion -->
+<div class="space-y-8">
+<!-- Tabs -->
+<div class="bg-white rounded-xl border border-neutral-border p-6 shadow-sm">
+<h4 class="text-xs font-bold text-neutral-text uppercase tracking-wider mb-4">Sekmeler (Tabs)</h4>
+<div class="flex border-b border-neutral-200">
+<button class="px-4 py-3 text-sm font-bold text-primary border-b-2 border-primary -mb-[1px]">Ürün Özellikleri</button>
+<button class="px-4 py-3 text-sm font-medium text-neutral-500 hover:text-dark-text transition-colors">Teknik Çizimler</button>
+<button class="px-4 py-3 text-sm font-medium text-neutral-500 hover:text-dark-text transition-colors">Yorumlar (12)</button>
+</div>
+<div class="p-4 bg-neutral-50 rounded-b-lg text-sm text-neutral-600 mt-2 border border-neutral-100 border-dashed">
+                                Aktif sekme içeriği buraya gelecek.
+                            </div>
+</div>
+<!-- Accordion -->
+<div class="bg-white rounded-xl border border-neutral-border overflow-hidden shadow-sm">
+<h4 class="text-xs font-bold text-neutral-text uppercase tracking-wider m-4 mb-2">Akordeon</h4>
+<div class="border-b border-neutral-100">
+<button class="w-full flex items-center justify-between p-4 bg-neutral-50 hover:bg-neutral-100 transition-colors text-left">
+<span class="text-sm font-bold text-dark-text">Montaj talimatları nelerdir?</span>
+<span class="material-symbols-outlined text-neutral-500">expand_less</span>
+</button>
+<div class="p-4 text-sm text-neutral-600 bg-white border-t border-neutral-100">
+                                    Ürünle birlikte gelen QR kodu okutarak dijital montaj kılavuzuna ulaşabilirsiniz.
+                                </div>
+</div>
+<div>
+<button class="w-full flex items-center justify-between p-4 bg-white hover:bg-neutral-50 transition-colors text-left">
+<span class="text-sm font-semibold text-neutral-600">Garanti süresi ne kadar?</span>
+<span class="material-symbols-outlined text-neutral-400">expand_more</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Toasts & Badges -->
+<div class="space-y-8">
+<!-- Badges -->
+<div class="bg-white rounded-xl border border-neutral-border p-6 shadow-sm">
+<h4 class="text-xs font-bold text-neutral-text uppercase tracking-wider mb-4">Etiketler (Badges)</h4>
+<div class="flex flex-wrap gap-3">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-primary/10 text-primary">
+                                    Yeni Ürün
+                                </span>
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-700">
+                                    Stokta Var
+                                </span>
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-700">
+                                    Sınırlı Stok
+                                </span>
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-neutral-100 text-neutral-600">
+                                    Taslak
+                                </span>
+</div>
+</div>
+<!-- Toasts -->
+<div class="bg-white rounded-xl border border-neutral-border p-6 shadow-sm relative overflow-hidden h-64 bg-neutral-50/50">
+<h4 class="text-xs font-bold text-neutral-text uppercase tracking-wider mb-4">Bildirimler (Toasts)</h4>
+<!-- Success Toast -->
+<div class="absolute top-12 right-6 w-80 bg-white rounded-lg shadow-lg border-l-4 border-green-500 p-4 flex gap-3 animate-bounce-slow">
+<div class="bg-green-100 p-1 rounded-full h-fit">
+<span class="material-symbols-outlined text-green-600 !text-sm">check</span>
+</div>
+<div>
+<h5 class="text-sm font-bold text-dark-text">İşlem Başarılı</h5>
+<p class="text-xs text-neutral-500 mt-1">Siparişiniz başarıyla oluşturuldu.</p>
+</div>
+<button class="ml-auto text-neutral-400 hover:text-dark-text">
+<span class="material-symbols-outlined !text-sm">close</span>
+</button>
+</div>
+<!-- Info Toast -->
+<div class="absolute top-36 right-6 w-80 bg-dark-text rounded-lg shadow-lg p-4 flex gap-3 items-center">
+<div class="bg-primary p-1 rounded-full h-fit">
+<span class="material-symbols-outlined text-white !text-sm">info</span>
+</div>
+<div>
+<h5 class="text-sm font-bold text-white">Sistem Güncellemesi</h5>
+<p class="text-xs text-neutral-400 mt-1">Bakım çalışması tamamlandı.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+</body></html>
