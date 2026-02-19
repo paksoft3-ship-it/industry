@@ -2,15 +2,58 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { megaMenuCategories, megaMenuPromo, megaMenuQuickLinks } from "@/data/siteData";
+import { megaMenuCategories, megaMenuPromo, megaMenuQuickLinks, sigmaProfilCategories } from "@/data/siteData";
 import MaterialIcon from "@/components/ui/MaterialIcon";
 
 interface MegaMenuProps {
   onClose: () => void;
+  menuType?: string;
 }
 
-export default function MegaMenu({ onClose }: MegaMenuProps) {
+export default function MegaMenu({ onClose, menuType = "categories" }: MegaMenuProps) {
   const [activeCategory, setActiveCategory] = useState(0);
+
+  // Sigma Menu Layout (Card Grid)
+  if (menuType === "sigma") {
+    return (
+      <>
+        {/* Overlay */}
+        <div
+          className="fixed inset-0 top-0 bg-black/40 z-30 backdrop-blur-sm"
+          onClick={onClose}
+        />
+        {/* Menu */}
+        <div className="absolute left-0 top-full w-full bg-white border-t border-gray-200 shadow-2xl z-40 py-8">
+          <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+              {sigmaProfilCategories.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="group flex flex-col items-center text-center p-4 rounded-xl hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-100"
+                  onClick={onClose}
+                >
+                  <div className="w-full aspect-square relative mb-4 bg-white rounded-lg overflow-hidden border border-gray-100 group-hover:border-primary/20 transition-colors p-2">
+                    <Image
+                      src={item.image}
+                      alt={item.title}
+                      fill
+                      className="object-contain p-2 group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                  <span className="text-sm font-bold text-gray-700 group-hover:text-primary leading-tight">
+                    {item.title}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  // Default Categories Layout (Existing)
   const category = megaMenuCategories[activeCategory];
 
   return (
@@ -29,11 +72,10 @@ export default function MegaMenu({ onClose }: MegaMenuProps) {
               {megaMenuCategories.map((cat, i) => (
                 <li key={cat.id}>
                   <button
-                    className={`w-full flex items-center justify-between px-6 py-4 text-left transition-all ${
-                      i === activeCategory
+                    className={`w-full flex items-center justify-between px-6 py-4 text-left transition-all ${i === activeCategory
                         ? "bg-gray-50 border-l-4 border-primary text-primary font-bold"
                         : "text-gray-600 hover:bg-gray-50 hover:text-primary font-medium border-l-4 border-transparent hover:border-gray-200"
-                    }`}
+                      }`}
                     onMouseEnter={() => setActiveCategory(i)}
                     onClick={() => setActiveCategory(i)}
                   >
@@ -43,9 +85,8 @@ export default function MegaMenu({ onClose }: MegaMenuProps) {
                     </div>
                     <MaterialIcon
                       icon="arrow_forward_ios"
-                      className={`text-sm ${
-                        i === activeCategory ? "" : "opacity-0 group-hover:opacity-100 text-gray-400"
-                      }`}
+                      className={`text-sm ${i === activeCategory ? "" : "opacity-0 group-hover:opacity-100 text-gray-400"
+                        }`}
                     />
                   </button>
                 </li>

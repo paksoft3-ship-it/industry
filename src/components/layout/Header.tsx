@@ -10,6 +10,7 @@ import MobileMenu from "./MobileMenu";
 
 export default function Header() {
   const [megaMenuOpen, setMegaMenuOpen] = useState(false);
+  const [activeMenuType, setActiveMenuType] = useState<string>("categories");
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -169,11 +170,14 @@ export default function Header() {
               <button
                 ref={megaMenuButtonRef}
                 className={`flex items-center gap-2 pr-4 border-r border-gray-100 py-3 text-sm font-bold transition-colors whitespace-nowrap ${megaMenuOpen
-                    ? "text-primary"
-                    : "text-gray-700 hover:text-primary"
+                  ? "text-primary"
+                  : "text-gray-700 hover:text-primary"
                   }`}
                 onClick={() => setMegaMenuOpen(!megaMenuOpen)}
-                onMouseEnter={() => setMegaMenuOpen(true)}
+                onMouseEnter={() => {
+                  setActiveMenuType("categories");
+                  setMegaMenuOpen(true);
+                }}
               >
                 <MaterialIcon icon="grid_view" className="text-[20px]" />
                 Kategoriler
@@ -188,12 +192,21 @@ export default function Header() {
             <div className="flex-1 overflow-x-auto hide-scrollbar px-4">
               <nav className="flex items-center justify-center gap-6 w-full">
                 {navLinks
-                  .filter((link) => !link.hasMegaMenu && link.label !== "Teklif Al" && link.label !== "Ana Sayfa" && link.label !== "Sipariş Takip" && link.label !== "Kampanyalar")
+                  .filter((link) => link.label !== "Teklif Al" && link.label !== "Ana Sayfa" && link.label !== "Sipariş Takip" && link.label !== "Kampanyalar")
                   .map((link) => (
                     <Link
                       key={link.href}
                       href={link.href}
-                      className="text-sm font-medium text-gray-500 hover:text-primary transition-colors whitespace-nowrap"
+                      className={`text-sm font-medium transition-colors whitespace-nowrap ${link.label === "Kategoriler" ? "hidden" : "text-gray-500 hover:text-primary"
+                        }`}
+                      onMouseEnter={() => {
+                        if (link.hasMegaMenu) {
+                          setActiveMenuType(link.menuType || "categories");
+                          setMegaMenuOpen(true);
+                        } else {
+                          setMegaMenuOpen(false);
+                        }
+                      }}
                     >
                       {link.label}
                     </Link>
@@ -218,7 +231,7 @@ export default function Header() {
 
       {/* Mega Menu (Desktop) */}
       <div ref={megaMenuRef}>
-        {megaMenuOpen && <MegaMenu onClose={closeMegaMenu} />}
+        {megaMenuOpen && <MegaMenu onClose={closeMegaMenu} menuType={activeMenuType} />}
       </div>
 
       {/* Search Modal */}
