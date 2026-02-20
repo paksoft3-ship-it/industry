@@ -2,8 +2,16 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { products, productFilterTabs } from "@/data/siteData";
 import MaterialIcon from "@/components/ui/MaterialIcon";
+
+const productFilterTabs = ["Tümü", "Motorlar", "Raylar", "Sürücüler"];
+
+const products: Array<{
+  id: string; slug: string; name: string; category: string; categoryLabel: string;
+  price: number; originalPrice: number | null; currency: string; badge: string | null;
+  inStock: boolean; stockCount: number; rating: number; reviewCount: number; sku: string;
+  images: string[];
+}> = [];
 
 const filterMap: Record<string, string[]> = {
   "Tümü": [],
@@ -50,91 +58,98 @@ export default function FeaturedProducts() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {filteredProducts.slice(0, 4).map((product) => {
-            const discountPercent = product.originalPrice
-              ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
-              : null;
+        {filteredProducts.length === 0 ? (
+          <div className="text-center py-20">
+            <MaterialIcon icon="inventory_2" className="text-6xl text-gray-300 mb-4" />
+            <p className="text-gray-500">Ürünler yakında eklenecektir.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {filteredProducts.slice(0, 4).map((product) => {
+              const discountPercent = product.originalPrice
+                ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
+                : null;
 
-            return (
-              <div
-                key={product.id}
-                className="group bg-background-light rounded-xl border border-gray-200 overflow-hidden hover:shadow-xl hover:border-primary/30 transition-all duration-300 flex flex-col"
-              >
-                <Link
-                  href={`/urunler/${product.slug}`}
-                  className="relative aspect-square bg-white p-6 flex items-center justify-center overflow-hidden"
+              return (
+                <div
+                  key={product.id}
+                  className="group bg-background-light rounded-xl border border-gray-200 overflow-hidden hover:shadow-xl hover:border-primary/30 transition-all duration-300 flex flex-col"
                 >
-                  <Image
-                    src={product.images[0]}
-                    alt={product.name}
-                    width={300}
-                    height={300}
-                    className="object-contain h-full w-full mix-blend-multiply group-hover:scale-110 transition-transform duration-300"
-                  />
-                  {discountPercent && (
-                    <div className="absolute top-3 left-3 bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded">
-                      -{discountPercent}%
-                    </div>
-                  )}
-                  {product.badge === "Yeni" && !discountPercent && (
-                    <div className="absolute top-3 left-3 bg-blue-600 text-white text-[10px] font-bold px-2 py-1 rounded">
-                      YENİ
-                    </div>
-                  )}
-                  <button className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0">
-                    <MaterialIcon icon="favorite" className="text-[20px]" />
-                  </button>
-                </Link>
-                <div className="p-5 flex flex-col flex-1">
-                  {/* Rating */}
-                  <div className="flex items-center gap-1 mb-2">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <MaterialIcon
-                        key={i}
-                        icon={i < Math.floor(product.rating) ? "star" : i < product.rating ? "star_half" : "star"}
-                        className={`text-[16px] ${i < product.rating ? "text-yellow-400" : "text-gray-300"}`}
-                      />
-                    ))}
-                    <span className="text-xs text-gray-500 ml-1">({product.reviewCount})</span>
-                  </div>
-                  <Link href={`/urunler/${product.slug}`}>
-                    <h3 className="font-bold text-text-main mb-1 group-hover:text-primary transition-colors font-[family-name:var(--font-display)]">
-                      {product.name}
-                    </h3>
-                  </Link>
-                  <p className="text-xs text-gray-400 mb-4 font-mono">SKU: {product.sku}</p>
-                  <div className="mt-auto flex items-center justify-between">
-                    <div>
-                      {product.originalPrice && (
-                        <p className="text-xs text-gray-400 line-through">
-                          {product.currency}{product.originalPrice.toLocaleString("tr-TR", { minimumFractionDigits: 2 })}
-                        </p>
-                      )}
-                      <p className="text-lg font-bold text-primary">
-                        {product.currency}{product.price.toLocaleString("tr-TR", { minimumFractionDigits: 2 })}
-                      </p>
-                    </div>
-                    <button className="size-10 rounded-lg bg-primary text-white flex items-center justify-center hover:bg-primary-dark transition-colors shadow-lg shadow-blue-500/30">
-                      <MaterialIcon icon="add_shopping_cart" className="text-[20px]" />
+                  <Link
+                    href={`/urun/${product.slug}`}
+                    className="relative aspect-square bg-white p-6 flex items-center justify-center overflow-hidden"
+                  >
+                    <Image
+                      src={product.images[0]}
+                      alt={product.name}
+                      width={300}
+                      height={300}
+                      className="object-contain h-full w-full mix-blend-multiply group-hover:scale-110 transition-transform duration-300"
+                    />
+                    {discountPercent && (
+                      <div className="absolute top-3 left-3 bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded">
+                        -{discountPercent}%
+                      </div>
+                    )}
+                    {product.badge === "Yeni" && !discountPercent && (
+                      <div className="absolute top-3 left-3 bg-blue-600 text-white text-[10px] font-bold px-2 py-1 rounded">
+                        YENİ
+                      </div>
+                    )}
+                    <button className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0">
+                      <MaterialIcon icon="favorite" className="text-[20px]" />
                     </button>
-                  </div>
-                  {/* Stock indicator */}
-                  <div className="mt-3 flex items-center gap-1.5">
-                    <div className={`size-2 rounded-full ${product.inStock ? (product.stockCount <= 5 ? "bg-orange-400" : "bg-green-500") : "bg-red-500"}`} />
-                    <span className={`text-xs font-medium ${product.inStock ? (product.stockCount <= 5 ? "text-orange-500" : "text-green-600") : "text-red-500"}`}>
-                      {product.inStock
-                        ? product.stockCount <= 5
-                          ? `Son ${product.stockCount} Ürün`
-                          : "Stokta Var"
-                        : "Tükendi"}
-                    </span>
+                  </Link>
+                  <div className="p-5 flex flex-col flex-1">
+                    {/* Rating */}
+                    <div className="flex items-center gap-1 mb-2">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <MaterialIcon
+                          key={i}
+                          icon={i < Math.floor(product.rating) ? "star" : i < product.rating ? "star_half" : "star"}
+                          className={`text-[16px] ${i < product.rating ? "text-yellow-400" : "text-gray-300"}`}
+                        />
+                      ))}
+                      <span className="text-xs text-gray-500 ml-1">({product.reviewCount})</span>
+                    </div>
+                    <Link href={`/urun/${product.slug}`}>
+                      <h3 className="font-bold text-text-main mb-1 group-hover:text-primary transition-colors font-[family-name:var(--font-display)]">
+                        {product.name}
+                      </h3>
+                    </Link>
+                    <p className="text-xs text-gray-400 mb-4 font-mono">SKU: {product.sku}</p>
+                    <div className="mt-auto flex items-center justify-between">
+                      <div>
+                        {product.originalPrice && (
+                          <p className="text-xs text-gray-400 line-through">
+                            {product.currency}{product.originalPrice.toLocaleString("tr-TR", { minimumFractionDigits: 2 })}
+                          </p>
+                        )}
+                        <p className="text-lg font-bold text-primary">
+                          {product.currency}{product.price.toLocaleString("tr-TR", { minimumFractionDigits: 2 })}
+                        </p>
+                      </div>
+                      <button className="size-10 rounded-lg bg-primary text-white flex items-center justify-center hover:bg-primary-dark transition-colors shadow-lg shadow-blue-500/30">
+                        <MaterialIcon icon="add_shopping_cart" className="text-[20px]" />
+                      </button>
+                    </div>
+                    {/* Stock indicator */}
+                    <div className="mt-3 flex items-center gap-1.5">
+                      <div className={`size-2 rounded-full ${product.inStock ? (product.stockCount <= 5 ? "bg-orange-400" : "bg-green-500") : "bg-red-500"}`} />
+                      <span className={`text-xs font-medium ${product.inStock ? (product.stockCount <= 5 ? "text-orange-500" : "text-green-600") : "text-red-500"}`}>
+                        {product.inStock
+                          ? product.stockCount <= 5
+                            ? `Son ${product.stockCount} Ürün`
+                            : "Stokta Var"
+                          : "Tükendi"}
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </section>
   );

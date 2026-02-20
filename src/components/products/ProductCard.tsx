@@ -35,7 +35,7 @@ export default function ProductCard({ product }: { product: Product }) {
 
   return (
     <div className="min-w-[280px] md:min-w-[300px] bg-white border border-gray-100 rounded-2xl overflow-hidden hover:shadow-xl transition-all group flex flex-col">
-      <Link href={`/urunler/${product.slug}`} className="relative h-60 bg-gray-50 flex items-center justify-center p-6">
+      <Link href={`/urun/${product.slug}`} className="relative h-60 bg-gray-50 flex items-center justify-center p-6">
         <Image
           src={product.images[0]}
           alt={product.name}
@@ -65,7 +65,7 @@ export default function ProductCard({ product }: { product: Product }) {
         <div className="text-xs text-gray-400 font-medium mb-1">
           {product.categoryLabel}
         </div>
-        <Link href={`/urunler/${product.slug}`}>
+        <Link href={`/urun/${product.slug}`}>
           <h3 className="font-bold text-lg text-text-main leading-tight mb-2 group-hover:text-primary transition-colors font-[family-name:var(--font-display)]">
             {product.name}
           </h3>

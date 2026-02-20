@@ -1,7 +1,23 @@
 import Link from "next/link";
 import Image from "next/image";
-import { siteConfig, footerLinks } from "@/data/siteData";
 import MaterialIcon from "@/components/ui/MaterialIcon";
+
+const siteName = "CNC Otomasyon";
+const address = "İkitelli OSB Mah. Marmara Sanayi Sitesi M Blok No:12 Başakşehir / İstanbul";
+const phone = "+90 212 555 00 00";
+const email = "info@cncotomasyon.com";
+const social = { facebook: "#", instagram: "#", linkedin: "#" };
+
+const quickLinks = [
+  { label: "Ana Sayfa", href: "/" },
+  { label: "Ürünler", href: "/kategori/tumu" },
+  { label: "Markalar", href: "/markalar" },
+  { label: "Kampanyalar", href: "/kampanyalar" },
+  { label: "Blog & Eğitim", href: "/blog-egitim" },
+  { label: "İletişim", href: "/iletisim" },
+  { label: "Dosya Merkezi", href: "/dosya-merkezi" },
+  { label: "Sipariş Takip", href: "/siparis-takip" },
+];
 
 export default function Footer() {
   return (
@@ -14,7 +30,7 @@ export default function Footer() {
               <div className="relative h-12 w-64">
                 <Image
                   src="/images/sivtech_makina_horizontal.png"
-                  alt={siteConfig.name}
+                  alt={siteName}
                   fill
                   className="object-contain object-left"
                 />
@@ -26,19 +42,19 @@ export default function Footer() {
             </p>
             <div className="flex gap-4">
               <a
-                href={siteConfig.social.facebook}
+                href={social.facebook}
                 className="w-8 h-8 rounded bg-gray-800 flex items-center justify-center hover:bg-primary transition-colors text-xs"
               >
                 FB
               </a>
               <a
-                href={siteConfig.social.linkedin}
+                href={social.linkedin}
                 className="w-8 h-8 rounded bg-gray-800 flex items-center justify-center hover:bg-primary transition-colors text-xs"
               >
                 LI
               </a>
               <a
-                href={siteConfig.social.instagram}
+                href={social.instagram}
                 className="w-8 h-8 rounded bg-gray-800 flex items-center justify-center hover:bg-primary transition-colors text-xs"
               >
                 IG
@@ -52,7 +68,7 @@ export default function Footer() {
               Hızlı Linkler
             </h4>
             <ul className="space-y-3 text-sm text-gray-400">
-              {footerLinks.quickLinks.map((link) => (
+              {quickLinks.map((link) => (
                 <li key={link.label}>
                   <Link href={link.href} className="hover:text-white transition-colors">
                     {link.label}
@@ -70,15 +86,15 @@ export default function Footer() {
             <ul className="space-y-4 text-sm text-gray-400">
               <li className="flex items-start gap-3">
                 <MaterialIcon icon="location_on" className="text-primary mt-0.5" />
-                <span>{siteConfig.address}</span>
+                <span>{address}</span>
               </li>
               <li className="flex items-center gap-3">
                 <MaterialIcon icon="call" className="text-primary" />
-                <span>{siteConfig.phone}</span>
+                <span>{phone}</span>
               </li>
               <li className="flex items-center gap-3">
                 <MaterialIcon icon="mail" className="text-primary" />
-                <span>{siteConfig.email}</span>
+                <span>{email}</span>
               </li>
             </ul>
           </div>
@@ -106,7 +122,7 @@ export default function Footer() {
 
         <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-gray-500 text-xs">
-            &copy; 2026 {siteConfig.name}. Tüm hakları saklıdır.
+            &copy; 2026 {siteName}. Tüm hakları saklıdır.
           </p>
           <div className="flex gap-4">
             <div className="h-6 w-10 bg-gray-700 rounded" />

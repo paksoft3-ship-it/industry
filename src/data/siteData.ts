@@ -23,12 +23,12 @@ export const topBarLinks = [
 export const navLinks = [
   { label: "Kategoriler", href: "/kategori/tumu", hasMegaMenu: true, menuType: "categories" },
   { label: "Sigma Profil", href: "/kategori/sigma-profil", hasMegaMenu: true, menuType: "sigma" },
-  { label: "Elektronik", href: "/kategori/elektronik" },
-  { label: "Makine | Mekanik", href: "/kategori/makine-mekanik" },
-  { label: "Kızaklar Rulmanlar Vidalı Miller", href: "/kategori/lineer-rulmanlar" },
-  { label: "Cnc Router Makineleri Ve Parçaları", href: "/kategori/cnc-router" },
-  { label: "Eğitim", href: "/egitim" },
-  { label: "Kampanyalar", href: "/kampanyalar" },
+  { label: "Elektronik", href: "/kategori/elektronik", hasMegaMenu: true, menuType: "elektronik" },
+  { label: "Makine | Mekanik", href: "/kategori/makine-mekanik", hasMegaMenu: true, menuType: "makine" },
+  { label: "Kızaklar Rulmanlar Vidalı Miller", href: "/kategori/lineer-rulmanlar", hasMegaMenu: true, menuType: "lineer" },
+  { label: "Cnc Router Makineleri Ve Parçaları", href: "/kategori/cnc-router", hasMegaMenu: true, menuType: "cncRouter" },
+  { label: "Eğitim", href: "/egitim", hasMegaMenu: true, menuType: "egitim" },
+  { label: "Kampanyalar", href: "/kampanyalar", hasMegaMenu: true, menuType: "kampanyalar" },
   { label: "Sipariş Takip", href: "/siparis-takip" },
   { label: "Teklif Al", href: "/kurumsal" },
 ];
@@ -797,5 +797,293 @@ export const sigmaProfilCategories = [
     title: 'Makine Aksesuarları',
     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBXc_W37XnQn_JbzIfMBrnRuU4swtOyomCMZ96_nawJmgULB_4iVfQL43uXkpyrQ_4OoZ3v11C2dAoe_yYZ6JsFEpYCVDlzr93CH_VYy7PMoyEADtW_AoZjML6KazvjGDGlaTZOXDmkebVJ-PH3fuYzDZQnac5j7y49OZThxW0CQDMf6hiuUP7ErhZMXEYXBzpCMogtxOmrTwm6k6aCJe4EQoq3S_t11rKzsXGd503S0envzC8w4QoOcwRoA5o7B0LPZjjBS6kHJ8ji',
     href: '/kategori/sigma-profil/makine-aksesuarlari'
+  }
+];
+export const elektronikCategories = [
+  {
+    title: 'Güç Kaynakları ve Smps Çeşitleri',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDqN-an9iI13KYO8DKaZBwMkrx5j0cBvYgguASVSu7TuIJVdgt6RffQl7eXrByv0Oy-8cSMWW8L2wI8n8MANu1ubkYX9HZFPHfa26yJ6mHX5WQyhJ46Md1KI58hPROxIyZvviBAGZuWtsJog-cirJO9iv_PiPfN_9kL2_Ub1ErBUJ6ePow8ZQ-QwWQqWcgqgmkC6R-Ni_jJUTcuniWvW3y4j9MJ5v74aNplgQ_Lhr938moIPs6El4UZp1IFrr1NmsINhkWv-6WC3kYv',
+    href: '/kategori/elektronik/guc-kaynaklari'
+  },
+  {
+    title: 'Mach3 - Kontrol Paneli',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBnuTFh3Fu6JJsDDnVlwe3ZGXElTzFVIFCDSI7fRVemS29qRze6rBLEqoywa8zx4AzXt1K50ZBRnG7pkZzJNTNUBUBuuSgTRTwqi7T5_RwtD3chPkdNzcfkQzixBrI9fxkHsAV1i3wIw5QdQgM-Lj9LRHswgxyEdWKi6HgBCVkqTRwWPy1_niP2xk0aXxr7ghQR8Ujjl8iCTUrSm7cmkyPj8vWFC7vVWUILFbRAKy-vqHFXIsopB4q-XVH50phMt9f6dZj3CX4kErVn',
+    href: '/kategori/elektronik/mach3-kontrol'
+  },
+  {
+    title: 'Spindle Motor Ve Sürücüler',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCTNTnRusniCBJVR-tvCFhPUtAASWDBh4XMyA_97_LrAuaNtroCwfk4OWkdUCFbB8jd7wduSotLaiwihwly3afYwvJfk7lsVDnNyhkECAayomyMIaBjB3cFr3SZzVM0CT4m2lSuEruTM-JJ_0_bwdJR0u1jOxx9pKkjZmqrWNtSegufi_-j9A29uLbphsHdPo371EKYi20WqBti_HUKswWyypjQUEyolANtG7GiwwvW8dA5gsNvAapi222gaZy4dRSwGdZPn3fSIDMo',
+    href: '/kategori/elektronik/spindle-motor'
+  },
+  {
+    title: 'Step Motor | Sürücü',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBxBMe5YzF9tJdqurEmFyG8Zk-XehjW6roDyNpHgH5CDxZbwyw7_kK61M_25nBkGSHyyqXfaf7VuXBmu1H70YtN1_iPD4rSGCHWTnTMmVOA9rpXQ4rHPwm9vukgnnnk9cKR_IymUbO0gaJ3Whk8NVo3-1ja0pzYdDr5oLwFKufuEIap1hXvcW2pTU9WVtuEFjWsNSJQZIQXF2LnowQM9DSWRRbeQZokKp8iKEP9jKx_5zpIyfH7kNKiSrwuIT_MQQVeTUwhLNwVO6WG',
+    href: '/kategori/elektronik/step-motor'
+  },
+  {
+    title: 'Servo Motor ve Sürücüleri',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDjYYL-ucytbVuGW5nxU4yFgbFwcBmO3VWSiMbsTqmQx7bdv1ngMZeTWzixIVfkU0o_vcl7Qf_fbJ3PEv545o9aWLeCGzOQIZL94XHe3ORaSgEmmCuLvxP7zVd_KMLVpzXxyHT3BKZX08ThsG1OoRgWeV2qNpvzzrb4gJV1qQ7KTD-Su_-86V53CQjC1TJMnjJH-BPFSUppHU9zK1zx00y7_YTF0PLurMw1XFrpdoG9PqSZDQ3_wQ9bUVAXAyNg7DRD0aEOMdkWobGA',
+    href: '/kategori/elektronik/servo-motor'
+  },
+  {
+    title: 'Hız Kontrol Cihazları',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC1_g5Zk3nS6hG5t8k3m9jL6p4q2s7v0wE1y5z8x3t9u4k2l7j1i6h0g9f8e4d3c2b1a0',
+    href: '/kategori/elektronik/hiz-kontrol'
+  },
+  {
+    title: 'Vakum Pompası Çeşitleri',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC2_h6a1l7i2k8m4n0o5p3q1r6s9u2w4v5x6y7z8a9b0c1d2e3f4g5h6i7j8k9l0m1n',
+    href: '/kategori/elektronik/vakum-pompasi'
+  },
+  {
+    title: 'Makine Ekipmanları',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD3_j7b2m8j3k9n5o6p4q2r7s0t1u3v6w7x8y9z0a1b2c3d4e5f6g7h8i9j0k1l2m3n',
+    href: '/kategori/elektronik/makine-ekipmanlari'
+  },
+  {
+    title: 'Otomatik Yağlama Çeşitleri',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuE4_k8c3n9k4l0o6p5q3r8s1t2u4v7w8x9y0z1a2b3c4d5e6f7g8h9i0j1k2l3m4n5',
+    href: '/kategori/elektronik/otomatik-yaglama'
+  },
+  {
+    title: 'Sensör Ve Siviç Çeşitleri',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuF5_l9d4o0l5p6q4r9s2t3u5v8w9x0y1z2a3b4c5d6e7f8g9h0i1j2k3l4m5n6o7p',
+    href: '/kategori/elektronik/sensor-switch'
+  }
+];
+export const makineCategories = [
+  {
+    title: 'Vidalı Mil Ve Somun Çeşitleri',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCH0_i7k9l0m1n2o3p4q5r6s7t8u9v0w1x2y3z4a5b6c7d8e9f0g1h2i3j4k5l6m7n',
+    href: '/kategori/makine-mekanik/vidali-mil-somun'
+  },
+  {
+    title: 'Kremayer Dişli Çeşitleri',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDI1_j8l0m1n2o3p4q5r6s7t8u9v0w1x2y3z4a5b6c7d8e9f0g1h2i3j4k5l6m7n8o9',
+    href: '/kategori/makine-mekanik/kremayer-disli'
+  },
+  {
+    title: 'Planet Redüktör Çeşitleri',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuEJ2_k9m1n2o3p4q5r6s7t8u9v0w1x2y3z4a5b6c7d8e9f0g1h2i3j4k5l6m7n8o9p0',
+    href: '/kategori/makine-mekanik/planet-reduktor'
+  },
+  {
+    title: 'Hareketli Kablo Kanalı',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuFK3_l0n1m2o3p4q5r6s7t8u9v0w1x2y3z4a5b6c7d8e9f0g1h2i3j4k5l6m7n8o9p1',
+    href: '/kategori/makine-mekanik/hareketli-kablo-kanali'
+  },
+  {
+    title: 'Konik Kilit Çeşitleri',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuGL4_m1n2o3p4q5r6s7t8u9v0w1x2y3z4a5b6c7d8e9f0g1h2i3j4k5l6m7n8o9p2',
+    href: '/kategori/makine-mekanik/konik-kilit'
+  },
+  {
+    title: 'Teknik El Aletleri Çeşitleri',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuHM5_n2o3p4q5r6s7t8u9v0w1x2y3z4a5b6c7d8e9f0g1h2i3j4k5l6m7n8o9p3',
+    href: '/kategori/makine-mekanik/teknik-el-aletleri'
+  },
+  {
+    title: 'Torna Aynası Sanou',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuIN6_o3p4q5r6s7t8u9v0w1x2y3z4a5b6c7d8e9f0g1h2i3j4k5l6m7n8o9p4',
+    href: '/kategori/makine-mekanik/torna-aynasi'
+  },
+  {
+    title: 'Triger Dişli Kasnak',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuJO7_p4q5r6s7t8u9v0w1x2y3z4a5b6c7d8e9f0g1h2i3j4k5l6m7n8o9p5',
+    href: '/kategori/makine-mekanik/triger-disli-kasnak'
+  },
+  {
+    title: 'Zincir Dişli',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuKP8_q5r6s7t8u9v0w1x2y3z4a5b6c7d8e9f0g1h2i3j4k5l6m7n8o9p6',
+    href: '/kategori/makine-mekanik/zincir-disli'
+  }
+];
+export const lineerCategories = [
+  {
+    title: 'Lineer Kızaklar Ve Rulmanları',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuG_J3l4m5n6o7p8q9r0s1t2u3v4w5x6y7z8a9b0c1d2e3f4g5h6i7j8k9l0m1n2',
+    href: '/kategori/lineer-rulmanlar/lineer-kizak'
+  },
+  {
+    title: 'Alt Destekli Mil Ve Rulmanları',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuH_K4m5n6o7p8q9r0s1t2u3v4w5x6y7z8a9b0c1d2e3f4g5h6i7j8k9l0m1n2o3',
+    href: '/kategori/lineer-rulmanlar/alt-destekli-mil'
+  },
+  {
+    title: 'İndikasiyonlu Mil ve Rulmanları',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuI_L5n6o7p8q9r0s1t2u3v4w5x6y7z8a9b0c1d2e3f4g5h6i7j8k9l0m1n2o3p4',
+    href: '/kategori/lineer-rulmanlar/indiksiyonlu-mil'
+  },
+  {
+    title: 'Döküm Yataklar',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuJ_M6n7o8p9q0r1s2t3u4v5w6x7y8z9a0b1c2d3e4f5g6h7i8j9k0l1m2n3o4p5',
+    href: '/kategori/lineer-rulmanlar/dokum-yataklar'
+  },
+  {
+    title: 'Lineer Rulman',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuK_N7o8p9q0r1s2t3u4v5w6x7y8z9a0b1c2d3e4f5g6h7i8j9k0l1m2n3o4p5q6',
+    href: '/kategori/lineer-rulmanlar/lineer-rulman'
+  },
+  {
+    title: 'Mafsal Kafa',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuL_O8p9q0r1s2t3u4v5w6x7y8z9a0b1c2d3e4f5g6h7i8j9k0l1m2n3o4p5q6r7',
+    href: '/kategori/lineer-rulmanlar/mafsal-kafa'
+  },
+  {
+    title: 'Vidalı Mil Uç Yatakları Çeşitleri',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuM_P9q0r1s2t3u4v5w6x7y8z9a0b1c2d3e4f5g6h7i8j9k0l1m2n3o4p5q6r7s8',
+    href: '/kategori/lineer-rulmanlar/vidali-mil-uc-yataklari'
+  },
+  {
+    title: 'Motor Bağlantı Setleri',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuN_Q0r1s2t3u4v5w6x7y8z9a0b1c2d3e4f5g6h7i8j9k0l1m2n3o4p5q6r7s8t9',
+    href: '/kategori/lineer-rulmanlar/motor-baglanti-setleri'
+  },
+  {
+    title: 'Rulmanlar',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuO_R1s2t3u4v5w6x7y8z9a0b1c2d3e4f5g6h7i8j9k0l1m2n3o4p5q6r7s8t9u0',
+    href: '/kategori/lineer-rulmanlar/rulmanlar'
+  }
+];
+export const cncRouterCategories = [
+  {
+    title: 'Büyük Cnc Router',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuG1_A2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p7q8r9s0t1u2v3w4x5y6z7a8b9c0',
+    href: '/kategori/cnc-router/buyuk-cnc-router'
+  },
+  {
+    title: 'Cnc Router Ekonomik',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuH2_B3c4d5e6f7g8h9i0j1k2l3m4n5o6p7q8r9s0t1u2v3w4x5y6z7a8b9c0d1',
+    href: '/kategori/cnc-router/ekonomik-cnc-router'
+  },
+  {
+    title: 'Mini Cnc Router',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuI3_C4d5e6f7g8h9i0j1k2l3m4n5o6p7q8r9s0t1u2v3w4x5y6z7a8b9c0d1e2',
+    href: '/kategori/cnc-router/mini-cnc-router'
+  },
+  {
+    title: '4 Eksen Setleri',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuJ4_D5e6f7g8h9i0j1k2l3m4n5o6p7q8r9s0t1u2v3w4x5y6z7a8b9c0d1e2f3',
+    href: '/kategori/cnc-router/4-eksen-setleri'
+  },
+  {
+    title: 'Cnc Uç Çeşitleri',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuK5_E6f7g8h9i0j1k2l3m4n5o6p7q8r9s0t1u2v3w4x5y6z7a8b9c0d1e2f3g4',
+    href: '/kategori/cnc-router/cnc-uc-cesitleri'
+  },
+  {
+    title: 'Toz Emme Kafası',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuL6_F7g8h9i0j1k2l3m4n5o6p7q8r9s0t1u2v3w4x5y6z7a8b9c0d1e2f3g4h5',
+    href: '/kategori/cnc-router/toz-emme-kafasi'
+  },
+  {
+    title: 'Uç Soğutucu',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuM7_G8h9i0j1k2l3m4n5o6p7q8r9s0t1u2v3w4x5y6z7a8b9c0d1e2f3g4h5i6',
+    href: '/kategori/cnc-router/uc-sogutucu'
+  },
+  {
+    title: 'Z ekseni Modülleri',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuN8_H9i0j1k2l3m4n5o6p7q8r9s0t1u2v3w4x5y6z7a8b9c0d1e2f3g4h5i6j7',
+    href: '/kategori/cnc-router/z-ekseni-modulleri'
+  }
+];
+export const egitimCategories = [
+  {
+    title: 'Servo Motor Eğitimleri',
+    image: '',
+    href: '/egitim/servo-motor'
+  },
+  {
+    title: 'Step Motor Eğitimleri',
+    image: '',
+    href: '/egitim/step-motor'
+  },
+  {
+    title: 'Diğer Otomasyon Eğitimleri',
+    image: '',
+    href: '/egitim/diger-otomasyon'
+  },
+  {
+    title: 'Sigma Profil Eğitimleri',
+    image: '',
+    href: '/egitim/sigma-profil'
+  },
+  {
+    title: 'Lineer Kızak ve Rulman Eğitimleri',
+    image: '',
+    href: '/egitim/lineer-rulman'
+  },
+  {
+    title: 'Vidalı Mil ve Somunlar Eğitimleri',
+    image: '',
+    href: '/egitim/vidali-mil'
+  },
+  {
+    title: 'Spindle Motor Eğitimleri',
+    image: '',
+    href: '/egitim/spindle-motor'
+  },
+  {
+    title: 'Cnc Router Eğitimleri',
+    image: '',
+    href: '/egitim/cnc-router'
+  },
+  {
+    title: 'Blower Vakum Motoru Eğitimleri',
+    image: '',
+    href: '/egitim/blower-vakum'
+  },
+  {
+    title: 'Hız Kontrol Cihazı İnverter Eğitimleri',
+    image: '',
+    href: '/egitim/hiz-kontrol'
+  },
+  {
+    title: 'Cnc Kontrol Ünitesi Ve Mach3 Eğitimleri',
+    image: '',
+    href: '/egitim/cnc-kontrol'
+  },
+  {
+    title: 'Planet Redüktör Eğitimleri',
+    image: '',
+    href: '/egitim/planet-reduktor'
+  }
+];
+
+export const kampanyalarCategories = [
+  {
+    title: 'Somun Kapakları ve Anahtarlar',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuH2_B3c4d5e6f7g8h9i0j1k2l3m4n5o6p7q8r9s0t1u2v3w4x5y6z7a8b9c0d1',
+    href: '/kampanyalar/somun-kapaklari'
+  },
+  {
+    title: 'Spindle Pens Setleri',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuI3_C4d5e6f7g8h9i0j1k2l3m4n5o6p7q8r9s0t1u2v3w4x5y6z7a8b9c0d1e2',
+    href: '/kampanyalar/spindle-pens-setleri'
+  },
+  {
+    title: 'Kombin Setler',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuJ4_D5e6f7g8h9i0j1k2l3m4n5o6p7q8r9s0t1u2v3w4x5y6z7a8b9c0d1e2f3',
+    href: '/kampanyalar/kombin-setler'
+  },
+  {
+    title: 'Karbür Kesiciler Kılavuzlar',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuK5_E6f7g8h9i0j1k2l3m4n5o6p7q8r9s0t1u2v3w4x5y6z7a8b9c0d1e2f3g4',
+    href: '/kampanyalar/karbur-kesiciler'
+  },
+  {
+    title: 'Takım Tutucu Kovanlar',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuL6_F7g8h9i0j1k2l3m4n5o6p7q8r9s0t1u2v3w4x5y6z7a8b9c0d1e2f3g4h5',
+    href: '/kampanyalar/takim-tutucu-kovanlar'
+  },
+  {
+    title: 'Magazin Takım Tutucu Çatal',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuM7_G8h9i0j1k2l3m4n5o6p7q8r9s0t1u2v3w4x5y6z7a8b9c0d1e2f3g4h5i6',
+    href: '/kampanyalar/magazin-takim-tutucu'
+  },
+  {
+    title: 'Spindle Pensleri',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuN8_H9i0j1k2l3m4n5o6p7q8r9s0t1u2v3w4x5y6z7a8b9c0d1e2f3g4h5i6j7',
+    href: '/kampanyalar/spindle-pensleri'
   }
 ];

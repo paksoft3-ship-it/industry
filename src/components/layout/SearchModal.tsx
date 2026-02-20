@@ -2,8 +2,22 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { products, searchPopularTerms } from "@/data/siteData";
 import MaterialIcon from "@/components/ui/MaterialIcon";
+
+interface SearchProduct {
+  id: string;
+  slug: string;
+  name: string;
+  price: number;
+  currency: string;
+  inStock: boolean;
+  categoryLabel: string;
+  images: string[];
+}
+
+const searchPopularTerms = ["Spindle Motor", "Step Motor", "Lineer Ray", "Mach3", "CNC Router", "VFD"];
+
+const products: SearchProduct[] = [];
 
 interface SearchModalProps {
   onClose: () => void;
@@ -29,7 +43,6 @@ export default function SearchModal({ onClose }: SearchModalProps) {
     ? products.filter(
         (p) =>
           p.name.toLowerCase().includes(query.toLowerCase()) ||
-          p.sku.toLowerCase().includes(query.toLowerCase()) ||
           p.categoryLabel.toLowerCase().includes(query.toLowerCase())
       )
     : products;
@@ -93,10 +106,16 @@ export default function SearchModal({ onClose }: SearchModalProps) {
             {/* Left: Results */}
             <div className="flex-1 overflow-y-auto bg-white p-2">
               <div className="flex flex-col gap-1 p-2">
+                {filteredProducts.length === 0 && !query && (
+                  <div className="flex flex-col items-center justify-center py-16 text-gray-400">
+                    <MaterialIcon icon="search" className="text-5xl mb-3" />
+                    <p className="text-sm font-medium">Arama sonuçları veritabanına bağlandığında gösterilecektir</p>
+                  </div>
+                )}
                 {filteredProducts.map((product) => (
                   <Link
                     key={product.id}
-                    href={`/urunler/${product.slug}`}
+                    href={`/urun/${product.slug}`}
                     onClick={onClose}
                     className="group flex items-start gap-4 p-3 rounded-lg hover:bg-blue-50/50 cursor-pointer border border-transparent hover:border-primary/20 transition-all"
                   >

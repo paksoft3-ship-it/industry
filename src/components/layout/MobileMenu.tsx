@@ -1,14 +1,21 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { navLinks, mobileMenuCategories } from "@/data/siteData";
 import MaterialIcon from "@/components/ui/MaterialIcon";
+import type { MegaMenuCategory } from "@/lib/types/menu";
+
+const navLinks = [
+  { label: "Markalar", href: "/markalar" },
+  { label: "Blog & Eğitim", href: "/blog-egitim" },
+  { label: "Sipariş Takip", href: "/siparis-takip" },
+];
 
 interface MobileMenuProps {
   onClose: () => void;
+  categories: MegaMenuCategory[];
 }
 
-export default function MobileMenu({ onClose }: MobileMenuProps) {
+export default function MobileMenu({ onClose, categories }: MobileMenuProps) {
   const [openCategory, setOpenCategory] = useState<number | null>(0);
 
   return (
@@ -69,9 +76,9 @@ export default function MobileMenu({ onClose }: MobileMenuProps) {
 
           {/* Accordion Categories */}
           <div className="flex flex-col gap-2 px-5 pb-6">
-            {mobileMenuCategories.map((cat, i) => (
+            {categories.map((cat, i) => (
               <div
-                key={cat.name}
+                key={cat.id}
                 className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100"
               >
                 <button
@@ -82,7 +89,7 @@ export default function MobileMenu({ onClose }: MobileMenuProps) {
                 >
                   <div className="flex items-center gap-3">
                     <MaterialIcon
-                      icon={cat.icon}
+                      icon={cat.icon || "category"}
                       className={openCategory === i ? "text-primary" : "text-gray-500"}
                     />
                     <span className="font-bold text-gray-900 text-[15px]">{cat.name}</span>
@@ -94,31 +101,31 @@ export default function MobileMenu({ onClose }: MobileMenuProps) {
                     }`}
                   />
                 </button>
-                {openCategory === i && cat.subcategories.length > 0 && (
+                {openCategory === i && cat.children.length > 0 && (
                   <div className="px-4 pb-4 pt-2 bg-gray-50">
                     <ul className="flex flex-col gap-3 border-l-2 border-primary/20 ml-2 pl-4">
-                      {cat.subcategories.map((sub) => (
-                        <li key={sub.title}>
+                      {cat.children.map((sub) => (
+                        <li key={sub.id}>
                           <Link
-                            href={sub.href}
+                            href={`/kategori/${sub.slug}`}
                             className="flex items-center justify-between text-gray-600 hover:text-primary text-sm transition-colors"
                             onClick={onClose}
                           >
-                            {sub.title}
-                            {sub.items.length > 0 && (
+                            {sub.name}
+                            {sub.children.length > 0 && (
                               <MaterialIcon icon="arrow_forward" className="text-[16px]" />
                             )}
                           </Link>
-                          {sub.items.length > 0 && (
+                          {sub.children.length > 0 && (
                             <ul className="mt-2 ml-1 flex flex-col gap-2">
-                              {sub.items.map((item) => (
-                                <li key={item.label}>
+                              {sub.children.map((item) => (
+                                <li key={item.id}>
                                   <Link
-                                    href={item.href}
+                                    href={`/kategori/${item.slug}`}
                                     className="text-gray-500 hover:text-primary text-xs block py-1"
                                     onClick={onClose}
                                   >
-                                    {item.label}
+                                    {item.name}
                                   </Link>
                                 </li>
                               ))}
@@ -136,19 +143,17 @@ export default function MobileMenu({ onClose }: MobileMenuProps) {
           {/* Nav Links */}
           <div className="px-5 pb-4">
             <div className="flex flex-col gap-1">
-              {navLinks
-                .filter((l) => l.label !== "Kategoriler" && l.label !== "Teklif Al")
-                .map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className="px-4 py-3 text-sm font-medium hover:bg-white rounded-lg transition-colors flex items-center justify-between"
-                    onClick={onClose}
-                  >
-                    {link.label}
-                    <MaterialIcon icon="chevron_right" className="text-gray-400 text-[18px]" />
-                  </Link>
-                ))}
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="px-4 py-3 text-sm font-medium hover:bg-white rounded-lg transition-colors flex items-center justify-between"
+                  onClick={onClose}
+                >
+                  {link.label}
+                  <MaterialIcon icon="chevron_right" className="text-gray-400 text-[18px]" />
+                </Link>
+              ))}
             </div>
           </div>
 
@@ -163,7 +168,7 @@ export default function MobileMenu({ onClose }: MobileMenuProps) {
               <span className="text-sm font-medium text-gray-700">İndirimli Ürünler</span>
             </Link>
             <Link
-              href="/urunler"
+              href="/kategori/tumu"
               className="flex items-center gap-3 p-4 rounded-lg hover:bg-white transition-colors border border-transparent hover:border-gray-200"
               onClick={onClose}
             >

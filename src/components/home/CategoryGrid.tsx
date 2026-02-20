@@ -1,8 +1,16 @@
 "use client";
 import { useRef } from "react";
 import Link from "next/link";
-import { categories } from "@/data/siteData";
 import MaterialIcon from "@/components/ui/MaterialIcon";
+
+const categories = [
+  { id: "sigma-profil", name: "Sigma Profil", subtitle: "Yapısal Çerçeve", icon: "view_in_ar", image: "" },
+  { id: "elektronik", name: "Elektronik", subtitle: "Kontrol Sistemleri", icon: "memory", image: "" },
+  { id: "spindle-motorlar", name: "Spindle Motor", subtitle: "İşleme Motorları", icon: "speed", image: "" },
+  { id: "lineer-ray-arabalar", name: "Lineer Ray", subtitle: "Hassas Hareket", icon: "linear_scale", image: "" },
+  { id: "cnc-router", name: "CNC Router", subtitle: "Komple Çözümler", icon: "router", image: "" },
+  { id: "step-motor-surucu", name: "Step Motor Sürücü", subtitle: "Hareket Kontrolü", icon: "settings_input_component", image: "" },
+];
 
 export default function CategoryGrid() {
   const scrollRef = useRef<HTMLDivElement>(null);

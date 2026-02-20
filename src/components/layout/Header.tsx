@@ -1,27 +1,52 @@
 "use client";
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { siteConfig, navLinks } from "@/data/siteData";
 import MaterialIcon from "@/components/ui/MaterialIcon";
 import MegaMenu from "./MegaMenu";
 import SearchModal from "./SearchModal";
 import MobileMenu from "./MobileMenu";
+import AccountDropdown from "@/components/layout/AccountDropdown";
+import MiniCartDrawer from "@/components/layout/MiniCartDrawer";
+import type { MegaMenuCategory } from "@/lib/types/menu";
 
-export default function Header() {
+const siteName = "CNC Otomasyon";
+
+interface HeaderProps {
+  categories: MegaMenuCategory[];
+}
+
+export default function Header({ categories }: HeaderProps) {
   const [megaMenuOpen, setMegaMenuOpen] = useState(false);
   const [activeMenuType, setActiveMenuType] = useState<string>("categories");
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
+  const [isLoggedIn] = useState(false);
 
   const megaMenuButtonRef = useRef<HTMLButtonElement>(null);
   const megaMenuRef = useRef<HTMLDivElement>(null);
+  const navRef = useRef<HTMLDivElement>(null);
   const searchButtonRef = useRef<HTMLButtonElement>(null);
   const searchModalRef = useRef<HTMLDivElement>(null);
 
   const closeMegaMenu = useCallback(() => setMegaMenuOpen(false), []);
   const closeSearch = useCallback(() => setSearchOpen(false), []);
   const closeMobileMenu = useCallback(() => setMobileMenuOpen(false), []);
+
+  const navLinks = useMemo(() => {
+    const categoryLinks = categories.map((cat) => ({
+      label: cat.name,
+      href: `/kategori/${cat.slug}`,
+      hasMegaMenu: true,
+      menuType: cat.slug,
+    }));
+    return [
+      ...categoryLinks,
+      { label: "Sipariş Takip", href: "/siparis-takip", hasMegaMenu: false, menuType: "" },
+      { label: "Teklif Al", href: "/kurumsal", hasMegaMenu: false, menuType: "" },
+    ];
+  }, [categories]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -32,14 +57,14 @@ export default function Header() {
         megaMenuRef.current &&
         !megaMenuRef.current.contains(target) &&
         megaMenuButtonRef.current &&
-        !megaMenuButtonRef.current.contains(target)
+        !megaMenuButtonRef.current.contains(target) &&
+        navRef.current &&
+        !navRef.current.contains(target)
       ) {
         setMegaMenuOpen(false);
       }
 
       // Close Search if clicked outside
-      // Note: SearchModal has its own overlay, but if the header is above it (z-index), we need this.
-      // We need a ref for the Search Modal wrapper.
       if (
         searchOpen &&
         searchModalRef.current &&
@@ -68,7 +93,7 @@ export default function Header() {
               <div className="relative h-10 w-48 md:h-12 md:w-64">
                 <Image
                   src="/images/sivtech_makina_horizontal.png"
-                  alt={siteConfig.name}
+                  alt={siteName}
                   fill
                   className="object-contain object-left"
                   priority
@@ -126,17 +151,11 @@ export default function Header() {
               </Link>
 
               {/* Hesabım */}
-              <Link
-                href="#"
-                className="flex flex-col items-center justify-center p-2 text-gray-600 hover:text-primary hover:bg-gray-50 rounded-lg transition-colors group"
-              >
-                <MaterialIcon icon="person" className="group-hover:scale-110 transition-transform" />
-                <span className="text-[10px] font-medium mt-0.5 hidden sm:block">Hesabım</span>
-              </Link>
+              <AccountDropdown isLoggedIn={isLoggedIn} />
 
               {/* Sepetim */}
-              <Link
-                href="#"
+              <button
+                onClick={() => setCartOpen(true)}
                 className="flex flex-col items-center justify-center p-2 text-gray-600 hover:text-primary hover:bg-gray-50 rounded-lg transition-colors group relative"
               >
                 <div className="relative">
@@ -146,7 +165,7 @@ export default function Header() {
                   </span>
                 </div>
                 <span className="text-[10px] font-medium mt-0.5 hidden sm:block">Sepetim</span>
-              </Link>
+              </button>
 
               {/* Mobile menu toggle */}
               <button
@@ -189,16 +208,15 @@ export default function Header() {
             </div>
 
             {/* Center: Navigation Links */}
-            <div className="flex-1 overflow-x-auto hide-scrollbar px-4">
+            <div className="flex-1 overflow-x-auto hide-scrollbar px-4" ref={navRef}>
               <nav className="flex items-center justify-center gap-6 w-full">
                 {navLinks
-                  .filter((link) => link.label !== "Teklif Al" && link.label !== "Ana Sayfa" && link.label !== "Sipariş Takip" && link.label !== "Kampanyalar")
+                  .filter((link) => link.label !== "Teklif Al" && link.label !== "Sipariş Takip" && link.label !== "Kampanyalar")
                   .map((link) => (
                     <Link
                       key={link.href}
                       href={link.href}
-                      className={`text-sm font-medium transition-colors whitespace-nowrap ${link.label === "Kategoriler" ? "hidden" : "text-gray-500 hover:text-primary"
-                        }`}
+                      className="flex items-center gap-1 text-sm font-medium transition-colors whitespace-nowrap text-gray-500 hover:text-primary"
                       onMouseEnter={() => {
                         if (link.hasMegaMenu) {
                           setActiveMenuType(link.menuType || "categories");
@@ -209,6 +227,7 @@ export default function Header() {
                       }}
                     >
                       {link.label}
+                      {link.hasMegaMenu && <MaterialIcon icon="expand_more" className="text-[18px]" />}
                     </Link>
                   ))}
               </nav>
@@ -231,7 +250,7 @@ export default function Header() {
 
       {/* Mega Menu (Desktop) */}
       <div ref={megaMenuRef}>
-        {megaMenuOpen && <MegaMenu onClose={closeMegaMenu} menuType={activeMenuType} />}
+        {megaMenuOpen && <MegaMenu onClose={closeMegaMenu} menuType={activeMenuType} categories={categories} />}
       </div>
 
       {/* Search Modal */}
@@ -240,7 +259,10 @@ export default function Header() {
       </div>
 
       {/* Mobile Menu */}
-      {mobileMenuOpen && <MobileMenu onClose={closeMobileMenu} />}
+      {mobileMenuOpen && <MobileMenu onClose={closeMobileMenu} categories={categories} />}
+
+      {/* Mini Cart Drawer */}
+      <MiniCartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />
     </header>
   );
 }

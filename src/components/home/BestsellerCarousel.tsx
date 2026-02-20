@@ -1,8 +1,14 @@
 "use client";
 import { useRef } from "react";
-import { products } from "@/data/siteData";
 import ProductCard from "@/components/products/ProductCard";
 import MaterialIcon from "@/components/ui/MaterialIcon";
+
+const products: Array<{
+  id: string; slug: string; name: string; category: string; categoryLabel: string;
+  price: number; originalPrice: number | null; currency: string; badge: string | null;
+  inStock: boolean; stockCount: number; rating: number; reviewCount: number; sku: string;
+  images: string[]; specs: string[];
+}> = [];
 
 export default function BestsellerCarousel() {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -43,16 +49,23 @@ export default function BestsellerCarousel() {
           </button>
         </div>
       </div>
-      <div
-        ref={scrollRef}
-        className="flex gap-6 overflow-x-auto pb-8 snap-x hide-scrollbar"
-      >
-        {products.map((product) => (
-          <div key={product.id} className="snap-start">
-            <ProductCard product={product} />
-          </div>
-        ))}
-      </div>
+      {products.length === 0 ? (
+        <div className="text-center py-20">
+          <MaterialIcon icon="inventory_2" className="text-6xl text-gray-300 mb-4" />
+          <p className="text-gray-500">Çok satan ürünler yakında eklenecektir.</p>
+        </div>
+      ) : (
+        <div
+          ref={scrollRef}
+          className="flex gap-6 overflow-x-auto pb-8 snap-x hide-scrollbar"
+        >
+          {products.map((product) => (
+            <div key={product.id} className="snap-start">
+              <ProductCard product={product} />
+            </div>
+          ))}
+        </div>
+      )}
     </section>
   );
 }

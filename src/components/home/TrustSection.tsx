@@ -1,5 +1,10 @@
-import { trustBadges } from "@/data/siteData";
 import MaterialIcon from "@/components/ui/MaterialIcon";
+
+const trustBadges = [
+  { title: "Kaliteli Ürünler", description: "Orijinal ve sertifikalı ürünler ile güvenli alışveriş.", icon: "verified" },
+  { title: "Hızlı Teslimat", description: "Stokta olan ürünlerde aynı gün kargo ile hızlı teslimat.", icon: "local_shipping" },
+  { title: "Teknik Destek", description: "Uzman mühendislerimizden ücretsiz teknik danışmanlık.", icon: "support_agent" },
+];
 
 export default function TrustSection() {
   return (

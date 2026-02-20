@@ -2,19 +2,47 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { megaMenuCategories, megaMenuPromo, megaMenuQuickLinks, sigmaProfilCategories } from "@/data/siteData";
 import MaterialIcon from "@/components/ui/MaterialIcon";
+import type { MegaMenuCategory } from "@/lib/types/menu";
+
+const megaMenuPromo = {
+  title: "CNC Router Kombin Setleri",
+  description: "Hazır CNC çözümleri ile projenize hemen başlayın",
+  badge: "Yeni",
+  image: "/images/placeholder.jpg",
+  href: "/kombin-liste",
+};
+
+const megaMenuQuickLinks = [
+  { title: "Dosya Merkezi", description: "Teknik dökümanlar", icon: "folder_open", href: "/dosya-merkezi" },
+  { title: "Sipariş Takip", description: "Kargo durumu", icon: "local_shipping", href: "/siparis-takip" },
+  { title: "İletişim", description: "Bize ulaşın", icon: "support_agent", href: "/iletisim" },
+];
 
 interface MegaMenuProps {
   onClose: () => void;
   menuType?: string;
+  categories: MegaMenuCategory[];
 }
 
-export default function MegaMenu({ onClose, menuType = "categories" }: MegaMenuProps) {
+export default function MegaMenu({ onClose, menuType = "categories", categories }: MegaMenuProps) {
   const [activeCategory, setActiveCategory] = useState(0);
 
-  // Sigma Menu Layout (Card Grid)
-  if (menuType === "sigma") {
+  // Find matching L1 category by slug for card grid layout
+  const matchedL1 = menuType !== "categories" ? categories.find((cat) => cat.slug === menuType) : null;
+
+  // Card Grid Layout — when menuType matches an L1 slug
+  if (matchedL1) {
+    const items = [
+      ...matchedL1.children.map((child) => ({
+        title: child.name,
+        href: `/kategori/${child.slug}`,
+        image: child.image || "",
+        icon: child.icon,
+      })),
+      { title: "Tümünü Gör", href: `/kategori/${matchedL1.slug}`, image: "", icon: null },
+    ];
+
     return (
       <>
         {/* Overlay */}
@@ -23,25 +51,28 @@ export default function MegaMenu({ onClose, menuType = "categories" }: MegaMenuP
           onClick={onClose}
         />
         {/* Menu */}
-        <div className="absolute left-0 top-full w-full bg-white border-t border-gray-200 shadow-2xl z-40 py-8">
+        <div className="absolute left-0 top-full w-full bg-white border-t border-gray-200 shadow-2xl z-[100] py-8">
           <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
-              {sigmaProfilCategories.map((item) => (
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              {items.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="group flex flex-col items-center text-center p-4 rounded-xl hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-100"
+                  className={`group flex flex-col items-center justify-center text-center p-4 rounded-xl hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-100 ${!item.image ? "h-full min-h-[120px] bg-gray-50 hover:bg-gray-100/80" : ""
+                    }`}
                   onClick={onClose}
                 >
-                  <div className="w-full aspect-square relative mb-4 bg-white rounded-lg overflow-hidden border border-gray-100 group-hover:border-primary/20 transition-colors p-2">
-                    <Image
-                      src={item.image}
-                      alt={item.title}
-                      fill
-                      className="object-contain p-2 group-hover:scale-105 transition-transform duration-300"
-                    />
-                  </div>
-                  <span className="text-sm font-bold text-gray-700 group-hover:text-primary leading-tight">
+                  {item.image ? (
+                    <div className="w-full aspect-square relative mb-4 bg-white rounded-lg overflow-hidden border border-gray-100 group-hover:border-primary/20 transition-colors p-2">
+                      <Image
+                        src={item.image}
+                        alt={item.title}
+                        fill
+                        className="object-contain p-2 group-hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
+                  ) : null}
+                  <span className={`text-sm font-bold text-gray-700 group-hover:text-primary leading-tight ${!item.image ? "text-base px-2" : ""}`}>
                     {item.title}
                   </span>
                 </Link>
@@ -53,8 +84,10 @@ export default function MegaMenu({ onClose, menuType = "categories" }: MegaMenuP
     );
   }
 
-  // Default Categories Layout (Existing)
-  const category = megaMenuCategories[activeCategory];
+  // Default Categories Layout
+  const category = categories[activeCategory];
+
+  if (!category) return null;
 
   return (
     <>
@@ -69,18 +102,18 @@ export default function MegaMenu({ onClose, menuType = "categories" }: MegaMenuP
           {/* LEFT: Categories */}
           <div className="w-1/4 min-w-[280px] border-r border-gray-100 h-full overflow-y-auto py-4">
             <ul className="flex flex-col">
-              {megaMenuCategories.map((cat, i) => (
+              {categories.map((cat, i) => (
                 <li key={cat.id}>
                   <button
                     className={`w-full flex items-center justify-between px-6 py-4 text-left transition-all ${i === activeCategory
-                        ? "bg-gray-50 border-l-4 border-primary text-primary font-bold"
-                        : "text-gray-600 hover:bg-gray-50 hover:text-primary font-medium border-l-4 border-transparent hover:border-gray-200"
+                      ? "bg-gray-50 border-l-4 border-primary text-primary font-bold"
+                      : "text-gray-600 hover:bg-gray-50 hover:text-primary font-medium border-l-4 border-transparent hover:border-gray-200"
                       }`}
                     onMouseEnter={() => setActiveCategory(i)}
                     onClick={() => setActiveCategory(i)}
                   >
                     <div className="flex items-center gap-3">
-                      <MaterialIcon icon={cat.icon} />
+                      <MaterialIcon icon={cat.icon || "category"} />
                       <span className="text-sm">{cat.name}</span>
                     </div>
                     <MaterialIcon
@@ -101,7 +134,7 @@ export default function MegaMenu({ onClose, menuType = "categories" }: MegaMenuP
                 {category.name}
               </h2>
               <Link
-                href="/kategori/tumu"
+                href={`/kategori/${category.slug}`}
                 className="text-sm font-semibold text-primary hover:text-primary-dark flex items-center gap-1"
                 onClick={onClose}
               >
@@ -109,25 +142,25 @@ export default function MegaMenu({ onClose, menuType = "categories" }: MegaMenuP
               </Link>
             </div>
             <div className="grid grid-cols-2 gap-y-8 gap-x-12">
-              {category.subcategories.map((sub) => (
-                <div key={sub.title} className="group">
+              {category.children.map((sub) => (
+                <div key={sub.id} className="group">
                   <Link
-                    href={sub.href}
+                    href={`/kategori/${sub.slug}`}
                     className="block text-gray-900 font-bold mb-3 hover:text-primary flex items-center gap-2 text-sm"
                     onClick={onClose}
                   >
                     <MaterialIcon icon="arrow_right" className="text-gray-400 group-hover:text-primary" />
-                    {sub.title}
+                    {sub.name}
                   </Link>
                   <ul className="space-y-2 pl-8 border-l border-gray-100">
-                    {sub.items.map((item) => (
-                      <li key={item.label}>
+                    {sub.children.map((item) => (
+                      <li key={item.id}>
                         <Link
-                          href={item.href}
+                          href={`/kategori/${item.slug}`}
                           className="text-gray-500 hover:text-primary text-sm block transition-colors"
                           onClick={onClose}
                         >
-                          {item.label}
+                          {item.name}
                         </Link>
                       </li>
                     ))}

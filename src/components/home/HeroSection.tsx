@@ -1,6 +1,16 @@
 import Link from "next/link";
-import { heroData } from "@/data/siteData";
 import MaterialIcon from "@/components/ui/MaterialIcon";
+
+const heroData = {
+  backgroundImage: "/images/hero-bg.jpg",
+  badgeIcon: "precision_manufacturing",
+  badge: "Endüstriyel Otomasyon Çözümleri",
+  title: "CNC ve Otomasyon",
+  highlight: "Çözüm Ortağınız",
+  subtitle: "Endüstriyel otomasyon, CNC makine parçaları ve ekipmanlarında Türkiye'nin güvenilir tedarikçisi.",
+  ctaPrimary: "Ürünleri Keşfet",
+  ctaSecondary: "Kategoriler",
+};
 
 export default function HeroSection() {
   return (
@@ -27,7 +37,7 @@ export default function HeroSection() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Link
-              href="/urunler"
+              href="/kategori/tumu"
               className="inline-flex items-center justify-center h-12 px-8 rounded-lg bg-primary hover:bg-primary-dark text-white font-bold transition-all shadow-lg shadow-blue-900/50 hover:shadow-blue-900/70 hover:-translate-y-0.5"
             >
               {heroData.ctaPrimary}

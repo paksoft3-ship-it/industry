@@ -2,8 +2,26 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { categories } from "@/data/siteData";
 import MaterialIcon from "@/components/ui/MaterialIcon";
+
+const categories = [
+  { id: "servo-motor", name: "Servo Motor", subtitle: "Hassas Kontrol", icon: "settings_input_component", image: "", productCount: 15 },
+  { id: "step-motor-surucu", name: "Step Motor Sürücü", subtitle: "Hareket Kontrolü", icon: "developer_board", image: "", productCount: 20 },
+  { id: "hiz-kontrol", name: "Hız Kontrol", subtitle: "VFD Sürücüler", icon: "speed", image: "", productCount: 8 },
+  { id: "vidali-mil-somun", name: "Vidalı Mil ve Somun", subtitle: "Hassas Hareket", icon: "handyman", image: "", productCount: 25 },
+  { id: "lineer-ray-arabalar", name: "Lineer Ray ve Arabalar", subtitle: "Doğrusal Kızak", icon: "linear_scale", image: "", productCount: 30 },
+  { id: "lineer-rulman", name: "Lineer Rulman", subtitle: "Hassas Yataklama", icon: "trip_origin", image: "", productCount: 18 },
+  { id: "dokum-yataklar", name: "Döküm Yataklar", subtitle: "Destek Elemanları", icon: "api", image: "", productCount: 10 },
+  { id: "sigma-profil", name: "Sigma Profil", subtitle: "Yapısal Çerçeve", icon: "view_in_ar", image: "", productCount: 40 },
+  { id: "otomatik-yaglama", name: "Otomatik Yağlama", subtitle: "Bakım Sistemleri", icon: "water_drop", image: "", productCount: 5 },
+  { id: "spindle-motorlar", name: "Spindle Motor", subtitle: "İşleme Motorları", icon: "speed", image: "", productCount: 12 },
+  { id: "planet-reduktor", name: "Planet Redüktör", subtitle: "Güç Aktarımı", icon: "settings_suggest", image: "", productCount: 14 },
+  { id: "cnc-router", name: "CNC Router", subtitle: "Komple Çözümler", icon: "router", image: "", productCount: 8 },
+  { id: "mach3-kontrol", name: "Mach3 Kontrol", subtitle: "CNC Yazılım", icon: "computer", image: "", productCount: 6 },
+  { id: "guc-kaynaklari", name: "Güç Kaynakları", subtitle: "Enerji Çözümleri", icon: "bolt", image: "", productCount: 15 },
+  { id: "kablo-kanali", name: "Kablo Kanalı", subtitle: "Kablo Yönetimi", icon: "cable", image: "", productCount: 10 },
+  { id: "vakum-pompasi", name: "Vakum Pompası", subtitle: "Tutma Sistemleri", icon: "air", image: "", productCount: 7 },
+];
 
 // Define the grouping structure based on the reference design
 const categoryGroups = [

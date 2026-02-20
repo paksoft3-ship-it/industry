@@ -1,7 +1,20 @@
 "use client";
 import Link from "next/link";
-import { siteConfig, topBarLinks } from "@/data/siteData";
 import MaterialIcon from "@/components/ui/MaterialIcon";
+import CurrencySwitcher from "@/components/layout/CurrencySwitcher";
+
+const phone = "+90 212 555 00 00";
+const whatsapp = "+90 555 555 55 55";
+const workingHours = "Pzt-Cum: 09:00 - 18:00";
+
+const topBarLinks = [
+  { label: "Ana Sayfa", href: "/" },
+  { label: "Sipariş Takip", href: "/siparis-takip" },
+  { label: "Dosya Merkezi", href: "/dosya-merkezi" },
+  { label: "Banka Bilgilerimiz", href: "/sayfa/banka-bilgilerimiz" },
+  { label: "İletişim", href: "/iletisim" },
+  { label: "Favoriler", href: "/favoriler" },
+];
 
 function WhatsAppIcon({ className = "" }: { className?: string }) {
   return (
@@ -26,17 +39,17 @@ export default function UtilityBar() {
         <div className="flex items-center gap-4">
           <span className="flex items-center gap-1">
             <MaterialIcon icon="call" className="text-[16px]" />
-            {siteConfig.phone}
+            {phone}
           </span>
           <span className="hidden md:inline text-gray-500">|</span>
           <a
-            href={`https://wa.me/${siteConfig.whatsapp.replace(/\s/g, "").replace("+", "")}`}
+            href={`https://wa.me/${whatsapp.replace(/\s/g, "").replace("+", "")}`}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-1.5 hover:text-[#25D366] transition-colors"
           >
             <WhatsAppIcon className="text-[#25D366]" />
-            <span>WhatsApp: {siteConfig.whatsapp}</span>
+            <span>WhatsApp: {whatsapp}</span>
           </a>
         </div>
 
@@ -55,7 +68,8 @@ export default function UtilityBar() {
 
         {/* Right: Working Hours */}
         <div className="flex items-center gap-4">
-          <span className="hidden md:inline">{siteConfig.workingHours}</span>
+          <span className="hidden md:inline">{workingHours}</span>
+          <CurrencySwitcher />
         </div>
       </div>
     </div>
