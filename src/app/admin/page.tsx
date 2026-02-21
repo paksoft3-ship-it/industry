@@ -5,23 +5,23 @@ import MaterialIcon from "@/components/ui/MaterialIcon";
 import prisma from "@/lib/prisma";
 
 const statusColors: Record<string, string> = {
-  "PENDING": "bg-yellow-100 text-yellow-700",
-  "CONFIRMED": "bg-blue-100 text-blue-700",
-  "PROCESSING": "bg-blue-100 text-blue-700",
-  "SHIPPED": "bg-indigo-100 text-indigo-700",
-  "DELIVERED": "bg-green-100 text-green-700",
-  "CANCELLED": "bg-red-100 text-red-700",
-  "REFUNDED": "bg-gray-100 text-gray-700",
+  PENDING: "bg-yellow-100 text-yellow-700",
+  CONFIRMED: "bg-blue-100 text-blue-700",
+  PROCESSING: "bg-blue-100 text-blue-700",
+  SHIPPED: "bg-indigo-100 text-indigo-700",
+  DELIVERED: "bg-green-100 text-green-700",
+  CANCELLED: "bg-red-100 text-red-700",
+  REFUNDED: "bg-gray-100 text-gray-700",
 };
 
 const statusLabels: Record<string, string> = {
-  "PENDING": "Ödeme Bekliyor",
-  "CONFIRMED": "Onaylandı",
-  "PROCESSING": "Hazırlanıyor",
-  "SHIPPED": "Kargoda",
-  "DELIVERED": "Teslim Edildi",
-  "CANCELLED": "İptal Edildi",
-  "REFUNDED": "İade Edildi",
+  PENDING: "Ödeme Bekliyor",
+  CONFIRMED: "Onaylandı",
+  PROCESSING: "Hazırlanıyor",
+  SHIPPED: "Kargoda",
+  DELIVERED: "Teslim Edildi",
+  CANCELLED: "İptal Edildi",
+  REFUNDED: "İade Edildi",
 };
 
 function formatCurrency(value: number): string {
@@ -33,8 +33,17 @@ function formatNumber(value: number): string {
 }
 
 export default async function AdminDashboard() {
-  const [productCount, orderCount, customerCount, revenueResult, recentOrders] = await Promise.all([
-    prisma.product.count(),
+  const [
+    productCount,
+    orderCount,
+    customerCount,
+    revenueResult,
+    recentOrders,
+    lowStockProducts,
+    pendingOrderCount,
+    topProducts,
+  ] = await Promise.all([
+    prisma.product.count({ where: { isActive: true } }),
     prisma.order.count(),
     prisma.user.count({ where: { role: "CUSTOMER" } }),
     prisma.order.aggregate({ _sum: { total: true }, where: { status: { not: "CANCELLED" } } }),
@@ -43,7 +52,43 @@ export default async function AdminDashboard() {
       orderBy: { createdAt: "desc" },
       include: { user: { select: { firstName: true, lastName: true } } },
     }),
+    prisma.product.findMany({
+      where: {
+        isActive: true,
+        stockCount: { lte: prisma.product.fields?.lowStockThreshold ? undefined : 5 },
+      },
+      orderBy: { stockCount: "asc" },
+      take: 5,
+      select: { id: true, name: true, sku: true, stockCount: true, lowStockThreshold: true },
+    }),
+    prisma.order.count({ where: { status: "PENDING" } }),
+    prisma.orderItem.groupBy({
+      by: ["productId"],
+      _sum: { quantity: true },
+      orderBy: { _sum: { quantity: "desc" } },
+      take: 5,
+    }),
   ]);
+
+  // Fetch product details for top products
+  const topProductIds = topProducts.map((p) => p.productId);
+  const topProductDetails = topProductIds.length > 0
+    ? await prisma.product.findMany({
+        where: { id: { in: topProductIds } },
+        select: { id: true, name: true, sku: true },
+      })
+    : [];
+
+  const topProductsWithDetails = topProducts.map((tp) => {
+    const detail = topProductDetails.find((d) => d.id === tp.productId);
+    return {
+      ...detail,
+      totalSold: tp._sum.quantity || 0,
+    };
+  });
+
+  // Filter low stock products manually (compare stockCount <= lowStockThreshold)
+  const actualLowStock = lowStockProducts.filter((p) => p.stockCount <= p.lowStockThreshold);
 
   const revenue = Number(revenueResult._sum.total ?? 0);
 
@@ -79,9 +124,16 @@ export default async function AdminDashboard() {
         {/* Recent Orders */}
         <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100">
           <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-            <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold text-gray-800">
-              Son Siparişler
-            </h2>
+            <div className="flex items-center gap-3">
+              <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold text-gray-800">
+                Son Siparişler
+              </h2>
+              {pendingOrderCount > 0 && (
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700">
+                  {pendingOrderCount} bekleyen
+                </span>
+              )}
+            </div>
             <Link href="/admin/siparisler" className="text-sm text-primary hover:underline font-medium">
               Tümünü Gör
             </Link>
@@ -107,7 +159,11 @@ export default async function AdminDashboard() {
                 ) : (
                   recentOrders.map((order) => (
                     <tr key={order.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 font-medium text-primary">#{order.orderNumber}</td>
+                      <td className="px-6 py-4">
+                        <Link href={`/admin/siparisler/${order.id}`} className="font-medium text-primary hover:underline">
+                          #{order.orderNumber}
+                        </Link>
+                      </td>
                       <td className="px-6 py-4 text-gray-700">{order.user.firstName} {order.user.lastName}</td>
                       <td className="px-6 py-4 text-gray-500">{order.createdAt.toLocaleDateString("tr-TR")}</td>
                       <td className="px-6 py-4 font-medium text-gray-800">{formatCurrency(Number(order.total))}</td>
@@ -124,72 +180,116 @@ export default async function AdminDashboard() {
           </div>
         </div>
 
-        {/* Quick Actions */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold text-gray-800 mb-4">
-            Hızlı İşlemler
-          </h2>
-          <div className="space-y-3">
-            <Link
-              href="/admin/urunler?new=true"
-              className="flex items-center gap-3 p-3 rounded-lg border border-gray-100 hover:border-primary/30 hover:bg-primary/5 transition-colors group"
-            >
-              <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center group-hover:bg-blue-100 transition-colors">
-                <MaterialIcon icon="add_box" className="text-blue-600" />
+        {/* Right Column */}
+        <div className="space-y-6">
+          {/* Low Stock Alert */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold text-gray-800">
+                Düşük Stok
+              </h2>
+              <Link href="/admin/urunler?status=outofstock" className="text-sm text-primary hover:underline font-medium">
+                Tümü
+              </Link>
+            </div>
+            {actualLowStock.length === 0 ? (
+              <div className="flex items-center gap-2 text-sm text-green-600 py-2">
+                <MaterialIcon icon="check_circle" className="text-lg" />
+                <span>Tüm ürünlerin stoğu yeterli</span>
               </div>
-              <div>
-                <p className="text-sm font-medium text-gray-800">Yeni Ürün Ekle</p>
-                <p className="text-xs text-gray-500">Ürün kataloğuna ekle</p>
+            ) : (
+              <div className="space-y-3">
+                {actualLowStock.map((product) => (
+                  <Link
+                    key={product.id}
+                    href={`/admin/urunler/${product.id}`}
+                    className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 transition-colors"
+                  >
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium text-gray-800 truncate">{product.name}</p>
+                      <p className="text-xs text-gray-500 font-mono">{product.sku}</p>
+                    </div>
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                      product.stockCount <= 0 ? "bg-red-100 text-red-700" : "bg-yellow-100 text-yellow-700"
+                    }`}>
+                      {product.stockCount} adet
+                    </span>
+                  </Link>
+                ))}
               </div>
-            </Link>
-            <Link
-              href="/admin/siparisler"
-              className="flex items-center gap-3 p-3 rounded-lg border border-gray-100 hover:border-primary/30 hover:bg-primary/5 transition-colors group"
-            >
-              <div className="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center group-hover:bg-green-100 transition-colors">
-                <MaterialIcon icon="local_shipping" className="text-green-600" />
+            )}
+          </div>
+
+          {/* Top Products */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold text-gray-800 mb-4">
+              En Çok Satanlar
+            </h2>
+            {topProductsWithDetails.length === 0 ? (
+              <p className="text-sm text-gray-400 py-2">Henüz satış verisi yok</p>
+            ) : (
+              <div className="space-y-3">
+                {topProductsWithDetails.map((product, i) => (
+                  <div key={product.id || i} className="flex items-center justify-between">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <span className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center text-xs font-bold text-primary">
+                        {i + 1}
+                      </span>
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium text-gray-800 truncate">{product.name || "—"}</p>
+                        <p className="text-xs text-gray-500 font-mono">{product.sku || ""}</p>
+                      </div>
+                    </div>
+                    <span className="text-sm font-medium text-gray-600 whitespace-nowrap ml-2">{product.totalSold} adet</span>
+                  </div>
+                ))}
               </div>
-              <div>
-                <p className="text-sm font-medium text-gray-800">Siparişleri Yönet</p>
-                <p className="text-xs text-gray-500">Bekleyen siparişler</p>
-              </div>
-            </Link>
-            <Link
-              href="/admin/kampanyalar"
-              className="flex items-center gap-3 p-3 rounded-lg border border-gray-100 hover:border-primary/30 hover:bg-primary/5 transition-colors group"
-            >
-              <div className="w-10 h-10 bg-orange-50 rounded-lg flex items-center justify-center group-hover:bg-orange-100 transition-colors">
-                <MaterialIcon icon="campaign" className="text-orange-600" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-gray-800">Kampanya Oluştur</p>
-                <p className="text-xs text-gray-500">İndirim ve kuponlar</p>
-              </div>
-            </Link>
-            <Link
-              href="/admin/egitim"
-              className="flex items-center gap-3 p-3 rounded-lg border border-gray-100 hover:border-primary/30 hover:bg-primary/5 transition-colors group"
-            >
-              <div className="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center group-hover:bg-purple-100 transition-colors">
-                <MaterialIcon icon="edit_note" className="text-purple-600" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-gray-800">Blog Yazısı Ekle</p>
-                <p className="text-xs text-gray-500">Yeni içerik yayınla</p>
-              </div>
-            </Link>
-            <Link
-              href="/admin/ayarlar"
-              className="flex items-center gap-3 p-3 rounded-lg border border-gray-100 hover:border-primary/30 hover:bg-primary/5 transition-colors group"
-            >
-              <div className="w-10 h-10 bg-gray-50 rounded-lg flex items-center justify-center group-hover:bg-gray-100 transition-colors">
-                <MaterialIcon icon="tune" className="text-gray-600" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-gray-800">Site Ayarları</p>
-                <p className="text-xs text-gray-500">Genel yapılandırma</p>
-              </div>
-            </Link>
+            )}
+          </div>
+
+          {/* Quick Actions */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold text-gray-800 mb-4">
+              Hızlı İşlemler
+            </h2>
+            <div className="space-y-3">
+              <Link
+                href="/admin/urunler/new"
+                className="flex items-center gap-3 p-3 rounded-lg border border-gray-100 hover:border-primary/30 hover:bg-primary/5 transition-colors group"
+              >
+                <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center group-hover:bg-blue-100 transition-colors">
+                  <MaterialIcon icon="add_box" className="text-blue-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-800">Yeni Ürün Ekle</p>
+                  <p className="text-xs text-gray-500">Ürün kataloğuna ekle</p>
+                </div>
+              </Link>
+              <Link
+                href="/admin/siparisler"
+                className="flex items-center gap-3 p-3 rounded-lg border border-gray-100 hover:border-primary/30 hover:bg-primary/5 transition-colors group"
+              >
+                <div className="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center group-hover:bg-green-100 transition-colors">
+                  <MaterialIcon icon="local_shipping" className="text-green-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-800">Siparişleri Yönet</p>
+                  <p className="text-xs text-gray-500">Bekleyen siparişler</p>
+                </div>
+              </Link>
+              <Link
+                href="/admin/kampanyalar"
+                className="flex items-center gap-3 p-3 rounded-lg border border-gray-100 hover:border-primary/30 hover:bg-primary/5 transition-colors group"
+              >
+                <div className="w-10 h-10 bg-orange-50 rounded-lg flex items-center justify-center group-hover:bg-orange-100 transition-colors">
+                  <MaterialIcon icon="campaign" className="text-orange-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-800">Kampanya Oluştur</p>
+                  <p className="text-xs text-gray-500">İndirim ve kuponlar</p>
+                </div>
+              </Link>
+            </div>
           </div>
         </div>
       </div>

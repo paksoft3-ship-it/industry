@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { Toaster } from "react-hot-toast";
 import MaterialIcon from "@/components/ui/MaterialIcon";
 
 const navItems = [
@@ -29,8 +31,20 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     return pathname.startsWith(href);
   };
 
+  const [sessionUser, setSessionUser] = useState<{ name: string; email: string } | null>(null);
+
+  useEffect(() => {
+    fetch("/api/auth/session")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data?.user) setSessionUser({ name: data.user.name, email: data.user.email });
+      })
+      .catch(() => {});
+  }, []);
+
   return (
     <div className="flex h-screen overflow-hidden bg-gray-100">
+      <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
       {/* Sidebar */}
       <aside className="w-64 flex-shrink-0 bg-[#0d121c] text-white flex flex-col">
         {/* Logo */}
@@ -71,8 +85,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <MaterialIcon icon="person" className="text-primary text-lg" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate">Admin User</p>
-              <p className="text-xs text-gray-500 truncate">admin@example.com</p>
+              <p className="text-sm font-medium truncate">{sessionUser?.name || "Admin"}</p>
+              <p className="text-xs text-gray-500 truncate">{sessionUser?.email || ""}</p>
             </div>
             <Link href="/" className="text-gray-500 hover:text-white transition-colors" title="Siteye Git">
               <MaterialIcon icon="open_in_new" className="text-lg" />
@@ -102,7 +116,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
                 <MaterialIcon icon="person" className="text-gray-500 text-lg" />
               </div>
-              <span className="font-medium">Admin</span>
+              <span className="font-medium">{sessionUser?.name?.split(" ")[0] || "Admin"}</span>
               <MaterialIcon icon="expand_more" className="text-lg" />
             </button>
           </div>

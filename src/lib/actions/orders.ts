@@ -128,6 +128,142 @@ export async function updateOrderStatus(orderId: string, status: string) {
     data: { status: status as never },
   });
 
+  await prisma.auditLog.create({
+    data: {
+      userId: session.user.id,
+      action: "UPDATE",
+      entity: "Order",
+      entityId: order.id,
+      details: `Sipariş durumu güncellendi: ${status}`,
+    },
+  });
+
   revalidatePath("/admin/siparisler");
+  revalidatePath(`/admin/siparisler/${orderId}`);
   return order;
+}
+
+export async function getAdminOrders({
+  search,
+  status,
+  page = 1,
+  limit = 20,
+}: {
+  search?: string;
+  status?: string;
+  page?: number;
+  limit?: number;
+} = {}) {
+  const where: Record<string, unknown> = {};
+
+  if (status) {
+    where.status = status;
+  }
+
+  if (search) {
+    where.OR = [
+      { orderNumber: { contains: search, mode: "insensitive" } },
+      { user: { firstName: { contains: search, mode: "insensitive" } } },
+      { user: { lastName: { contains: search, mode: "insensitive" } } },
+      { user: { email: { contains: search, mode: "insensitive" } } },
+    ];
+  }
+
+  const [orders, total, statusCounts] = await Promise.all([
+    prisma.order.findMany({
+      where: where as never,
+      include: {
+        user: { select: { firstName: true, lastName: true, email: true } },
+        _count: { select: { items: true } },
+      },
+      orderBy: { createdAt: "desc" },
+      skip: (page - 1) * limit,
+      take: limit,
+    }),
+    prisma.order.count({ where: where as never }),
+    prisma.$queryRaw<{ status: string; count: bigint }[]>`
+      SELECT status, COUNT(*)::bigint as count FROM "Order" GROUP BY status
+    `,
+  ]);
+
+  const counts: Record<string, number> = {};
+  for (const row of statusCounts) {
+    counts[row.status] = Number(row.count);
+  }
+
+  return { orders, total, totalPages: Math.ceil(total / limit), page, statusCounts: counts };
+}
+
+export async function getOrderDetail(orderId: string) {
+  return prisma.order.findUnique({
+    where: { id: orderId },
+    include: {
+      items: {
+        include: {
+          product: { include: { images: { take: 1, orderBy: { sortOrder: "asc" } } } },
+        },
+      },
+      address: true,
+      user: {
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          email: true,
+          phone: true,
+          _count: { select: { orders: true } },
+        },
+      },
+    },
+  });
+}
+
+export async function updateOrderTracking(orderId: string, data: {
+  trackingNumber?: string;
+  trackingUrl?: string;
+}) {
+  const session = await auth();
+  if (!session?.user || !["ADMIN", "SUPER_ADMIN"].includes((session.user as { role: string }).role)) {
+    throw new Error("Unauthorized");
+  }
+
+  const order = await prisma.order.update({
+    where: { id: orderId },
+    data,
+  });
+
+  await prisma.auditLog.create({
+    data: {
+      userId: session.user.id,
+      action: "UPDATE",
+      entity: "Order",
+      entityId: order.id,
+      details: `Kargo takip bilgisi güncellendi`,
+    },
+  });
+
+  revalidatePath(`/admin/siparisler/${orderId}`);
+  return order;
+}
+
+export async function addOrderNote(orderId: string, note: string) {
+  const session = await auth();
+  if (!session?.user || !["ADMIN", "SUPER_ADMIN"].includes((session.user as { role: string }).role)) {
+    throw new Error("Unauthorized");
+  }
+
+  const order = await prisma.order.findUnique({ where: { id: orderId }, select: { notes: true } });
+  const existingNotes = order?.notes || "";
+  const timestamp = new Date().toLocaleString("tr-TR");
+  const newNotes = existingNotes
+    ? `${existingNotes}\n\n[${timestamp}] ${note}`
+    : `[${timestamp}] ${note}`;
+
+  const updated = await prisma.order.update({
+    where: { id: orderId },
+    data: { notes: newNotes },
+  });
+
+  revalidatePath(`/admin/siparisler/${orderId}`);
+  return updated;
 }
