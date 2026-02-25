@@ -17,6 +17,10 @@ export async function DELETE(request: Request) {
         return NextResponse.json({ error: "Missing url parameter" }, { status: 400 });
     }
 
+    if (!url.startsWith("https://") || !url.includes(".public.blob.vercel-storage.com/")) {
+        return NextResponse.json({ error: "Invalid blob URL" }, { status: 400 });
+    }
+
     try {
         await del(url);
         return new NextResponse(null, { status: 204 });

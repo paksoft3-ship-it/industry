@@ -45,6 +45,13 @@ export async function POST(request: Request): Promise<NextResponse> {
                         "image/webp",
                         "image/svg+xml",
                         "application/pdf",
+                        "application/zip",
+                        "application/x-zip-compressed",
+                        "application/octet-stream",
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                        "application/vnd.ms-excel",
+                        "application/msword",
                     ],
                     tokenPayload: JSON.stringify({
                         userId: session.user.id,

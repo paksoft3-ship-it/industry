@@ -7,6 +7,7 @@ import { useState, useTransition } from "react";
 import toast from "react-hot-toast";
 import MaterialIcon from "@/components/ui/MaterialIcon";
 import { createProduct, updateProduct } from "@/lib/actions/products";
+import MediaUploader from "@/components/admin/MediaUploader";
 
 type Product = {
   id: string;
@@ -30,7 +31,8 @@ type Product = {
   isNewArrival: boolean;
   seoTitle: string | null;
   seoDesc: string | null;
-  images: { id: string; url: string; order: number }[];
+  images: { id: string; url: string; alt: string | null; order: number }[];
+  downloads: { id: string; title: string; fileUrl: string; fileType: string; fileSize?: string | null }[];
   brand: { id: string; name: string } | null;
   categories: { category: { id: string; name: string } }[];
   attributes: { id: string; key: string; value: string }[];
@@ -99,8 +101,11 @@ export default function ProductForm({
   const [attributes, setAttributes] = useState<{ key: string; value: string }[]>(
     product?.attributes?.map((a) => ({ key: a.key, value: a.value })) || []
   );
-  const [imageUrls, setImageUrls] = useState<string[]>(
-    product?.images?.map((i) => i.url) || []
+  const [images, setImages] = useState<{ url: string; alt?: string }[]>(
+    product?.images?.map((i) => ({ url: i.url, alt: i.alt || "" })) || []
+  );
+  const [downloads, setDownloads] = useState<{ title: string; fileUrl: string; fileType: string; fileSize?: string }[]>(
+    product?.downloads?.map((d) => ({ title: d.title, fileUrl: d.fileUrl, fileType: d.fileType, fileSize: d.fileSize || "" })) || []
   );
   const [uploading, setUploading] = useState(false);
 
@@ -109,31 +114,53 @@ export default function ProductForm({
     if (!isEdit) setSlug(slugify(val));
   }
 
-  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const files = e.target.files;
-    if (!files?.length) return;
-    setUploading(true);
+  async function handleRemoveImage(url: string, index: number) {
+    if (!confirm("Bu görseli silmek istediğinize emin misiniz?")) return;
+
+    setImages(prev => prev.filter((_, i) => i !== index));
+
     try {
-      for (const file of Array.from(files)) {
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("entity", "products");
-        const res = await fetch("/api/upload", { method: "POST", body: formData });
-        if (!res.ok) throw new Error("Upload failed");
-        const { url } = await res.json();
-        setImageUrls((prev) => [...prev, url]);
+      if (url.includes("public.blob.vercel-storage.com")) {
+        await fetch(`/api/blob/delete?url=${encodeURIComponent(url)}`, { method: "DELETE" });
       }
-      toast.success("Görsel yüklendi");
-    } catch {
-      toast.error("Görsel yüklenemedi");
-    } finally {
-      setUploading(false);
-      e.target.value = "";
+      toast.success("Görsel silindi");
+    } catch (error) {
+      console.error("Delete error:", error);
+      toast.error("Görsel silinemedi");
     }
   }
 
-  function removeImage(index: number) {
-    setImageUrls((prev) => prev.filter((_, i) => i !== index));
+  function updateImageAlt(index: number, alt: string) {
+    const newImages = [...images];
+    newImages[index] = { ...newImages[index], alt };
+    setImages(newImages);
+  }
+
+  function moveImage(index: number, direction: "up" | "down") {
+    const newImages = [...images];
+    const targetIndex = direction === "up" ? index - 1 : index + 1;
+    if (targetIndex >= 0 && targetIndex < images.length) {
+      [newImages[index], newImages[targetIndex]] = [newImages[targetIndex], newImages[index]];
+      setImages(newImages);
+    }
+  }
+
+  async function handleRemoveDownload(index: number) {
+    const download = downloads[index];
+    if (!confirm(`"${download.title}" dosyasını silmek istediğinize emin misiniz?`)) return;
+
+    const urlToDelete = download.fileUrl;
+    setDownloads(prev => prev.filter((_, i) => i !== index));
+
+    try {
+      if (urlToDelete.includes("public.blob.vercel-storage.com")) {
+        await fetch(`/api/blob/delete?url=${encodeURIComponent(urlToDelete)}`, { method: "DELETE" });
+      }
+      toast.success("Dosya silindi");
+    } catch (error) {
+      console.error("Delete error:", error);
+      toast.error("Dosya silinemedi");
+    }
   }
 
   function addAttribute() {
@@ -179,7 +206,8 @@ export default function ProductForm({
       seoDesc: seoDesc || undefined,
       categoryIds: selectedCategoryIds,
       attributes: attributes.filter((a) => a.key && a.value),
-      imageUrls,
+      images,
+      downloads,
     };
 
     startTransition(async () => {
@@ -487,25 +515,62 @@ export default function ProductForm({
           {/* Images */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
             <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold text-gray-800 mb-4">Görseller</h2>
-            <div className="grid grid-cols-3 gap-2 mb-3">
-              {imageUrls.map((url, i) => (
-                <div key={i} className="relative aspect-square bg-gray-100 rounded-lg overflow-hidden group">
-                  <Image src={url} alt="" fill className="object-cover" />
-                  <button
-                    type="button"
-                    onClick={() => removeImage(i)}
-                    className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    <MaterialIcon icon="close" className="text-sm" />
-                  </button>
+
+            <div className="space-y-4 mb-6">
+              {images.map((img, i) => (
+                <div key={img.url} className="flex gap-4 p-4 bg-gray-50 rounded-xl border border-gray-200 group">
+                  <div className="relative w-24 h-24 bg-white rounded-lg overflow-hidden border border-gray-100 flex-shrink-0">
+                    <Image src={img.url} alt="" fill className="object-contain" />
+                  </div>
+
+                  <div className="flex-1 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Görsel {i + 1}</span>
+                      <div className="flex gap-1">
+                        <button
+                          type="button"
+                          onClick={() => moveImage(i, "up")}
+                          disabled={i === 0}
+                          className="p-1 text-gray-400 hover:text-primary disabled:opacity-30"
+                        >
+                          <MaterialIcon icon="arrow_upward" className="text-lg" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => moveImage(i, "down")}
+                          disabled={i === images.length - 1}
+                          className="p-1 text-gray-400 hover:text-primary disabled:opacity-30"
+                        >
+                          <MaterialIcon icon="arrow_downward" className="text-lg" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveImage(img.url, i)}
+                          className="p-1 text-gray-400 hover:text-red-500"
+                        >
+                          <MaterialIcon icon="delete" className="text-lg" />
+                        </button>
+                      </div>
+                    </div>
+                    <input
+                      type="text"
+                      value={img.alt}
+                      onChange={(e) => updateImageAlt(i, e.target.value)}
+                      placeholder="Alt metin (SEO)"
+                      className="w-full px-3 py-1.5 text-xs border border-gray-200 rounded-lg focus:outline-none focus:border-primary"
+                    />
+                  </div>
                 </div>
               ))}
             </div>
-            <label className="w-full py-2.5 border-2 border-dashed border-gray-200 rounded-lg text-sm text-gray-500 hover:border-primary/30 hover:text-primary transition-colors flex items-center justify-center gap-2 cursor-pointer">
-              <MaterialIcon icon="cloud_upload" className="text-lg" />
-              {uploading ? "Yükleniyor..." : "Görsel Yükle"}
-              <input type="file" accept="image/*" multiple onChange={handleImageUpload} className="hidden" disabled={uploading} />
-            </label>
+
+            <MediaUploader
+              folderPrefix="products"
+              multiple
+              onUploaded={(items) => {
+                setImages(prev => [...prev, ...items.map(it => ({ url: it.url, alt: name }))]);
+              }}
+            />
           </div>
 
           {/* Stock */}
@@ -546,6 +611,43 @@ export default function ProductForm({
                 />
               </div>
             </div>
+          </div>
+
+          {/* Downloads */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold text-gray-800 mb-4">Dosyalar & Dokümanlar</h2>
+            <div className="space-y-4 mb-4">
+              {downloads.map((d, i) => (
+                <div key={i} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-100">
+                  <div className="flex items-center gap-3">
+                    <MaterialIcon icon="insert_drive_file" className="text-gray-400" />
+                    <div className="max-w-[150px] overflow-hidden">
+                      <p className="text-sm font-medium text-gray-800 truncate">{d.title}</p>
+                      <p className="text-[10px] text-gray-400 uppercase font-bold">{d.fileType} {d.fileSize ? `• ${d.fileSize}` : ""}</p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveDownload(i)}
+                    className="p-1.5 text-gray-400 hover:text-red-500 transition-colors"
+                  >
+                    <MaterialIcon icon="delete" className="text-lg" />
+                  </button>
+                </div>
+              ))}
+            </div>
+            <MediaUploader
+              folderPrefix="files"
+              accept="application/pdf,application/zip,image/*"
+              onUploaded={(items) => {
+                setDownloads(prev => [...prev, ...items.map(it => ({
+                  title: it.pathname.split("/").pop() || "Dosya",
+                  fileUrl: it.url,
+                  fileType: it.contentType?.split("/")[1]?.toUpperCase() || "FILE",
+                  fileSize: it.size ? (it.size / 1024 / 1024).toFixed(2) + " MB" : undefined
+                }))]);
+              }}
+            />
           </div>
 
           {/* Badge */}

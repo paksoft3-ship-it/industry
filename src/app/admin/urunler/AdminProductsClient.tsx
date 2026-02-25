@@ -79,7 +79,7 @@ export default function AdminProductsClient({
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
-    updateFilters({ search });
+    updateFilters({ search, page: "" });
   }
 
   async function handleDelete(id: string, name: string) {

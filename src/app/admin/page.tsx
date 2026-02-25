@@ -53,15 +53,13 @@ export default async function AdminDashboard() {
       orderBy: { createdAt: "desc" },
       include: { user: { select: { firstName: true, lastName: true } } },
     }),
-    prisma.product.findMany({
-      where: {
-        isActive: true,
-        stockCount: { lte: prisma.product.fields?.lowStockThreshold ? undefined : 5 },
-      },
-      orderBy: { stockCount: "asc" },
-      take: 5,
-      select: { id: true, name: true, sku: true, stockCount: true, lowStockThreshold: true },
-    }),
+    prisma.$queryRaw<{ id: string; name: string; sku: string; stockCount: number; lowStockThreshold: number }[]>`
+      SELECT id, name, sku, "stockCount", "lowStockThreshold"
+      FROM "Product"
+      WHERE "isActive" = true AND "stockCount" <= "lowStockThreshold"
+      ORDER BY "stockCount" ASC
+      LIMIT 5
+    `,
     prisma.order.count({ where: { status: "PENDING" } }),
     prisma.orderItem.groupBy({
       by: ["productId"],
@@ -92,9 +90,6 @@ export default async function AdminDashboard() {
       totalSold: tp._sum.quantity || 0,
     };
   });
-
-  // Filter low stock products manually (compare stockCount <= lowStockThreshold)
-  const actualLowStock = lowStockProducts.filter((p) => p.stockCount <= p.lowStockThreshold);
 
   const revenue = Number(revenueResult._sum.total ?? 0);
 

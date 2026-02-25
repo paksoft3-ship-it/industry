@@ -9,6 +9,7 @@ import {
   updateFileLibraryItem,
   deleteFileLibraryItem,
 } from "@/lib/actions/fileLibrary";
+import MediaUploader from "@/components/admin/MediaUploader";
 
 type FileItem = {
   id: string;
@@ -134,31 +135,24 @@ export default function AdminDosyaMerkeziClient({ items }: { items: FileItem[] }
     setModal({ open: true, mode: "edit", item });
   }
 
-  async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setUploading(true);
+  async function handleRemoveFile() {
+    if (!formFileUrl) return;
+    const urlToDelete = formFileUrl;
+    setFormFileUrl("");
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("entity", "dosya-merkezi");
-      const res = await fetch("/api/upload", { method: "POST", body: formData });
-      if (!res.ok) throw new Error();
-      const { url } = await res.json();
-      setFormFileUrl(url);
-      toast.success("Dosya yuklendi");
-    } catch {
-      toast.error("Dosya yuklenemedi");
-    } finally {
-      setUploading(false);
-      e.target.value = "";
+      if (urlToDelete.includes("public.blob.vercel-storage.com")) {
+        await fetch(`/api/blob/delete?url=${encodeURIComponent(urlToDelete)}`, { method: "DELETE" });
+      }
+      toast.success("Dosya kaldırıldı");
+    } catch (error) {
+      console.error("Delete error:", error);
     }
   }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!formTitle || !formCategory || !formFileUrl || !formFileType) {
-      toast.error("Baslik, kategori, dosya URL ve dosya turu zorunludur");
+      toast.error("Başlık, kategori, dosya URL ve dosya türü zorunludur");
       return;
     }
 
@@ -174,7 +168,7 @@ export default function AdminDosyaMerkeziClient({ items }: { items: FileItem[] }
             icon: formIcon || undefined,
             order: formOrder || undefined,
           });
-          toast.success("Dosya olusturuldu");
+          toast.success("Dosya oluşturuldu");
         } else if (modal.item) {
           await updateFileLibraryItem(modal.item.id, {
             title: formTitle,
@@ -186,25 +180,25 @@ export default function AdminDosyaMerkeziClient({ items }: { items: FileItem[] }
             order: formOrder,
             isActive: formIsActive,
           });
-          toast.success("Dosya guncellendi");
+          toast.success("Dosya güncellendi");
         }
         setModal({ open: false, mode: "create", item: null });
         router.refresh();
       } catch (err) {
-        toast.error(err instanceof Error ? err.message : "Islem basarisiz");
+        toast.error(err instanceof Error ? err.message : "İşlem başarısız");
       }
     });
   }
 
   function handleDelete(item: FileItem) {
-    if (!confirm(`"${item.title}" dosyasini silmek istediginize emin misiniz?`)) return;
+    if (!confirm(`"${item.title}" dosyasını silmek istediğinize emin misiniz?`)) return;
     startTransition(async () => {
       try {
         await deleteFileLibraryItem(item.id);
         toast.success("Dosya silindi");
         router.refresh();
       } catch (err) {
-        toast.error(err instanceof Error ? err.message : "Silme basarisiz");
+        toast.error(err instanceof Error ? err.message : "Silme başarısız");
       }
     });
   }
@@ -222,7 +216,7 @@ export default function AdminDosyaMerkeziClient({ items }: { items: FileItem[] }
           <h1 className="text-2xl font-bold font-[family-name:var(--font-display)] text-gray-800">
             Dosya Merkezi
           </h1>
-          <p className="text-sm text-gray-500 mt-1">Teknik dokumanlar ve dosyalari yonetin</p>
+          <p className="text-sm text-gray-500 mt-1">Teknik dokümanlar ve dosyaları yönetin</p>
         </div>
         <button
           onClick={openCreateModal}
@@ -281,7 +275,7 @@ export default function AdminDosyaMerkeziClient({ items }: { items: FileItem[] }
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Dosya adi, kategori veya tur ile ara..."
+            placeholder="Dosya adı, kategori veya tür ile ara..."
             className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
           />
         </div>
@@ -291,7 +285,7 @@ export default function AdminDosyaMerkeziClient({ items }: { items: FileItem[] }
       {grouped.length === 0 && (
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-12 text-center">
           <MaterialIcon icon="folder_off" className="text-5xl text-gray-300 mb-3" />
-          <p className="text-gray-500 text-sm">Henuz dosya eklenmemis</p>
+          <p className="text-gray-500 text-sm">Henüz dosya eklenmemiş</p>
         </div>
       )}
 
@@ -328,7 +322,7 @@ export default function AdminDosyaMerkeziClient({ items }: { items: FileItem[] }
                     Dosya
                   </th>
                   <th className="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase">
-                    Tur
+                    Tür
                   </th>
                   <th className="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase">
                     Boyut
@@ -340,7 +334,7 @@ export default function AdminDosyaMerkeziClient({ items }: { items: FileItem[] }
                     Durum
                   </th>
                   <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase">
-                    Islemler
+                    İşlemler
                   </th>
                 </tr>
               </thead>
@@ -379,8 +373,8 @@ export default function AdminDosyaMerkeziClient({ items }: { items: FileItem[] }
                     <td className="px-6 py-4">
                       <span
                         className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${item.isActive
-                            ? "bg-green-100 text-green-700"
-                            : "bg-gray-100 text-gray-500"
+                          ? "bg-green-100 text-green-700"
+                          : "bg-gray-100 text-gray-500"
                           }`}
                       >
                         {item.isActive ? "Aktif" : "Pasif"}
@@ -390,7 +384,7 @@ export default function AdminDosyaMerkeziClient({ items }: { items: FileItem[] }
                       <button
                         onClick={() => openEditModal(item)}
                         className="p-1.5 text-gray-400 hover:text-primary hover:bg-primary/5 rounded-lg transition-colors mr-1"
-                        title="Duzenle"
+                        title="Düzenle"
                       >
                         <MaterialIcon icon="edit" className="text-[18px]" />
                       </button>
@@ -422,7 +416,7 @@ export default function AdminDosyaMerkeziClient({ items }: { items: FileItem[] }
             {/* Modal Header */}
             <div className="p-6 border-b border-gray-100 flex items-center justify-between">
               <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold text-gray-800">
-                {modal.mode === "create" ? "Yeni Dosya Ekle" : "Dosya Duzenle"}
+                {modal.mode === "create" ? "Yeni Dosya Ekle" : "Dosya Düzenle"}
               </h2>
               <button
                 onClick={() => setModal({ ...modal, open: false })}
@@ -436,12 +430,12 @@ export default function AdminDosyaMerkeziClient({ items }: { items: FileItem[] }
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
               {/* Title */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Baslik</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Başlık</label>
                 <input
                   type="text"
                   value={formTitle}
                   onChange={(e) => setFormTitle(e.target.value)}
-                  placeholder="Dosya basligi"
+                  placeholder="Dosya başlığı"
                   className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                   required
                 />
@@ -455,7 +449,7 @@ export default function AdminDosyaMerkeziClient({ items }: { items: FileItem[] }
                     type="text"
                     value={formCategory}
                     onChange={(e) => setFormCategory(e.target.value)}
-                    placeholder="Kategori adi girin veya secin"
+                    placeholder="Kategori adı girin veya seçin"
                     list="category-list"
                     className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                     required
@@ -470,32 +464,42 @@ export default function AdminDosyaMerkeziClient({ items }: { items: FileItem[] }
 
               {/* File URL + Upload */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Dosya URL</label>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={formFileUrl}
-                    onChange={(e) => setFormFileUrl(e.target.value)}
-                    placeholder="https://... veya dosya yukleyin"
-                    className="flex-1 px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                    required
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Dosya</label>
+                {formFileUrl ? (
+                  <div className="mb-4 p-4 bg-gray-50 rounded-xl border border-gray-200 flex items-center justify-between group">
+                    <div className="flex items-center gap-3">
+                      <MaterialIcon icon={formIcon || fileTypeIcons[formFileType] || "description"} className="text-2xl text-primary" />
+                      <div className="max-w-[250px] overflow-hidden">
+                        <p className="text-sm font-medium text-gray-800 truncate">{formTitle || "Dosya"}</p>
+                        <p className="text-xs text-gray-500 truncate">{formFileUrl}</p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleRemoveFile}
+                      className="p-1.5 bg-red-500 text-white rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <MaterialIcon icon="delete" className="text-lg" />
+                    </button>
+                  </div>
+                ) : (
+                  <MediaUploader
+                    folderPrefix="files"
+                    onUploaded={(items) => {
+                      setFormFileUrl(items[0].url);
+                      // Auto-detect file type if possible
+                      const ext = items[0].url.split('.').pop()?.toUpperCase();
+                      if (ext && FILE_TYPES.includes(ext)) {
+                        setFormFileType(ext);
+                      }
+                    }}
                   />
-                  <label className="inline-flex items-center gap-1.5 px-3 py-2.5 border-2 border-dashed border-gray-200 rounded-lg text-sm text-gray-500 hover:border-primary/30 hover:text-primary transition-colors cursor-pointer whitespace-nowrap">
-                    <MaterialIcon icon="cloud_upload" className="text-lg" />
-                    {uploading ? "..." : "Yukle"}
-                    <input
-                      type="file"
-                      onChange={handleFileUpload}
-                      className="hidden"
-                      disabled={uploading}
-                    />
-                  </label>
-                </div>
+                )}
               </div>
 
               {/* File Type */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Dosya Turu</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Dosya Türü</label>
                 <select
                   value={formFileType}
                   onChange={(e) => setFormFileType(e.target.value)}
@@ -519,7 +523,7 @@ export default function AdminDosyaMerkeziClient({ items }: { items: FileItem[] }
                     type="text"
                     value={formFileSize}
                     onChange={(e) => setFormFileSize(e.target.value)}
-                    placeholder="orn. 2.4 MB"
+                    placeholder="örn. 2.4 MB"
                     className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                   />
                 </div>
@@ -531,7 +535,7 @@ export default function AdminDosyaMerkeziClient({ items }: { items: FileItem[] }
                     type="text"
                     value={formIcon}
                     onChange={(e) => setFormIcon(e.target.value)}
-                    placeholder="orn. picture_as_pdf"
+                    placeholder="örn. picture_as_pdf"
                     className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                   />
                 </div>
@@ -540,7 +544,7 @@ export default function AdminDosyaMerkeziClient({ items }: { items: FileItem[] }
               {/* Sort Order */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Siralama
+                  Sıralama
                 </label>
                 <input
                   type="number"
@@ -570,7 +574,7 @@ export default function AdminDosyaMerkeziClient({ items }: { items: FileItem[] }
                   onClick={() => setModal({ ...modal, open: false })}
                   className="px-4 py-2.5 border border-gray-200 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors"
                 >
-                  Iptal
+                  İptal
                 </button>
                 <button
                   type="submit"
@@ -580,8 +584,8 @@ export default function AdminDosyaMerkeziClient({ items }: { items: FileItem[] }
                   {isPending
                     ? "Kaydediliyor..."
                     : modal.mode === "create"
-                      ? "Olustur"
-                      : "Guncelle"}
+                      ? "Oluştur"
+                      : "Güncelle"}
                 </button>
               </div>
             </form>
