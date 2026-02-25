@@ -23,9 +23,10 @@ interface FeaturedProduct {
 
 interface FeaturedProductsProps {
   products: FeaturedProduct[];
+  isAdmin?: boolean;
 }
 
-export default function FeaturedProducts({ products }: FeaturedProductsProps) {
+export default function FeaturedProducts({ products, isAdmin = false }: FeaturedProductsProps) {
   // Build dynamic filter tabs from the categories present in the data
   const allCategoryNames = Array.from(
     new Set(products.flatMap((p) => p.categories.map((c) => c.category.name)))
@@ -53,8 +54,17 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
               Profesyonellerin en çok tercih ettiği ürünler.
             </p>
           </div>
-          {/* Filter Tabs */}
-          {filterTabs.length > 1 && (
+          <div className="flex items-center gap-3 flex-wrap">
+            {/* "See all" link */}
+            <Link
+              href="/arama"
+              className="hidden md:flex items-center gap-2 px-6 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary-dark transition-colors shadow-sm"
+            >
+              Tümünü Gör
+              <MaterialIcon icon="arrow_forward" className="text-[18px]" />
+            </Link>
+            {/* Filter Tabs */}
+            {filterTabs.length > 1 && (
             <div className="flex items-center gap-2 p-1 bg-gray-100 rounded-lg overflow-x-auto max-w-full">
               {filterTabs.map((tab) => (
                 <button
@@ -69,13 +79,23 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
                 </button>
               ))}
             </div>
-          )}
+            )}
+          </div>
         </div>
 
         {filteredProducts.length === 0 ? (
           <div className="text-center py-20">
             <MaterialIcon icon="inventory_2" className="text-6xl text-gray-300 mb-4" />
-            <p className="text-gray-500">Ürünler yakında eklenecektir.</p>
+            <p className="text-gray-500">Öne çıkan ürünler yakında eklenecek.</p>
+            {isAdmin && (
+              <Link
+                href="/admin/urunler"
+                className="inline-flex items-center gap-2 mt-4 px-4 py-2 text-sm bg-primary/10 text-primary border border-primary/20 rounded-lg hover:bg-primary/20 transition-colors"
+              >
+                <MaterialIcon icon="add_circle" className="text-[18px]" />
+                Öne çıkan ürün ekle
+              </Link>
+            )}
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
