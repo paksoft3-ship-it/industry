@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import MaterialIcon from "@/components/ui/MaterialIcon";
 import { updateSettings } from "@/lib/actions/settings";
+import MediaUploader from "@/components/admin/MediaUploader";
 
 interface SiteSettings {
   siteName: string | null;
@@ -18,6 +19,7 @@ interface SiteSettings {
   linkedinUrl: string | null;
   youtubeUrl: string | null;
   logoUrl: string | null;
+  faviconUrl: string | null;
 }
 
 export default function AdminAyarlarClient({ settings }: { settings: SiteSettings }) {
@@ -37,6 +39,7 @@ export default function AdminAyarlarClient({ settings }: { settings: SiteSetting
     linkedinUrl: settings.linkedinUrl ?? "",
     youtubeUrl: settings.youtubeUrl ?? "",
     logoUrl: settings.logoUrl ?? "",
+    faviconUrl: settings.faviconUrl ?? "",
   });
 
   const handleChange = (key: string, value: string) => {
@@ -55,30 +58,25 @@ export default function AdminAyarlarClient({ settings }: { settings: SiteSetting
     });
   };
 
-  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("entity", "settings");
-
-    try {
-      const res = await fetch("/api/upload", { method: "POST", body: formData });
-      const data = await res.json();
-      if (data.url) {
-        setForm((prev) => ({ ...prev, logoUrl: data.url }));
-        toast.success("Logo yüklendi");
-      } else {
-        toast.error("Logo yüklenemedi");
-      }
-    } catch {
-      toast.error("Logo yüklenemedi");
-    }
-  };
-
-  const handleRemoveLogo = () => {
+  const handleRemoveLogo = async () => {
+    if (!form.logoUrl) return;
+    const urlToDelete = form.logoUrl;
     setForm((prev) => ({ ...prev, logoUrl: "" }));
+    try {
+      // Persist removal to DB first so page is consistent on refresh
+      await updateSettings({ logoUrl: "" });
+      // Then delete the blob (fire-and-forget; orphaned blobs are harmless)
+      if (urlToDelete.includes("public.blob.vercel-storage.com")) {
+        fetch(`/api/blob/delete?url=${encodeURIComponent(urlToDelete)}`, { method: "DELETE" }).catch(console.error);
+      }
+      toast.success("Logo kaldırıldı");
+      router.refresh();
+    } catch (error) {
+      console.error("Remove logo error:", error);
+      // Rollback local state on failure
+      setForm((prev) => ({ ...prev, logoUrl: urlToDelete }));
+      toast.error("Logo kaldırılamadı");
+    }
   };
 
   return (
@@ -150,33 +148,87 @@ export default function AdminAyarlarClient({ settings }: { settings: SiteSetting
 
         <h3 className="text-lg font-semibold text-gray-800 border-b pb-3 pt-4">Logo</h3>
         {form.logoUrl ? (
-          <div className="flex items-center gap-4">
-            <img
-              src={form.logoUrl}
-              alt="Site logo"
-              className="h-16 object-contain rounded-lg border border-gray-200 p-2"
-            />
+          <div className="flex items-center gap-4 group relative w-fit">
+            <div className="h-20 w-40 bg-gray-50 rounded-lg border border-gray-200 flex items-center justify-center p-2">
+              <img
+                src={form.logoUrl}
+                alt="Site logo"
+                className="h-full w-full object-contain"
+              />
+            </div>
             <button
               type="button"
               onClick={handleRemoveLogo}
-              className="text-red-500 hover:text-red-700 text-sm flex items-center gap-1"
+              className="absolute -top-2 -right-2 p-1.5 bg-red-500 text-white rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
             >
-              <MaterialIcon icon="delete" className="text-[18px]" />
-              Kaldır
+              <MaterialIcon icon="delete" className="text-lg" />
             </button>
           </div>
         ) : (
-          <label className="border-2 border-dashed border-gray-200 rounded-xl p-8 text-center cursor-pointer block hover:border-gray-300 transition-colors">
-            <MaterialIcon icon="cloud_upload" className="text-4xl text-gray-300 mb-2" />
-            <p className="text-sm text-gray-500">Logo dosyasını buraya sürükleyin veya seçin</p>
-            <p className="text-xs text-gray-400 mt-1">PNG, SVG veya JPEG (max 2MB)</p>
-            <input
-              type="file"
-              accept="image/png,image/svg+xml,image/jpeg"
-              onChange={handleLogoUpload}
-              className="hidden"
-            />
-          </label>
+          <MediaUploader
+            folderPrefix="settings"
+            onUploaded={async (items) => {
+              const newUrl = items[0].url;
+              setForm((prev) => ({ ...prev, logoUrl: newUrl }));
+              try {
+                await updateSettings({ logoUrl: newUrl });
+                toast.success("Logo kaydedildi");
+                router.refresh();
+              } catch {
+                toast.error("Logo kaydedilemedi");
+              }
+            }}
+          />
+        )}
+
+        <h3 className="text-lg font-semibold text-gray-800 border-b pb-3 pt-4">Favicon</h3>
+        {form.faviconUrl ? (
+          <div className="flex items-center gap-4 group relative w-fit">
+            <div className="h-16 w-16 bg-gray-50 rounded-lg border border-gray-200 flex items-center justify-center p-2">
+              <img
+                src={form.faviconUrl}
+                alt="Favicon"
+                className="h-full w-full object-contain"
+              />
+            </div>
+            <button
+              type="button"
+              onClick={async () => {
+                const urlToDelete = form.faviconUrl;
+                if (!urlToDelete) return;
+                setForm((prev) => ({ ...prev, faviconUrl: "" }));
+                try {
+                  await updateSettings({ faviconUrl: "" });
+                  if (urlToDelete.includes("public.blob.vercel-storage.com")) {
+                    fetch(`/api/blob/delete?url=${encodeURIComponent(urlToDelete)}`, { method: "DELETE" }).catch(console.error);
+                  }
+                  toast.success("Favicon kaldırıldı");
+                  router.refresh();
+                } catch {
+                  setForm((prev) => ({ ...prev, faviconUrl: urlToDelete }));
+                  toast.error("Favicon kaldırılamadı");
+                }
+              }}
+              className="absolute -top-2 -right-2 p-1.5 bg-red-500 text-white rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
+            >
+              <MaterialIcon icon="delete" className="text-lg" />
+            </button>
+          </div>
+        ) : (
+          <MediaUploader
+            folderPrefix="settings"
+            onUploaded={async (items) => {
+              const newUrl = items[0].url;
+              setForm((prev) => ({ ...prev, faviconUrl: newUrl }));
+              try {
+                await updateSettings({ faviconUrl: newUrl });
+                toast.success("Favicon kaydedildi");
+                router.refresh();
+              } catch {
+                toast.error("Favicon kaydedilemedi");
+              }
+            }}
+          />
         )}
 
         <div className="flex justify-end pt-4">

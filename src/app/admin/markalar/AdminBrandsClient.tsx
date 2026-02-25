@@ -6,6 +6,7 @@ import Image from "next/image";
 import toast from "react-hot-toast";
 import MaterialIcon from "@/components/ui/MaterialIcon";
 import { createBrand, updateBrand, deleteBrand } from "@/lib/actions/brands";
+import MediaUploader from "@/components/admin/MediaUploader";
 
 type Brand = {
   id: string;
@@ -46,7 +47,7 @@ export default function AdminBrandsClient({ brands }: { brands: Brand[] }) {
   const [formDescription, setFormDescription] = useState("");
   const [formWebsite, setFormWebsite] = useState("");
   const [formIsActive, setFormIsActive] = useState(true);
-  const [uploading, setUploading] = useState(false);
+  const [pendingDeleteUrl, setPendingDeleteUrl] = useState<string | null>(null);
 
   const filteredBrands = searchTerm
     ? brands.filter((b) => b.name.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -59,6 +60,7 @@ export default function AdminBrandsClient({ brands }: { brands: Brand[] }) {
     setFormDescription("");
     setFormWebsite("");
     setFormIsActive(true);
+    setPendingDeleteUrl(null);
     setModal({ open: true, mode: "create", brand: null });
   }
 
@@ -69,6 +71,7 @@ export default function AdminBrandsClient({ brands }: { brands: Brand[] }) {
     setFormDescription(brand.description || "");
     setFormWebsite(brand.website || "");
     setFormIsActive(brand.isActive);
+    setPendingDeleteUrl(null);
     setModal({ open: true, mode: "edit", brand });
   }
 
@@ -77,25 +80,13 @@ export default function AdminBrandsClient({ brands }: { brands: Brand[] }) {
     if (modal.mode === "create") setFormSlug(slugify(val));
   }
 
-  async function handleLogoUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setUploading(true);
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("entity", "brands");
-      const res = await fetch("/api/upload", { method: "POST", body: formData });
-      if (!res.ok) throw new Error();
-      const { url } = await res.json();
-      setFormLogo(url);
-      toast.success("Logo yüklendi");
-    } catch {
-      toast.error("Logo yüklenemedi");
-    } finally {
-      setUploading(false);
-      e.target.value = "";
+  function handleRemoveLogo() {
+    if (!formLogo) return;
+    // Queue for deletion AFTER form is saved — don't delete blob before save
+    if (formLogo.includes("public.blob.vercel-storage.com")) {
+      setPendingDeleteUrl(formLogo);
     }
+    setFormLogo("");
   }
 
   function handleSubmit(e: React.FormEvent) {
@@ -126,6 +117,11 @@ export default function AdminBrandsClient({ brands }: { brands: Brand[] }) {
             isActive: formIsActive,
           });
           toast.success("Marka güncellendi");
+        }
+        // Only now that save succeeded, delete the old blob
+        if (pendingDeleteUrl) {
+          fetch(`/api/blob/delete?url=${encodeURIComponent(pendingDeleteUrl)}`, { method: "DELETE" }).catch(console.error);
+          setPendingDeleteUrl(null);
         }
         setModal({ open: false, mode: "create", brand: null });
         router.refresh();
@@ -278,17 +274,25 @@ export default function AdminBrandsClient({ brands }: { brands: Brand[] }) {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">Logo</label>
-                {formLogo && (
-                  <div className="mb-2 flex items-center gap-2">
-                    <img src={formLogo} alt="" className="h-12 w-12 object-contain rounded-lg border" />
-                    <button type="button" onClick={() => setFormLogo("")} className="text-red-500 text-sm">Kaldır</button>
+                {formLogo ? (
+                  <div className="mb-4 relative group">
+                    <div className="h-32 w-full bg-gray-50 rounded-xl border border-gray-200 flex items-center justify-center overflow-hidden">
+                      <img src={formLogo} alt="" className="h-full w-full object-contain p-2" />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleRemoveLogo}
+                      className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <MaterialIcon icon="delete" className="text-lg" />
+                    </button>
                   </div>
+                ) : (
+                  <MediaUploader
+                    folderPrefix="brands"
+                    onUploaded={(items) => setFormLogo(items[0].url)}
+                  />
                 )}
-                <label className="w-full py-2 border-2 border-dashed border-gray-200 rounded-lg text-sm text-gray-500 hover:border-primary/30 hover:text-primary transition-colors flex items-center justify-center gap-2 cursor-pointer">
-                  <MaterialIcon icon="cloud_upload" className="text-lg" />
-                  {uploading ? "Yükleniyor..." : "Logo Yükle"}
-                  <input type="file" accept="image/*" onChange={handleLogoUpload} className="hidden" disabled={uploading} />
-                </label>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">Açıklama</label>
