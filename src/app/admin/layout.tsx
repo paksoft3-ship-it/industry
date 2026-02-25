@@ -1,26 +1,56 @@
 "use client";
 
+import { signOut } from "next-auth/react";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
 import MaterialIcon from "@/components/ui/MaterialIcon";
 
-const navItems = [
-  { label: "Dashboard", icon: "dashboard", href: "/admin" },
-  { label: "Ürünler", icon: "inventory_2", href: "/admin/urunler" },
-  { label: "Kategoriler", icon: "category", href: "/admin/kategoriler" },
-  { label: "Markalar", icon: "branding_watermark", href: "/admin/markalar" },
-  { label: "Kombinler", icon: "package_2", href: "/admin/kombinler" },
-  { label: "Siparişler", icon: "receipt_long", href: "/admin/siparisler" },
-  { label: "Müşteriler", icon: "group", href: "/admin/musteriler" },
-  { label: "Eğitim/Blog", icon: "school", href: "/admin/egitim" },
-  { label: "Dosya Merkezi", icon: "folder_open", href: "/admin/dosya-merkezi" },
-  { label: "Sayfalar", icon: "article", href: "/admin/sayfalar" },
-  { label: "Kampanyalar", icon: "local_offer", href: "/admin/kampanyalar" },
-  { label: "Ayarlar", icon: "settings", href: "/admin/ayarlar" },
-  { label: "Kullanıcılar", icon: "manage_accounts", href: "/admin/kullanicilar" },
-  { label: "Audit Log", icon: "history", href: "/admin/audit-log" },
+const navSections = [
+  {
+    title: "Ana Menü",
+    items: [
+      { label: "Dashboard", icon: "dashboard", href: "/admin" },
+      { label: "Siparişler", icon: "receipt_long", href: "/admin/siparisler" },
+      { label: "Müşteriler", icon: "group", href: "/admin/musteriler" },
+    ]
+  },
+  {
+    title: "Katalog",
+    items: [
+      { label: "Ürünler", icon: "inventory_2", href: "/admin/urunler" },
+      { label: "Kategoriler", icon: "category", href: "/admin/kategoriler" },
+      { label: "Markalar", icon: "branding_watermark", href: "/admin/markalar" },
+      { label: "Kombinler", icon: "package_2", href: "/admin/kombinler" },
+    ]
+  },
+  {
+    title: "Eğitim / Blog",
+    items: [
+      { label: "Eğitim Kategorileri", icon: "school", href: "/admin/egitim/kategoriler" },
+      { label: "Eğitim Yazıları", icon: "article", href: "/admin/egitim/yazilar" },
+      { label: "Blog Kategorileri", icon: "category", href: "/admin/blog/kategoriler" },
+      { label: "Blog Yazıları", icon: "edit_note", href: "/admin/blog/yazilar" },
+    ]
+  },
+  {
+    title: "İçerik",
+    items: [
+      { label: "Dosya Merkezi", icon: "folder_open", href: "/admin/dosya-merkezi" },
+      { label: "Sayfalar", icon: "article", href: "/admin/sayfalar" },
+      { label: "Kampanyalar", icon: "local_offer", href: "/admin/kampanyalar" },
+    ]
+  },
+  {
+    title: "Sistem",
+    items: [
+      { label: "Ayarlar", icon: "settings", href: "/admin/ayarlar" },
+      { label: "Kullanıcılar", icon: "manage_accounts", href: "/admin/kullanicilar" },
+      { label: "Audit Log", icon: "history", href: "/admin/audit-log" },
+    ]
+  }
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -39,7 +69,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       .then((data) => {
         if (data?.user) setSessionUser({ name: data.user.name, email: data.user.email });
       })
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   return (
@@ -58,24 +88,32 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
-          {navItems.map((item) => {
-            const active = isActive(item.href);
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                  active
-                    ? "bg-primary text-white"
-                    : "text-gray-400 hover:text-white hover:bg-white/5"
-                }`}
-              >
-                <MaterialIcon icon={item.icon} className="text-[20px]" />
-                <span>{item.label}</span>
-              </Link>
-            );
-          })}
+        <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-6">
+          {navSections.map((section) => (
+            <div key={section.title}>
+              <h3 className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                {section.title}
+              </h3>
+              <div className="space-y-1">
+                {section.items.map((item) => {
+                  const active = isActive(item.href);
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${active
+                        ? "bg-primary text-white"
+                        : "text-gray-400 hover:text-white hover:bg-white/5"
+                        }`}
+                    >
+                      <MaterialIcon icon={item.icon} className="text-[20px]" />
+                      <span>{item.label}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </nav>
 
         {/* User section */}
@@ -88,9 +126,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <p className="text-sm font-medium truncate">{sessionUser?.name || "Admin"}</p>
               <p className="text-xs text-gray-500 truncate">{sessionUser?.email || ""}</p>
             </div>
-            <Link href="/" className="text-gray-500 hover:text-white transition-colors" title="Siteye Git">
-              <MaterialIcon icon="open_in_new" className="text-lg" />
-            </Link>
+            <div className="flex items-center gap-2">
+              <Link href="/" className="text-gray-500 hover:text-white transition-colors" title="Siteye Git">
+                <MaterialIcon icon="open_in_new" className="text-lg" />
+              </Link>
+              <button
+                onClick={() => signOut({ callbackUrl: "/uye-girisi-sayfasi" })}
+                className="text-gray-500 hover:text-red-400 transition-colors"
+                title="Çıkış Yap"
+              >
+                <MaterialIcon icon="logout" className="text-lg" />
+              </button>
+            </div>
           </div>
         </div>
       </aside>
@@ -101,7 +148,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 flex-shrink-0">
           <div className="flex items-center gap-3">
             <h1 className="font-[family-name:var(--font-display)] text-lg font-semibold text-gray-800">
-              {navItems.find((item) => isActive(item.href))?.label || "Admin"}
+              {navSections.flatMap(s => s.items).find((item) => isActive(item.href))?.label || "Admin"}
             </h1>
           </div>
           <div className="flex items-center gap-4">

@@ -18,7 +18,7 @@ type FileItem = {
   fileType: string;
   fileSize: string | null;
   icon: string | null;
-  sortOrder: number;
+  order: number;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
@@ -68,7 +68,7 @@ export default function AdminDosyaMerkeziClient({ items }: { items: FileItem[] }
   const [formFileType, setFormFileType] = useState("PDF");
   const [formFileSize, setFormFileSize] = useState("");
   const [formIcon, setFormIcon] = useState("");
-  const [formSortOrder, setFormSortOrder] = useState(0);
+  const [formOrder, setFormOrder] = useState(0);
   const [formIsActive, setFormIsActive] = useState(true);
   const [uploading, setUploading] = useState(false);
 
@@ -83,11 +83,11 @@ export default function AdminDosyaMerkeziClient({ items }: { items: FileItem[] }
   // Filter
   const filteredItems = searchTerm
     ? items.filter(
-        (i) =>
-          i.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          i.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          i.fileType.toLowerCase().includes(searchTerm.toLowerCase())
-      )
+      (i) =>
+        i.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        i.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        i.fileType.toLowerCase().includes(searchTerm.toLowerCase())
+    )
     : items;
 
   // Group by category
@@ -117,7 +117,7 @@ export default function AdminDosyaMerkeziClient({ items }: { items: FileItem[] }
     setFormFileType("PDF");
     setFormFileSize("");
     setFormIcon("");
-    setFormSortOrder(0);
+    setFormOrder(0);
     setFormIsActive(true);
     setModal({ open: true, mode: "create", item: null });
   }
@@ -129,7 +129,7 @@ export default function AdminDosyaMerkeziClient({ items }: { items: FileItem[] }
     setFormFileType(item.fileType);
     setFormFileSize(item.fileSize || "");
     setFormIcon(item.icon || "");
-    setFormSortOrder(item.sortOrder);
+    setFormOrder(item.order);
     setFormIsActive(item.isActive);
     setModal({ open: true, mode: "edit", item });
   }
@@ -172,7 +172,7 @@ export default function AdminDosyaMerkeziClient({ items }: { items: FileItem[] }
             fileType: formFileType,
             fileSize: formFileSize || undefined,
             icon: formIcon || undefined,
-            sortOrder: formSortOrder || undefined,
+            order: formOrder || undefined,
           });
           toast.success("Dosya olusturuldu");
         } else if (modal.item) {
@@ -183,7 +183,7 @@ export default function AdminDosyaMerkeziClient({ items }: { items: FileItem[] }
             fileType: formFileType,
             fileSize: formFileSize || undefined,
             icon: formIcon || undefined,
-            sortOrder: formSortOrder,
+            order: formOrder,
             isActive: formIsActive,
           });
           toast.success("Dosya guncellendi");
@@ -358,9 +358,8 @@ export default function AdminDosyaMerkeziClient({ items }: { items: FileItem[] }
                     </td>
                     <td className="px-6 py-4">
                       <span
-                        className={`px-2 py-0.5 rounded text-xs font-medium ${
-                          fileTypeColors[item.fileType] || "bg-gray-100 text-gray-600"
-                        }`}
+                        className={`px-2 py-0.5 rounded text-xs font-medium ${fileTypeColors[item.fileType] || "bg-gray-100 text-gray-600"
+                          }`}
                       >
                         {item.fileType}
                       </span>
@@ -379,11 +378,10 @@ export default function AdminDosyaMerkeziClient({ items }: { items: FileItem[] }
                     </td>
                     <td className="px-6 py-4">
                       <span
-                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          item.isActive
+                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${item.isActive
                             ? "bg-green-100 text-green-700"
                             : "bg-gray-100 text-gray-500"
-                        }`}
+                          }`}
                       >
                         {item.isActive ? "Aktif" : "Pasif"}
                       </span>
@@ -546,8 +544,8 @@ export default function AdminDosyaMerkeziClient({ items }: { items: FileItem[] }
                 </label>
                 <input
                   type="number"
-                  value={formSortOrder}
-                  onChange={(e) => setFormSortOrder(Number(e.target.value))}
+                  value={formOrder}
+                  onChange={(e) => setFormOrder(Number(e.target.value))}
                   className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                 />
               </div>

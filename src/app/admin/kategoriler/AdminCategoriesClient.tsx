@@ -14,7 +14,7 @@ type Category = {
   image: string | null;
   description: string | null;
   isActive: boolean;
-  sortOrder: number;
+  order: number;
   seoSlug: string | null;
   seoTitle: string | null;
   seoDesc: string | null;
@@ -169,7 +169,7 @@ export default function AdminCategoriesClient({ categories }: { categories: Cate
   const [formIcon, setFormIcon] = useState("");
   const [formDescription, setFormDescription] = useState("");
   const [formIsActive, setFormIsActive] = useState(true);
-  const [formSortOrder, setFormSortOrder] = useState("0");
+  const [formOrder, setFormOrder] = useState("0");
   const [formImage, setFormImage] = useState("");
   const [formSeoTitle, setFormSeoTitle] = useState("");
   const [formSeoDesc, setFormSeoDesc] = useState("");
@@ -181,7 +181,7 @@ export default function AdminCategoriesClient({ categories }: { categories: Cate
     setFormIcon("");
     setFormDescription("");
     setFormIsActive(true);
-    setFormSortOrder("0");
+    setFormOrder("0");
     setFormImage("");
     setFormSeoTitle("");
     setFormSeoDesc("");
@@ -194,7 +194,7 @@ export default function AdminCategoriesClient({ categories }: { categories: Cate
     setFormIcon(category.icon || "");
     setFormDescription(category.description || "");
     setFormIsActive(category.isActive);
-    setFormSortOrder(String(category.sortOrder));
+    setFormOrder(String(category.order));
     setFormImage(category.image || "");
     setFormSeoTitle(category.seoTitle || "");
     setFormSeoDesc(category.seoDesc || "");
@@ -244,7 +244,7 @@ export default function AdminCategoriesClient({ categories }: { categories: Cate
             image: formImage || undefined,
             description: formDescription || undefined,
             parentId: modal.parentId || undefined,
-            sortOrder: parseInt(formSortOrder, 10) || 0,
+            order: parseInt(formOrder, 10) || 0,
             seoTitle: formSeoTitle || undefined,
             seoDesc: formSeoDesc || undefined,
           });
@@ -257,7 +257,7 @@ export default function AdminCategoriesClient({ categories }: { categories: Cate
             image: formImage || undefined,
             description: formDescription || undefined,
             isActive: formIsActive,
-            sortOrder: parseInt(formSortOrder, 10) || 0,
+            order: parseInt(formOrder, 10) || 0,
             seoTitle: formSeoTitle || undefined,
             seoDesc: formSeoDesc || undefined,
           });
@@ -410,8 +410,8 @@ export default function AdminCategoriesClient({ categories }: { categories: Cate
                   <label className="block text-sm font-medium text-gray-700 mb-1.5">Sıralama</label>
                   <input
                     type="number"
-                    value={formSortOrder}
-                    onChange={(e) => setFormSortOrder(e.target.value)}
+                    value={formOrder}
+                    onChange={(e) => setFormOrder(e.target.value)}
                     className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                   />
                 </div>

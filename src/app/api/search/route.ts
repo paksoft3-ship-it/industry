@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
         ],
       },
       include: {
-        images: { take: 1, orderBy: { sortOrder: "asc" } },
+        images: { take: 1, orderBy: { order: "asc" } },
         categories: { include: { category: { select: { name: true } } }, take: 1 },
       },
       take: 8,

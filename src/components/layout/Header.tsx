@@ -14,9 +14,11 @@ const siteName = "CNC Otomasyon";
 
 interface HeaderProps {
   categories: MegaMenuCategory[];
+  educationCategories?: any[];
+  blogCategories?: any[];
 }
 
-export default function Header({ categories }: HeaderProps) {
+export default function Header({ categories, educationCategories = [], blogCategories = [] }: HeaderProps) {
   const [megaMenuOpen, setMegaMenuOpen] = useState(false);
   const [activeMenuType, setActiveMenuType] = useState<string>("categories");
   const [searchOpen, setSearchOpen] = useState(false);
@@ -43,8 +45,12 @@ export default function Header({ categories }: HeaderProps) {
     }));
     return [
       ...categoryLinks,
-      { label: "Sipariş Takip", href: "/siparis-takip", hasMegaMenu: false, menuType: "" },
-      { label: "Teklif Al", href: "/kurumsal", hasMegaMenu: false, menuType: "" },
+      {
+        label: "Eğitim / Blog",
+        href: "/egitim",
+        hasMegaMenu: true,
+        menuType: "education-blog",
+      }
     ];
   }, [categories]);
 
@@ -83,7 +89,7 @@ export default function Header({ categories }: HeaderProps) {
   }, [megaMenuOpen, searchOpen]);
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white shadow-sm">
+    <header className="sticky top-0 z-50 w-full bg-white shadow-sm" onMouseLeave={closeMegaMenu}>
       {/* ============ MIDDLE BAR: Logo + Search + Actions ============ */}
       <div className="border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
@@ -211,7 +217,6 @@ export default function Header({ categories }: HeaderProps) {
             <div className="flex-1 overflow-x-auto hide-scrollbar px-4" ref={navRef}>
               <nav className="flex items-center justify-center gap-6 w-full">
                 {navLinks
-                  .filter((link) => link.label !== "Teklif Al" && link.label !== "Sipariş Takip" && link.label !== "Kampanyalar")
                   .map((link) => (
                     <Link
                       key={link.href}
@@ -250,7 +255,15 @@ export default function Header({ categories }: HeaderProps) {
 
       {/* Mega Menu (Desktop) */}
       <div ref={megaMenuRef}>
-        {megaMenuOpen && <MegaMenu onClose={closeMegaMenu} menuType={activeMenuType} categories={categories} />}
+        {megaMenuOpen && (
+          <MegaMenu
+            onClose={closeMegaMenu}
+            menuType={activeMenuType}
+            categories={categories}
+            educationCategories={educationCategories}
+            blogCategories={blogCategories}
+          />
+        )}
       </div>
 
       {/* Search Modal */}

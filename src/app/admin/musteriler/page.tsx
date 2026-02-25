@@ -10,9 +10,9 @@ export default async function AdminCustomersPage({
   const search = params.search || "";
   const page = parseInt(params.page || "1", 10);
   const sortBy = params.sortBy || "createdAt";
-  const sortOrder = (params.sortOrder as "asc" | "desc") || "desc";
+  const order = (params.order as "asc" | "desc") || "desc";
 
-  const data = await getCustomers({ search, page, limit: 20, sortBy, sortOrder });
+  const data = await getCustomers({ search, page, limit: 20, sortBy, order });
 
   return (
     <AdminCustomersClient
@@ -20,7 +20,7 @@ export default async function AdminCustomersPage({
       total={data.total}
       totalPages={data.totalPages}
       currentPage={page}
-      filters={{ search, sortBy, sortOrder }}
+      filters={{ search, sortBy, order }}
     />
   );
 }

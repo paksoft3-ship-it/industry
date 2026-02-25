@@ -15,7 +15,7 @@ type Brand = {
   description: string | null;
   website: string | null;
   isActive: boolean;
-  sortOrder: number;
+  order: number;
   _count: { products: number };
 };
 
@@ -218,9 +218,8 @@ export default function AdminBrandsClient({ brands }: { brands: Brand[] }) {
                 <span className="font-medium">{brand._count.products}</span> ürün
               </span>
               <span
-                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                  brand.isActive ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"
-                }`}
+                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${brand.isActive ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"
+                  }`}
               >
                 {brand.isActive ? "Aktif" : "Pasif"}
               </span>

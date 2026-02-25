@@ -3,31 +3,75 @@ import prisma from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 
+// Turkish slugify
+function slugify(text: string): string {
+  return text
+    .replace(/ç/g, "c").replace(/Ç/g, "c")
+    .replace(/ğ/g, "g").replace(/Ğ/g, "g")
+    .replace(/ı/g, "i").replace(/İ/g, "i")
+    .replace(/ö/g, "o").replace(/Ö/g, "o")
+    .replace(/ş/g, "s").replace(/Ş/g, "s")
+    .replace(/ü/g, "u").replace(/Ü/g, "u")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 // Blog Categories
 export async function getBlogCategories() {
   return prisma.blogCategory.findMany({
     include: { _count: { select: { posts: true } } },
-    orderBy: { sortOrder: "asc" },
+    orderBy: [{ order: "asc" }, { name: "asc" }],
   });
 }
 
-export async function createBlogCategory(data: { name: string; slug: string; sortOrder?: number }) {
+export async function createBlogCategory(data: { name: string; slug?: string; order?: number }) {
   const session = await auth();
   if (!session?.user || !["ADMIN", "SUPER_ADMIN"].includes((session.user as { role: string }).role))
     throw new Error("Unauthorized");
-  const cat = await prisma.blogCategory.create({ data });
-  await prisma.auditLog.create({ data: { userId: session.user.id, action: "CREATE", entity: "BlogCategory", entityId: cat.id, details: `Blog kategorisi: ${cat.name}` } });
-  revalidatePath("/admin/egitim");
+
+  const slug = data.slug || slugify(data.name);
+  const cat = await prisma.blogCategory.create({
+    data: {
+      ...data,
+      slug
+    }
+  });
+
+  await prisma.auditLog.create({
+    data: {
+      userId: session.user.id,
+      action: "CREATE",
+      entity: "BlogCategory",
+      entityId: cat.id,
+      details: `Blog kategorisi: ${cat.name}`
+    }
+  });
+
+  revalidatePath("/admin/blog");
+  revalidatePath("/blog");
   return cat;
 }
 
-export async function updateBlogCategory(id: string, data: { name?: string; slug?: string; sortOrder?: number }) {
+export async function updateBlogCategory(id: string, data: { name?: string; slug?: string; order?: number; isActive?: boolean }) {
   const session = await auth();
   if (!session?.user || !["ADMIN", "SUPER_ADMIN"].includes((session.user as { role: string }).role))
     throw new Error("Unauthorized");
+
   const cat = await prisma.blogCategory.update({ where: { id }, data });
-  await prisma.auditLog.create({ data: { userId: session.user.id, action: "UPDATE", entity: "BlogCategory", entityId: cat.id, details: `Blog kategorisi güncellendi: ${cat.name}` } });
-  revalidatePath("/admin/egitim");
+
+  await prisma.auditLog.create({
+    data: {
+      userId: session.user.id,
+      action: "UPDATE",
+      entity: "BlogCategory",
+      entityId: cat.id,
+      details: `Blog kategorisi güncellendi: ${cat.name}`
+    }
+  });
+
+  revalidatePath("/admin/blog");
+  revalidatePath("/blog");
   return cat;
 }
 
@@ -35,12 +79,29 @@ export async function deleteBlogCategory(id: string) {
   const session = await auth();
   if (!session?.user || !["ADMIN", "SUPER_ADMIN"].includes((session.user as { role: string }).role))
     throw new Error("Unauthorized");
-  const cat = await prisma.blogCategory.findUnique({ where: { id }, include: { _count: { select: { posts: true } } } });
+
+  const cat = await prisma.blogCategory.findUnique({
+    where: { id },
+    include: { _count: { select: { posts: true } } }
+  });
+
   if (!cat) throw new Error("Kategori bulunamadı");
   if (cat._count.posts > 0) throw new Error(`Bu kategoride ${cat._count.posts} yazı var. Önce yazıları silin.`);
+
   await prisma.blogCategory.delete({ where: { id } });
-  await prisma.auditLog.create({ data: { userId: session.user.id, action: "DELETE", entity: "BlogCategory", entityId: id, details: `Blog kategorisi silindi: ${cat.name}` } });
-  revalidatePath("/admin/egitim");
+
+  await prisma.auditLog.create({
+    data: {
+      userId: session.user.id,
+      action: "DELETE",
+      entity: "BlogCategory",
+      entityId: id,
+      details: `Blog kategorisi silindi: ${cat.name}`
+    }
+  });
+
+  revalidatePath("/admin/blog");
+  revalidatePath("/blog");
 }
 
 // Blog Posts
@@ -57,38 +118,108 @@ export async function getBlogPosts({ page = 1, limit = 20 } = {}) {
   return { posts, total, totalPages: Math.ceil(total / limit), page };
 }
 
+export async function getBlogPostBySlug(categorySlug: string, postSlug: string) {
+  return prisma.blogPost.findFirst({
+    where: {
+      slug: postSlug,
+      category: { slug: categorySlug },
+      isPublished: true
+    },
+    include: {
+      category: true
+    }
+  });
+}
+
+export async function getBlogPostsByCategory(categorySlug: string) {
+  return prisma.blogPost.findMany({
+    where: {
+      category: { slug: categorySlug },
+      isPublished: true
+    },
+    orderBy: { createdAt: "desc" }
+  });
+}
+
 export async function createBlogPost(data: {
-  title: string; slug: string; excerpt?: string; content?: string;
-  image?: string; categoryId: string; authorName?: string;
-  isPublished?: boolean; seoTitle?: string; seoDesc?: string;
+  title: string;
+  slug?: string;
+  excerpt?: string;
+  content: string;
+  coverImageUrl?: string;
+  categoryId: string;
+  isPublished?: boolean;
+  seoTitle?: string;
+  seoDescription?: string;
 }) {
   const session = await auth();
   if (!session?.user || !["ADMIN", "SUPER_ADMIN"].includes((session.user as { role: string }).role))
     throw new Error("Unauthorized");
+
+  const slug = data.slug || slugify(data.title);
   const post = await prisma.blogPost.create({
-    data: { ...data, publishedAt: data.isPublished ? new Date() : undefined },
+    data: {
+      ...data,
+      slug,
+      publishedAt: data.isPublished ? new Date() : null
+    },
   });
-  await prisma.auditLog.create({ data: { userId: session.user.id, action: "CREATE", entity: "BlogPost", entityId: post.id, details: `Blog yazısı: ${post.title}` } });
-  revalidatePath("/admin/egitim");
+
+  await prisma.auditLog.create({
+    data: {
+      userId: session.user.id,
+      action: "CREATE",
+      entity: "BlogPost",
+      entityId: post.id,
+      details: `Blog yazısı: ${post.title}`
+    }
+  });
+
+  revalidatePath("/admin/blog");
+  revalidatePath("/blog");
   return post;
 }
 
 export async function updateBlogPost(id: string, data: {
-  title?: string; slug?: string; excerpt?: string; content?: string;
-  image?: string; categoryId?: string; authorName?: string;
-  isPublished?: boolean; seoTitle?: string; seoDesc?: string;
+  title?: string;
+  slug?: string;
+  excerpt?: string;
+  content?: string;
+  coverImageUrl?: string;
+  categoryId?: string;
+  isPublished?: boolean;
+  seoTitle?: string;
+  seoDescription?: string;
 }) {
   const session = await auth();
   if (!session?.user || !["ADMIN", "SUPER_ADMIN"].includes((session.user as { role: string }).role))
     throw new Error("Unauthorized");
-  const updateData: Record<string, unknown> = { ...data };
+
+  const updateData: any = { ...data };
+
   if (data.isPublished !== undefined) {
     const existing = await prisma.blogPost.findUnique({ where: { id }, select: { publishedAt: true } });
-    if (data.isPublished && !existing?.publishedAt) updateData.publishedAt = new Date();
+    if (data.isPublished && !existing?.publishedAt) {
+      updateData.publishedAt = new Date();
+    } else if (data.isPublished === false) {
+      updateData.publishedAt = null;
+    }
   }
-  const post = await prisma.blogPost.update({ where: { id }, data: updateData as never });
-  await prisma.auditLog.create({ data: { userId: session.user.id, action: "UPDATE", entity: "BlogPost", entityId: post.id, details: `Blog yazısı güncellendi: ${post.title}` } });
-  revalidatePath("/admin/egitim");
+
+  const post = await prisma.blogPost.update({ where: { id }, data: updateData });
+
+  await prisma.auditLog.create({
+    data: {
+      userId: session.user.id,
+      action: "UPDATE",
+      entity: "BlogPost",
+      entityId: post.id,
+      details: `Blog yazısı güncellendi: ${post.title}`
+    }
+  });
+
+  revalidatePath("/admin/blog");
+  revalidatePath("/blog");
   return post;
 }
 
@@ -96,8 +227,39 @@ export async function deleteBlogPost(id: string) {
   const session = await auth();
   if (!session?.user || !["ADMIN", "SUPER_ADMIN"].includes((session.user as { role: string }).role))
     throw new Error("Unauthorized");
+
   const post = await prisma.blogPost.findUnique({ where: { id }, select: { title: true } });
+  if (!post) throw new Error("Yazı bulunamadı");
+
   await prisma.blogPost.delete({ where: { id } });
-  await prisma.auditLog.create({ data: { userId: session.user.id, action: "DELETE", entity: "BlogPost", entityId: id, details: `Blog yazısı silindi: ${post?.title}` } });
-  revalidatePath("/admin/egitim");
+
+  await prisma.auditLog.create({
+    data: {
+      userId: session.user.id,
+      action: "DELETE",
+      entity: "BlogPost",
+      entityId: id,
+      details: `Blog yazısı silindi: ${post.title}`
+    }
+  });
+
+  revalidatePath("/admin/blog");
+  revalidatePath("/blog");
+}
+
+export async function getEducationBlogMegaMenuData() {
+  const [educationCategories, blogCategories] = await Promise.all([
+    prisma.educationCategory.findMany({
+      where: { isActive: true },
+      include: { _count: { select: { posts: true } } },
+      orderBy: [{ order: "asc" }, { name: "asc" }],
+    }),
+    prisma.blogCategory.findMany({
+      where: { isActive: true },
+      include: { _count: { select: { posts: true } } },
+      orderBy: [{ order: "asc" }, { name: "asc" }],
+    }),
+  ]);
+
+  return { educationCategories, blogCategories };
 }

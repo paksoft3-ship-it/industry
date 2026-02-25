@@ -32,13 +32,22 @@ export default async function AdminProductsPage({
           <h1 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-800">Ürünler</h1>
           <p className="text-sm text-gray-500 mt-1">Toplam {productsData.total} ürün</p>
         </div>
-        <Link
-          href="/admin/urunler/new"
-          className="inline-flex items-center gap-2 bg-primary text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors"
-        >
-          <MaterialIcon icon="add" className="text-lg" />
-          Yeni Ürün Ekle
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/admin/urunler/import"
+            className="inline-flex items-center gap-2 bg-white border border-gray-200 text-gray-700 px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors"
+          >
+            <MaterialIcon icon="upload_file" className="text-lg" />
+            Toplu Yükle
+          </Link>
+          <Link
+            href="/admin/urunler/new"
+            className="inline-flex items-center gap-2 bg-primary text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors"
+          >
+            <MaterialIcon icon="add" className="text-lg" />
+            Yeni Ürün Ekle
+          </Link>
+        </div>
       </div>
 
       {/* Filters */}

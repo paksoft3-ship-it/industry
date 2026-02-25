@@ -23,10 +23,106 @@ interface MegaMenuProps {
   onClose: () => void;
   menuType?: string;
   categories: MegaMenuCategory[];
+  educationCategories?: any[];
+  blogCategories?: any[];
 }
 
-export default function MegaMenu({ onClose, menuType = "categories", categories }: MegaMenuProps) {
+export default function MegaMenu({ onClose, menuType = "categories", categories, educationCategories = [], blogCategories = [] }: MegaMenuProps) {
   const [activeCategory, setActiveCategory] = useState(0);
+  const [activeTab, setActiveTab] = useState<"egitim" | "blog">("egitim");
+
+  // Eğitim / Blog Menu Layout (Two Tabs)
+  if (menuType === "education-blog") {
+    const displayCategories = activeTab === "egitim" ? educationCategories : blogCategories;
+    const basePath = activeTab === "egitim" ? "/egitim" : "/blog";
+
+    return (
+      <div className="absolute left-0 top-full w-full bg-white border-t border-gray-200 shadow-2xl z-[100] py-10 animate-in fade-in slide-in-from-top-4 duration-300">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row gap-12">
+            {/* Left: Info & Tabs */}
+            <div className="w-full md:w-1/4">
+              <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100 flex flex-col h-full">
+                <div className="flex gap-1 bg-white p-1 rounded-xl shadow-sm mb-6 border border-gray-100">
+                  <button
+                    onClick={() => setActiveTab("egitim")}
+                    className={`flex-1 py-2.5 rounded-lg text-xs font-bold transition-all uppercase tracking-widest ${activeTab === "egitim" ? "bg-primary text-white shadow-lg shadow-primary/20" : "text-gray-400 hover:text-gray-600 hover:bg-gray-50"}`}
+                  >
+                    EĞİTİM
+                  </button>
+                  <button
+                    onClick={() => setActiveTab("blog")}
+                    className={`flex-1 py-2.5 rounded-lg text-xs font-bold transition-all uppercase tracking-widest ${activeTab === "blog" ? "bg-primary text-white shadow-lg shadow-primary/20" : "text-gray-400 hover:text-gray-600 hover:bg-gray-50"}`}
+                  >
+                    BLOG
+                  </button>
+                </div>
+
+                <div className="flex-1">
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4">
+                    <MaterialIcon icon={activeTab === "egitim" ? "school" : "article"} className="text-2xl" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2 font-[family-name:var(--font-display)]">
+                    {activeTab === "egitim" ? "Eğitim Akademisi" : "Bilgi Blogu"}
+                  </h3>
+                  <p className="text-sm text-gray-500 mb-6 leading-relaxed">
+                    {activeTab === "egitim"
+                      ? "Teknik dökümanlar, rehberler ve sektördeki en iyi uygulamalarla kendinizi geliştirin."
+                      : "Sektörel haberler, ürün incelemeleri ve başarı hikayelerinden haberdar olun."}
+                  </p>
+                </div>
+
+                <Link
+                  href={basePath}
+                  onClick={onClose}
+                  className="mt-auto inline-flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-widest hover:gap-4 transition-all"
+                >
+                  TÜM {activeTab === "egitim" ? "EĞİTİMLERE" : "YAZILARA"} GÖZ AT <MaterialIcon icon="arrow_forward" className="text-lg" />
+                </Link>
+              </div>
+            </div>
+
+            {/* Right: Category Cards Grid */}
+            <div className="flex-1">
+              {displayCategories.length === 0 ? (
+                <div className="h-full flex flex-col items-center justify-center text-center py-12 bg-gray-50/50 rounded-2xl border border-dashed border-gray-200">
+                  <MaterialIcon icon="sentiment_dissatisfied" className="text-4xl text-gray-300 mb-2" />
+                  <p className="text-gray-400 font-medium italic">Henüz bu kategoride içerik bulunmuyor.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {displayCategories.map((cat: any) => (
+                    <Link
+                      key={cat.id}
+                      href={`${basePath}/${cat.slug}`}
+                      onClick={onClose}
+                      className="group flex flex-col p-5 rounded-2xl bg-white hover:bg-gray-50 transition-all border border-gray-100 hover:border-primary/20 shadow-sm hover:shadow-xl transform hover:-translate-y-1"
+                    >
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-10 h-10 rounded-xl bg-gray-50 text-gray-400 group-hover:bg-primary group-hover:text-white transition-all flex items-center justify-center border border-gray-100 shadow-sm">
+                          <MaterialIcon icon={activeTab === "egitim" ? "auto_stories" : "newspaper"} className="text-xl" />
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="font-bold text-gray-900 group-hover:text-primary transition-colors line-clamp-1">{cat.name}</span>
+                          <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{cat._count?.posts || 0} İçerik</span>
+                        </div>
+                      </div>
+                      <p className="text-[11px] text-gray-500 line-clamp-2 leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity">
+                        {cat.name} hakkındaki tüm makalelerimizi ve dökümanlarımızı inceleyin.
+                      </p>
+                      <div className="mt-4 text-primary opacity-0 group-hover:opacity-100 transition-all transform translate-x-[-5px] group-hover:translate-x-0">
+                        <MaterialIcon icon="arrow_right_alt" className="text-xl" />
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // Find matching L1 category by slug for card grid layout
   const matchedL1 = menuType !== "categories" ? categories.find((cat) => cat.slug === menuType) : null;
@@ -45,11 +141,6 @@ export default function MegaMenu({ onClose, menuType = "categories", categories 
 
     return (
       <>
-        {/* Overlay */}
-        <div
-          className="fixed inset-0 top-0 bg-black/40 z-30 backdrop-blur-sm"
-          onClick={onClose}
-        />
         {/* Menu */}
         <div className="absolute left-0 top-full w-full bg-white border-t border-gray-200 shadow-2xl z-[100] py-8">
           <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
@@ -85,17 +176,23 @@ export default function MegaMenu({ onClose, menuType = "categories", categories 
   }
 
   // Default Categories Layout
-  const category = categories[activeCategory];
+  if (categories.length === 0) {
+    return (
+      <div className="absolute left-0 top-full w-full bg-white border-t border-gray-200 shadow-2xl z-40 py-12">
+        <div className="max-w-[1440px] mx-auto px-4 text-center">
+          <MaterialIcon icon="inventory_2" className="text-5xl text-gray-200 mb-4" />
+          <p className="text-gray-500 font-medium">Henüz kategori eklenmemiştir.</p>
+          <p className="text-sm text-gray-400 mt-1">Admin panelinden kategori ekleyerek burayı doldurabilirsiniz.</p>
+        </div>
+      </div>
+    );
+  }
 
+  const category = categories[activeCategory];
   if (!category) return null;
 
   return (
     <>
-      {/* Overlay */}
-      <div
-        className="fixed inset-0 top-0 bg-black/40 z-30 backdrop-blur-sm"
-        onClick={onClose}
-      />
       {/* Menu */}
       <div className="absolute left-0 top-full w-full bg-white border-t border-gray-200 shadow-2xl z-40 h-[560px]">
         <div className="max-w-[1440px] mx-auto h-full flex">

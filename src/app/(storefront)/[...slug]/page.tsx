@@ -18,7 +18,7 @@ export default async function CatchAllPage({ params }: CatchAllPageProps) {
     if (settings && fullSlug === settings.dosyaMerkeziSlug) {
       const files = await prisma.fileLibrary.findMany({
         where: { isActive: true },
-        orderBy: { sortOrder: "asc" },
+        orderBy: { order: "asc" },
       });
       return <DosyaMerkeziContent files={files} />;
     }
@@ -35,14 +35,6 @@ export default async function CatchAllPage({ params }: CatchAllPageProps) {
           <p className="text-gray-500 mt-2">{bundle.description}</p>
         </div>
       );
-    }
-
-    // 3. Check if it matches a BlogCategory rootSlug
-    const blogCat = await prisma.blogCategory.findFirst({
-      where: { rootSlug: fullSlug },
-    });
-    if (blogCat) {
-      redirect(`/blog/${blogCat.slug}`);
     }
 
     // 4. Check if it matches a Category seoSlug

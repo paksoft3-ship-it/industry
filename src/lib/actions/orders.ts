@@ -200,7 +200,7 @@ export async function getOrderDetail(orderId: string) {
     include: {
       items: {
         include: {
-          product: { include: { images: { take: 1, orderBy: { sortOrder: "asc" } } } },
+          product: { include: { images: { take: 1, orderBy: { order: "asc" } } } },
         },
       },
       address: true,

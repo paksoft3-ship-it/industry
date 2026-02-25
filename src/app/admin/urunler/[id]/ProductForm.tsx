@@ -30,7 +30,7 @@ type Product = {
   isNewArrival: boolean;
   seoTitle: string | null;
   seoDesc: string | null;
-  images: { id: string; url: string; sortOrder: number }[];
+  images: { id: string; url: string; order: number }[];
   brand: { id: string; name: string } | null;
   categories: { category: { id: string; name: string } }[];
   attributes: { id: string; key: string; value: string }[];

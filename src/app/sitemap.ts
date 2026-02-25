@@ -12,7 +12,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/markalar`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.7 },
     { url: `${baseUrl}/kampanyalar`, lastModified: new Date(), changeFrequency: "daily", priority: 0.8 },
     { url: `${baseUrl}/iletisim`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
-    { url: `${baseUrl}/blog-egitim`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.7 },
+    { url: `${baseUrl}/egitim`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.7 },
     { url: `${baseUrl}/dosya-merkezi`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.6 },
   ];
 
@@ -52,13 +52,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  // Blog posts
-  const posts = await prisma.blogPost.findMany({
-    where: { isPublished: true },
+  // Education categories
+  const edCategories = await prisma.educationCategory.findMany({
+    where: { isActive: true },
     select: { slug: true, updatedAt: true },
   });
-  const blogRoutes: MetadataRoute.Sitemap = posts.map((post) => ({
-    url: `${baseUrl}/blog/yazi/${post.slug}`,
+  const educationCategoryRoutes: MetadataRoute.Sitemap = edCategories.map((cat) => ({
+    url: `${baseUrl}/egitim/${cat.slug}`,
+    lastModified: cat.updatedAt,
+    changeFrequency: "weekly" as const,
+    priority: 0.7,
+  }));
+
+  // Education posts
+  const posts = await prisma.educationPost.findMany({
+    where: { isPublished: true },
+    include: { category: { select: { slug: true } } },
+  });
+  const educationPostRoutes: MetadataRoute.Sitemap = posts.map((post: any) => ({
+    url: `${baseUrl}/egitim/${post.category.slug}/${post.slug}`,
     lastModified: post.updatedAt,
     changeFrequency: "monthly" as const,
     priority: 0.6,
@@ -81,7 +93,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...categoryRoutes,
     ...productRoutes,
     ...brandRoutes,
-    ...blogRoutes,
+    ...educationCategoryRoutes,
+    ...educationPostRoutes,
     ...pageRoutes,
   ];
 }

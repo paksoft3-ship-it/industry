@@ -31,7 +31,7 @@ export default function AdminCustomersClient({
   total: number;
   totalPages: number;
   currentPage: number;
-  filters: { search: string; sortBy: string; sortOrder: string };
+  filters: { search: string; sortBy: string; order: string };
 }) {
   const router = useRouter();
   const [search, setSearch] = useState(filters.search);
@@ -41,7 +41,7 @@ export default function AdminCustomersClient({
     const merged = { ...filters, ...updates };
     if (merged.search) params.set("search", merged.search);
     if (merged.sortBy && merged.sortBy !== "createdAt") params.set("sortBy", merged.sortBy);
-    if (merged.sortOrder && merged.sortOrder !== "desc") params.set("sortOrder", merged.sortOrder);
+    if (merged.order && merged.order !== "desc") params.set("order", merged.order);
     if (updates.page) params.set("page", updates.page);
     router.push(`/admin/musteriler?${params.toString()}`);
   }
@@ -88,10 +88,10 @@ export default function AdminCustomersClient({
             />
           </form>
           <select
-            value={`${filters.sortBy}-${filters.sortOrder}`}
+            value={`${filters.sortBy}-${filters.order}`}
             onChange={(e) => {
-              const [sortBy, sortOrder] = e.target.value.split("-");
-              updateFilters({ sortBy, sortOrder, page: "" });
+              const [sortBy, order] = e.target.value.split("-");
+              updateFilters({ sortBy, order, page: "" });
             }}
             className="border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-primary/20"
           >
@@ -195,9 +195,8 @@ export default function AdminCustomersClient({
                   <button
                     key={pageNum}
                     onClick={() => updateFilters({ page: String(pageNum) })}
-                    className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${
-                      pageNum === currentPage ? "bg-primary text-white" : "text-gray-600 hover:bg-gray-50"
-                    }`}
+                    className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${pageNum === currentPage ? "bg-primary text-white" : "text-gray-600 hover:bg-gray-50"
+                      }`}
                   >
                     {pageNum}
                   </button>

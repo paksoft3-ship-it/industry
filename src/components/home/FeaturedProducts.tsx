@@ -4,29 +4,42 @@ import Image from "next/image";
 import Link from "next/link";
 import MaterialIcon from "@/components/ui/MaterialIcon";
 
-const productFilterTabs = ["Tümü", "Motorlar", "Raylar", "Sürücüler"];
+interface FeaturedProduct {
+  id: string;
+  slug: string;
+  name: string;
+  sku: string;
+  price: number;
+  compareAtPrice: number | null;
+  currency: string;
+  badge: string | null;
+  inStock: boolean;
+  stockCount: number;
+  isFeatured: boolean;
+  images: { url: string; alt: string | null }[];
+  brand: { name: string } | null;
+  categories: { category: { name: string } }[];
+}
 
-const products: Array<{
-  id: string; slug: string; name: string; category: string; categoryLabel: string;
-  price: number; originalPrice: number | null; currency: string; badge: string | null;
-  inStock: boolean; stockCount: number; rating: number; reviewCount: number; sku: string;
-  images: string[];
-}> = [];
+interface FeaturedProductsProps {
+  products: FeaturedProduct[];
+}
 
-const filterMap: Record<string, string[]> = {
-  "Tümü": [],
-  "Motorlar": ["step-motorlar", "spindle-motorlar"],
-  "Raylar": ["lineer-rulmanlar"],
-  "Sürücüler": ["cnc-kontrolculer"],
-};
+export default function FeaturedProducts({ products }: FeaturedProductsProps) {
+  // Build dynamic filter tabs from the categories present in the data
+  const allCategoryNames = Array.from(
+    new Set(products.flatMap((p) => p.categories.map((c) => c.category.name)))
+  );
+  const filterTabs = ["Tümü", ...allCategoryNames.slice(0, 3)];
 
-export default function FeaturedProducts() {
   const [activeTab, setActiveTab] = useState("Tümü");
 
   const filteredProducts =
     activeTab === "Tümü"
       ? products
-      : products.filter((p) => filterMap[activeTab]?.includes(p.category));
+      : products.filter((p) =>
+        p.categories.some((c) => c.category.name === activeTab)
+      );
 
   return (
     <section className="py-16 bg-white border-t border-gray-100">
@@ -41,21 +54,22 @@ export default function FeaturedProducts() {
             </p>
           </div>
           {/* Filter Tabs */}
-          <div className="flex items-center gap-2 p-1 bg-gray-100 rounded-lg overflow-x-auto max-w-full">
-            {productFilterTabs.map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`px-4 py-2 rounded-md text-sm font-medium whitespace-nowrap transition-all ${
-                  activeTab === tab
+          {filterTabs.length > 1 && (
+            <div className="flex items-center gap-2 p-1 bg-gray-100 rounded-lg overflow-x-auto max-w-full">
+              {filterTabs.map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`px-4 py-2 rounded-md text-sm font-medium whitespace-nowrap transition-all ${activeTab === tab
                     ? "bg-white shadow-sm text-primary"
                     : "text-gray-500 hover:text-text-main hover:bg-white/50"
-                }`}
-              >
-                {tab}
-              </button>
-            ))}
-          </div>
+                    }`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {filteredProducts.length === 0 ? (
@@ -65,10 +79,11 @@ export default function FeaturedProducts() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {filteredProducts.slice(0, 4).map((product) => {
-              const discountPercent = product.originalPrice
-                ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
+            {filteredProducts.slice(0, 8).map((product) => {
+              const discountPercent = product.compareAtPrice
+                ? Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100)
                 : null;
+              const imageUrl = product.images?.[0]?.url || "/images/placeholder.png";
 
               return (
                 <div
@@ -80,13 +95,13 @@ export default function FeaturedProducts() {
                     className="relative aspect-square bg-white p-6 flex items-center justify-center overflow-hidden"
                   >
                     <Image
-                      src={product.images[0]}
+                      src={imageUrl}
                       alt={product.name}
                       width={300}
                       height={300}
                       className="object-contain h-full w-full mix-blend-multiply group-hover:scale-110 transition-transform duration-300"
                     />
-                    {discountPercent && (
+                    {discountPercent && discountPercent > 0 && (
                       <div className="absolute top-3 left-3 bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded">
                         -{discountPercent}%
                       </div>
@@ -101,17 +116,10 @@ export default function FeaturedProducts() {
                     </button>
                   </Link>
                   <div className="p-5 flex flex-col flex-1">
-                    {/* Rating */}
-                    <div className="flex items-center gap-1 mb-2">
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <MaterialIcon
-                          key={i}
-                          icon={i < Math.floor(product.rating) ? "star" : i < product.rating ? "star_half" : "star"}
-                          className={`text-[16px] ${i < product.rating ? "text-yellow-400" : "text-gray-300"}`}
-                        />
-                      ))}
-                      <span className="text-xs text-gray-500 ml-1">({product.reviewCount})</span>
-                    </div>
+                    {/* Brand */}
+                    {product.brand && (
+                      <span className="text-xs text-gray-400 mb-1 uppercase tracking-wide">{product.brand.name}</span>
+                    )}
                     <Link href={`/urun/${product.slug}`}>
                       <h3 className="font-bold text-text-main mb-1 group-hover:text-primary transition-colors font-[family-name:var(--font-display)]">
                         {product.name}
@@ -120,13 +128,15 @@ export default function FeaturedProducts() {
                     <p className="text-xs text-gray-400 mb-4 font-mono">SKU: {product.sku}</p>
                     <div className="mt-auto flex items-center justify-between">
                       <div>
-                        {product.originalPrice && (
+                        {product.compareAtPrice && (
                           <p className="text-xs text-gray-400 line-through">
-                            {product.currency}{product.originalPrice.toLocaleString("tr-TR", { minimumFractionDigits: 2 })}
+                            {product.currency}
+                            {product.compareAtPrice.toLocaleString("tr-TR", { minimumFractionDigits: 2 })}
                           </p>
                         )}
                         <p className="text-lg font-bold text-primary">
-                          {product.currency}{product.price.toLocaleString("tr-TR", { minimumFractionDigits: 2 })}
+                          {product.currency}
+                          {product.price.toLocaleString("tr-TR", { minimumFractionDigits: 2 })}
                         </p>
                       </div>
                       <button className="size-10 rounded-lg bg-primary text-white flex items-center justify-center hover:bg-primary-dark transition-colors shadow-lg shadow-blue-500/30">

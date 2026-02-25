@@ -8,13 +8,13 @@ export async function getCustomers({
   page = 1,
   limit = 20,
   sortBy = "createdAt",
-  sortOrder = "desc",
+  order = "desc",
 }: {
   search?: string;
   page?: number;
   limit?: number;
   sortBy?: string;
-  sortOrder?: "asc" | "desc";
+  order?: "asc" | "desc";
 } = {}) {
   const session = await auth();
   if (!session?.user || !["ADMIN", "SUPER_ADMIN"].includes((session.user as { role: string }).role)) {
@@ -33,8 +33,8 @@ export async function getCustomers({
   }
 
   const orderByMap: Record<string, Record<string, string>> = {
-    createdAt: { createdAt: sortOrder },
-    name: { firstName: sortOrder },
+    createdAt: { createdAt: order },
+    name: { firstName: order },
   };
 
   const [customers, total] = await Promise.all([

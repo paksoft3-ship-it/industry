@@ -12,6 +12,7 @@ export async function getProducts({
   sortBy = "createdAt",
   sortOrder = "desc",
   inStockOnly = false,
+  attributes,
 }: {
   categorySlug?: string;
   brandSlug?: string;
@@ -21,6 +22,7 @@ export async function getProducts({
   sortBy?: string;
   sortOrder?: "asc" | "desc";
   inStockOnly?: boolean;
+  attributes?: Record<string, string[]>;
 } = {}) {
   const where: Record<string, unknown> = { isActive: true };
 
@@ -46,11 +48,23 @@ export async function getProducts({
     where.inStock = true;
   }
 
+  if (attributes && Object.keys(attributes).length > 0) {
+    const attributeFilters = Object.entries(attributes).map(([key, values]) => ({
+      attributeValues: {
+        some: {
+          attribute: { key },
+          valueString: { in: values }
+        }
+      }
+    }));
+    where.AND = [...(where.AND as any[] || []), ...attributeFilters];
+  }
+
   const [products, total] = await Promise.all([
     prisma.product.findMany({
       where: where as never,
       include: {
-        images: { orderBy: { sortOrder: "asc" }, take: 2 },
+        images: { orderBy: { order: "asc" }, take: 2 },
         brand: { select: { name: true, slug: true } },
         categories: { include: { category: { select: { name: true, slug: true } } } },
       },
@@ -105,7 +119,7 @@ export async function getAdminProducts({
     prisma.product.findMany({
       where: where as never,
       include: {
-        images: { orderBy: { sortOrder: "asc" }, take: 1 },
+        images: { orderBy: { order: "asc" }, take: 1 },
         brand: { select: { id: true, name: true } },
         categories: { include: { category: { select: { id: true, name: true } } } },
       },
@@ -123,7 +137,7 @@ export async function getProductById(id: string) {
   return prisma.product.findUnique({
     where: { id },
     include: {
-      images: { orderBy: { sortOrder: "asc" } },
+      images: { orderBy: { order: "asc" } },
       brand: true,
       categories: { include: { category: true } },
       attributes: true,
@@ -136,7 +150,7 @@ export async function getProductBySlug(slug: string) {
   const product = await prisma.product.findUnique({
     where: { slug },
     include: {
-      images: { orderBy: { sortOrder: "asc" } },
+      images: { orderBy: { order: "asc" } },
       brand: true,
       categories: { include: { category: true } },
       attributes: true,
@@ -171,7 +185,7 @@ export async function getFeaturedProducts(limit = 8) {
   return prisma.product.findMany({
     where: { isActive: true, isFeatured: true },
     include: {
-      images: { orderBy: { sortOrder: "asc" }, take: 1 },
+      images: { orderBy: { order: "asc" }, take: 1 },
       brand: { select: { name: true } },
       categories: { include: { category: { select: { name: true } } } },
     },
@@ -206,11 +220,34 @@ export async function createProduct(data: {
   imageUrls?: string[];
 }) {
   const session = await auth();
-  if (!session?.user || !["ADMIN", "SUPER_ADMIN"].includes((session.user as { role: string }).role)) {
-    throw new Error("Unauthorized");
+  if (!session?.user) {
+    throw new Error("Oturumunuz sona ermiş olabilir. Lütfen tekrar giriş yapın.");
+  }
+
+  // Verify user still exists in DB (Stale session check)
+  const dbUser = await prisma.user.findUnique({ where: { id: session.user.id } });
+  if (!dbUser) {
+    throw new Error("Kullanıcı kaydı bulunamadı. Lütfen çıkış yapıp tekrar giriş yapın.");
+  }
+
+  const userRole = (session.user as { role: string }).role;
+  if (!["ADMIN", "SUPER_ADMIN"].includes(userRole)) {
+    throw new Error("Bu işlem için yetkiniz yok.");
   }
 
   const { categoryIds, attributes, imageUrls, ...productData } = data;
+
+  // Slug check
+  const existingSlug = await prisma.product.findUnique({ where: { slug: data.slug } });
+  if (existingSlug) {
+    throw new Error(`"${data.slug}" slugına sahip bir ürün zaten var. Lütfen farklı bir slug veya isim girin.`);
+  }
+
+  // SKU check
+  const existingSku = await prisma.product.findUnique({ where: { sku: data.sku } });
+  if (existingSku) {
+    throw new Error(`"${data.sku}" SKU koduna sahip bir ürün zaten var.`);
+  }
 
   const product = await prisma.product.create({
     data: {
@@ -222,20 +259,24 @@ export async function createProduct(data: {
         ? { create: attributes }
         : undefined,
       images: imageUrls?.length
-        ? { create: imageUrls.map((url, i) => ({ url, sortOrder: i })) }
+        ? { create: imageUrls.map((url, i) => ({ url, order: i })) }
         : undefined,
     },
   });
 
-  await prisma.auditLog.create({
-    data: {
-      userId: session.user.id,
-      action: "CREATE",
-      entity: "Product",
-      entityId: product.id,
-      details: `Ürün oluşturuldu: ${product.name}`,
-    },
-  });
+  try {
+    await prisma.auditLog.create({
+      data: {
+        userId: session.user.id,
+        action: "CREATE",
+        entity: "Product",
+        entityId: product.id,
+        details: `Ürün oluşturuldu: ${product.name}`,
+      },
+    });
+  } catch (logError) {
+    console.error("Audit log error:", logError);
+  }
 
   revalidatePath("/admin/urunler");
   return product;
@@ -270,8 +311,39 @@ export async function updateProduct(
   }
 ) {
   const session = await auth();
-  if (!session?.user || !["ADMIN", "SUPER_ADMIN"].includes((session.user as { role: string }).role)) {
-    throw new Error("Unauthorized");
+  if (!session?.user) {
+    throw new Error("Oturumunuz sona ermiş olabilir. Lütfen tekrar giriş yapın.");
+  }
+
+  // Verify user still exists in DB (Stale session check)
+  const dbUser = await prisma.user.findUnique({ where: { id: session.user.id } });
+  if (!dbUser) {
+    throw new Error("Kullanıcı kaydı bulunamadı. Lütfen çıkış yapıp tekrar giriş yapın.");
+  }
+
+  const userRole = (session.user as { role: string }).role;
+  if (!["ADMIN", "SUPER_ADMIN"].includes(userRole)) {
+    throw new Error("Bu işlem için yetkiniz yok.");
+  }
+
+  // Slug conflict check if slug is being updated
+  if (data.slug) {
+    const existing = await prisma.product.findFirst({
+      where: { slug: data.slug, id: { not: id } },
+    });
+    if (existing) {
+      throw new Error(`"${data.slug}" slugına sahip başka bir ürün zaten var.`);
+    }
+  }
+
+  // SKU conflict check if SKU is being updated
+  if (data.sku) {
+    const existing = await prisma.product.findFirst({
+      where: { sku: data.sku, id: { not: id } },
+    });
+    if (existing) {
+      throw new Error(`"${data.sku}" SKU koduna sahip başka bir ürün zaten var.`);
+    }
   }
 
   const { categoryIds, attributes, imageUrls, ...productData } = data;
@@ -301,7 +373,7 @@ export async function updateProduct(
     await prisma.productImage.deleteMany({ where: { productId: id } });
     if (imageUrls.length > 0) {
       await prisma.productImage.createMany({
-        data: imageUrls.map((url, i) => ({ productId: id, url, sortOrder: i })),
+        data: imageUrls.map((url, i) => ({ productId: id, url, order: i })),
       });
     }
   }
@@ -311,15 +383,19 @@ export async function updateProduct(
     data: productData as never,
   });
 
-  await prisma.auditLog.create({
-    data: {
-      userId: session.user.id,
-      action: "UPDATE",
-      entity: "Product",
-      entityId: product.id,
-      details: `Ürün güncellendi: ${product.name}`,
-    },
-  });
+  try {
+    await prisma.auditLog.create({
+      data: {
+        userId: session.user.id,
+        action: "UPDATE",
+        entity: "Product",
+        entityId: product.id,
+        details: `Ürün güncellendi: ${product.name}`,
+      },
+    });
+  } catch (logError) {
+    console.error("Audit log error:", logError);
+  }
 
   revalidatePath("/admin/urunler");
   revalidatePath(`/urun/${product.slug}`);
@@ -328,22 +404,37 @@ export async function updateProduct(
 
 export async function deleteProduct(id: string) {
   const session = await auth();
-  if (!session?.user || !["ADMIN", "SUPER_ADMIN"].includes((session.user as { role: string }).role)) {
-    throw new Error("Unauthorized");
+  if (!session?.user) {
+    throw new Error("Oturumunuz sona ermiş olabilir. Lütfen tekrar giriş yapın.");
+  }
+
+  // Verify user still exists in DB (Stale session check)
+  const dbUser = await prisma.user.findUnique({ where: { id: session.user.id } });
+  if (!dbUser) {
+    throw new Error("Kullanıcı kaydı bulunamadı. Lütfen çıkış yapıp tekrar giriş yapın.");
+  }
+
+  const userRole = (session.user as { role: string }).role;
+  if (!["ADMIN", "SUPER_ADMIN"].includes(userRole)) {
+    throw new Error("Bu işlem için yetkiniz yok.");
   }
 
   const product = await prisma.product.findUnique({ where: { id }, select: { name: true } });
   await prisma.product.delete({ where: { id } });
 
-  await prisma.auditLog.create({
-    data: {
-      userId: session.user.id,
-      action: "DELETE",
-      entity: "Product",
-      entityId: id,
-      details: `Ürün silindi: ${product?.name}`,
-    },
-  });
+  try {
+    await prisma.auditLog.create({
+      data: {
+        userId: session.user.id,
+        action: "DELETE",
+        entity: "Product",
+        entityId: id,
+        details: `Ürün silindi: ${product?.name}`,
+      },
+    });
+  } catch (logError) {
+    console.error("Audit log error:", logError);
+  }
 
   revalidatePath("/admin/urunler");
 }

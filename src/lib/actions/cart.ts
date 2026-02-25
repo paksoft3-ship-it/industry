@@ -41,7 +41,7 @@ export async function getCart() {
       where: { userId: session.user.id },
       include: {
         product: {
-          include: { images: { take: 1, orderBy: { sortOrder: "asc" } } },
+          include: { images: { take: 1, orderBy: { order: "asc" } } },
         },
       },
       orderBy: { createdAt: "desc" },
@@ -55,7 +55,7 @@ export async function getCart() {
   const productIds = guestItems.map((i) => i.productId);
   const products = await prisma.product.findMany({
     where: { id: { in: productIds }, isActive: true },
-    include: { images: { take: 1, orderBy: { sortOrder: "asc" } } },
+    include: { images: { take: 1, orderBy: { order: "asc" } } },
   });
 
   return guestItems

@@ -4,12 +4,12 @@ import { auth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 
 export async function getFileLibraryItems() {
-  return prisma.fileLibrary.findMany({ orderBy: [{ category: "asc" }, { sortOrder: "asc" }] });
+  return prisma.fileLibrary.findMany({ orderBy: [{ category: "asc" }, { order: "asc" }] });
 }
 
 export async function createFileLibraryItem(data: {
   title: string; category: string; fileUrl: string; fileType: string;
-  fileSize?: string; icon?: string; sortOrder?: number;
+  fileSize?: string; icon?: string; order?: number;
 }) {
   const session = await auth();
   if (!session?.user || !["ADMIN", "SUPER_ADMIN"].includes((session.user as { role: string }).role))
@@ -22,7 +22,7 @@ export async function createFileLibraryItem(data: {
 
 export async function updateFileLibraryItem(id: string, data: {
   title?: string; category?: string; fileUrl?: string; fileType?: string;
-  fileSize?: string; icon?: string; sortOrder?: number; isActive?: boolean;
+  fileSize?: string; icon?: string; order?: number; isActive?: boolean;
 }) {
   const session = await auth();
   if (!session?.user || !["ADMIN", "SUPER_ADMIN"].includes((session.user as { role: string }).role))

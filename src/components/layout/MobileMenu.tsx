@@ -6,7 +6,7 @@ import type { MegaMenuCategory } from "@/lib/types/menu";
 
 const navLinks = [
   { label: "Markalar", href: "/markalar" },
-  { label: "Blog & Eğitim", href: "/blog-egitim" },
+  { label: "Eğitim / Blog", href: "/egitim" },
   { label: "Sipariş Takip", href: "/siparis-takip" },
 ];
 
@@ -82,9 +82,8 @@ export default function MobileMenu({ onClose, categories }: MobileMenuProps) {
                 className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100"
               >
                 <button
-                  className={`w-full flex cursor-pointer items-center justify-between p-4 transition-colors ${
-                    openCategory === i ? "bg-gray-50" : "hover:bg-gray-50"
-                  }`}
+                  className={`w-full flex cursor-pointer items-center justify-between p-4 transition-colors ${openCategory === i ? "bg-gray-50" : "hover:bg-gray-50"
+                    }`}
                   onClick={() => setOpenCategory(openCategory === i ? null : i)}
                 >
                   <div className="flex items-center gap-3">
@@ -96,9 +95,8 @@ export default function MobileMenu({ onClose, categories }: MobileMenuProps) {
                   </div>
                   <MaterialIcon
                     icon="expand_more"
-                    className={`text-gray-400 transition-transform ${
-                      openCategory === i ? "rotate-180" : ""
-                    }`}
+                    className={`text-gray-400 transition-transform ${openCategory === i ? "rotate-180" : ""
+                      }`}
                   />
                 </button>
                 {openCategory === i && cat.children.length > 0 && (
