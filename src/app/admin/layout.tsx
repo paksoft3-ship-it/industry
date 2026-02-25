@@ -53,8 +53,15 @@ const navSections = [
   }
 ];
 
+const ADMIN_AUTH_PATHS = ["/admin/login", "/admin/forgot-password", "/admin/reset-password"];
+
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+
+  // Auth pages render standalone — no sidebar
+  if (ADMIN_AUTH_PATHS.some((p) => pathname.startsWith(p))) {
+    return <>{children}</>;
+  }
 
   const isActive = (href: string) => {
     if (href === "/admin") return pathname === "/admin";
@@ -131,7 +138,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <MaterialIcon icon="open_in_new" className="text-lg" />
               </Link>
               <button
-                onClick={() => signOut({ callbackUrl: "/uye-girisi-sayfasi" })}
+                onClick={() => signOut({ callbackUrl: "/admin/login" })}
                 className="text-gray-500 hover:text-red-400 transition-colors"
                 title="Çıkış Yap"
               >
