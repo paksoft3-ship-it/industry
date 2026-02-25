@@ -1,12 +1,12 @@
 import Link from "next/link";
+import Image from "next/image";
 import MaterialIcon from "@/components/ui/MaterialIcon";
+import { getBrands } from "@/lib/actions/brands";
 
-export default function MarkalarPage() {
-  const placeholderBrands = [
-    "Marka A", "Marka B", "Marka C", "Marka D",
-    "Marka E", "Marka F", "Marka G", "Marka H",
-    "Marka I", "Marka J", "Marka K", "Marka L",
-  ];
+export const dynamic = "force-dynamic";
+
+export default async function MarkalarPage() {
+  const brands = await getBrands();
 
   return (
     <div className="min-h-screen bg-background-light">
@@ -23,33 +23,32 @@ export default function MarkalarPage() {
           Markalarımız
         </h1>
 
-        {/* Alphabet Filter */}
-        <div className="flex flex-wrap gap-2 mb-8">
-          {"ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").map((letter) => (
-            <button
-              key={letter}
-              className="w-9 h-9 flex items-center justify-center rounded border border-gray-200 bg-white text-sm font-medium text-primary hover:bg-primary hover:text-white transition-colors"
-            >
-              {letter}
-            </button>
-          ))}
-        </div>
-
-        {/* Brand Cards Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          {placeholderBrands.map((brand, i) => (
-            <Link
-              key={i}
-              href={`/marka/${brand.toLowerCase().replace(" ", "-")}`}
-              className="group bg-white rounded-lg border border-gray-100 p-6 flex flex-col items-center justify-center gap-3 hover:shadow-md hover:border-primary/20 transition-all"
-            >
-              <div className="w-20 h-20 rounded-full bg-gray-50 flex items-center justify-center">
-                <MaterialIcon icon="business" className="text-3xl text-gray-300 group-hover:text-primary transition-colors" />
-              </div>
-              <span className="text-sm font-medium text-primary text-center">{brand}</span>
-            </Link>
-          ))}
-        </div>
+        {brands.length === 0 ? (
+          <div className="text-center py-20 text-gray-400">
+            <MaterialIcon icon="branding_watermark" className="text-6xl mb-4" />
+            <p>Henüz marka eklenmemiş.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {brands.map((brand) => (
+              <Link
+                key={brand.id}
+                href={`/marka/${brand.slug}`}
+                className="group bg-white rounded-lg border border-gray-100 p-6 flex flex-col items-center justify-center gap-3 hover:shadow-md hover:border-primary/20 transition-all"
+              >
+                <div className="w-20 h-20 rounded-full bg-gray-50 flex items-center justify-center overflow-hidden">
+                  {brand.logo ? (
+                    <Image src={brand.logo} alt={brand.name} width={80} height={80} className="object-contain w-full h-full p-1" />
+                  ) : (
+                    <MaterialIcon icon="business" className="text-3xl text-gray-300 group-hover:text-primary transition-colors" />
+                  )}
+                </div>
+                <span className="text-sm font-medium text-primary text-center">{brand.name}</span>
+                <span className="text-xs text-gray-400">{brand._count.products} ürün</span>
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
