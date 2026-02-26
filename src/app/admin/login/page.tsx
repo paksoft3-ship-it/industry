@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useState } from "react";
-import { signIn, signOut } from "next-auth/react";
+import { loginUser, logoutUser } from "@/lib/actions/auth";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -33,13 +33,9 @@ function AdminLoginForm() {
     setLoading(true);
 
     try {
-      const result = await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
-      });
+      const result = await loginUser(email, password);
 
-      if (result?.error) {
+      if (!result.success) {
         setError("E-posta veya şifre hatalı.");
         return;
       }
@@ -51,7 +47,7 @@ function AdminLoginForm() {
 
       if (role !== "ADMIN" && role !== "SUPER_ADMIN") {
         // User exists but is not an admin — sign them out immediately
-        await signOut({ redirect: false });
+        await logoutUser();
         setError("Bu hesabın yönetici paneline erişim izni yok.");
         return;
       }

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Noto_Sans } from "next/font/google";
 import "./globals.css";
-import Providers from "./providers";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -37,7 +36,7 @@ export default function RootLayout({
       <body
         className={`${spaceGrotesk.variable} ${notoSans.variable} bg-background-light text-text-main min-h-screen flex flex-col`}
       >
-        <Providers>{children}</Providers>
+        {children}
       </body>
     </html>
   );

@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { useSession, signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { logoutUser } from "@/lib/actions/auth";
 import MaterialIcon from "@/components/ui/MaterialIcon";
 import type { MegaMenuCategory } from "@/lib/types/menu";
 
@@ -14,12 +15,13 @@ const navLinks = [
 interface MobileMenuProps {
   onClose: () => void;
   categories: MegaMenuCategory[];
+  isLoggedIn: boolean;
+  userName?: string;
 }
 
-export default function MobileMenu({ onClose, categories }: MobileMenuProps) {
+export default function MobileMenu({ onClose, categories, isLoggedIn, userName }: MobileMenuProps) {
   const [openCategory, setOpenCategory] = useState<number | null>(0);
-  const { data: session } = useSession();
-  const isLoggedIn = !!session?.user;
+  const router = useRouter();
 
   return (
     <div className="fixed inset-0 z-50 xl:hidden">
@@ -66,12 +68,12 @@ export default function MobileMenu({ onClose, categories }: MobileMenuProps) {
                     <MaterialIcon icon="person" className="text-xl" />
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-sm font-bold text-gray-900">{session?.user?.name || "Hesabım"}</span>
+                    <span className="text-sm font-bold text-gray-900">{userName || "Hesabım"}</span>
                     <span className="text-xs text-primary font-medium">Hesabımı Görüntüle</span>
                   </div>
                 </Link>
                 <button
-                  onClick={() => { onClose(); signOut({ callbackUrl: "/" }); }}
+                  onClick={async () => { onClose(); await logoutUser(); router.push("/"); router.refresh(); }}
                   className="p-2 text-red-400 hover:text-red-600 transition-colors"
                   title="Çıkış Yap"
                 >

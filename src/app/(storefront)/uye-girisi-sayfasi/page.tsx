@@ -1,11 +1,10 @@
 "use client";
 
 import { Suspense, useState } from "react";
-import { signIn } from "next-auth/react";
+import { loginUser, registerUser } from "@/lib/actions/auth";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import MaterialIcon from "@/components/ui/MaterialIcon";
-import { registerUser } from "@/lib/actions/auth";
 
 export default function UyeGirisiPage() {
   return (
@@ -42,13 +41,9 @@ function UyeGirisiContent() {
     setLoginLoading(true);
 
     try {
-      const result = await signIn("credentials", {
-        email: loginEmail,
-        password: loginPassword,
-        redirect: false,
-      });
+      const result = await loginUser(loginEmail, loginPassword);
 
-      if (result?.error) {
+      if (!result.success) {
         setLoginError("E-posta veya şifre hatalı.");
       } else {
         router.push(callbackUrl);
@@ -90,13 +85,9 @@ function UyeGirisiContent() {
       });
 
       // Auto-login after registration
-      const result = await signIn("credentials", {
-        email: regEmail,
-        password: regPassword,
-        redirect: false,
-      });
+      const result = await loginUser(regEmail, regPassword);
 
-      if (result?.error) {
+      if (!result.success) {
         setRegSuccess("Kayıt başarılı! Giriş sayfasına yönlendiriliyorsunuz.");
         setTimeout(() => router.push("/uye-girisi-sayfasi"), 2000);
       } else {

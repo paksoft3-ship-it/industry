@@ -9,7 +9,6 @@ import MobileMenu from "./MobileMenu";
 import AccountDropdown from "@/components/layout/AccountDropdown";
 import MiniCartDrawer from "@/components/layout/MiniCartDrawer";
 import { useCart } from "@/context/CartContext";
-import { useSession } from "next-auth/react";
 import type { MegaMenuCategory } from "@/lib/types/menu";
 
 const siteName = "SivTech Makina";
@@ -18,17 +17,16 @@ interface HeaderProps {
   categories: MegaMenuCategory[];
   educationCategories?: any[];
   blogCategories?: any[];
+  isLoggedIn: boolean;
+  userName?: string;
 }
 
-export default function Header({ categories, educationCategories = [], blogCategories = [] }: HeaderProps) {
+export default function Header({ categories, educationCategories = [], blogCategories = [], isLoggedIn, userName = "" }: HeaderProps) {
   const [megaMenuOpen, setMegaMenuOpen] = useState(false);
   const [activeMenuType, setActiveMenuType] = useState<string>("categories");
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
-  const { data: session } = useSession();
-  const isLoggedIn = !!session?.user;
-  const userName = session?.user?.name ?? "";
   const { count: cartCount } = useCart();
 
   const megaMenuButtonRef = useRef<HTMLButtonElement>(null);
@@ -279,7 +277,7 @@ export default function Header({ categories, educationCategories = [], blogCateg
       </div>
 
       {/* Mobile Menu */}
-      {mobileMenuOpen && <MobileMenu onClose={closeMobileMenu} categories={categories} />}
+      {mobileMenuOpen && <MobileMenu onClose={closeMobileMenu} categories={categories} isLoggedIn={isLoggedIn} userName={userName} />}
 
       {/* Mini Cart Drawer */}
       <MiniCartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />

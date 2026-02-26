@@ -1,7 +1,8 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { logoutUser } from "@/lib/actions/auth";
 import MaterialIcon from "@/components/ui/MaterialIcon";
 
 interface AccountDropdownProps {
@@ -12,6 +13,7 @@ interface AccountDropdownProps {
 export default function AccountDropdown({ isLoggedIn, userName }: AccountDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -59,9 +61,11 @@ export default function AccountDropdown({ isLoggedIn, userName }: AccountDropdow
               </nav>
               <div className="border-t px-5 py-3">
                 <button
-                  onClick={() => {
+                  onClick={async () => {
                     setIsOpen(false);
-                    signOut({ callbackUrl: "/" });
+                    await logoutUser();
+                    router.push("/");
+                    router.refresh();
                   }}
                   className="flex items-center gap-2 text-sm text-red-500 hover:text-red-600 font-medium"
                 >

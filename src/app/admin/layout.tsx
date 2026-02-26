@@ -1,9 +1,8 @@
 "use client";
 
-import { signOut } from "next-auth/react";
-
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { logoutUser } from "@/lib/actions/auth";
 import { useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
 import MaterialIcon from "@/components/ui/MaterialIcon";
@@ -57,6 +56,7 @@ const ADMIN_AUTH_PATHS = ["/admin/login", "/admin/forgot-password", "/admin/rese
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Auth pages render standalone — no sidebar
@@ -141,7 +141,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <MaterialIcon icon="open_in_new" className="text-lg" />
             </Link>
             <button
-              onClick={() => signOut({ callbackUrl: "/admin/login" })}
+              onClick={async () => { await logoutUser(); router.push("/admin/login"); router.refresh(); }}
               className="text-gray-500 hover:text-red-400 transition-colors"
               title="Çıkış Yap"
             >
