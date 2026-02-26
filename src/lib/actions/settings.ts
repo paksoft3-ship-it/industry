@@ -27,6 +27,19 @@ export async function updateSettings(data: {
   defaultCurrency?: string;
   logoUrl?: string;
   faviconUrl?: string;
+  // Hero section
+  heroTitle?: string;
+  heroHighlight?: string;
+  heroSubtitle?: string;
+  heroBadge?: string;
+  heroBadgeIcon?: string;
+  heroImage?: string;
+  heroCta1Text?: string;
+  heroCta1Url?: string;
+  heroCta2Text?: string;
+  heroCta2Url?: string;
+  // Contact page
+  mapEmbedUrl?: string;
 }) {
   const session = await auth();
   if (!session?.user || !["ADMIN", "SUPER_ADMIN"].includes((session.user as { role: string }).role)) {
@@ -50,5 +63,7 @@ export async function updateSettings(data: {
   });
 
   revalidatePath("/admin/ayarlar");
+  revalidatePath("/");
+  revalidatePath("/iletisim");
   return settings;
 }

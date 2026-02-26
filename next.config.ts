@@ -13,6 +13,7 @@ const nextConfig: NextConfig = {
         hostname: "**.public.blob.vercel-storage.com",
       },
     ],
+    minimumCacheTTL: 86400,
   },
   turbopack: {
     root: path.resolve(__dirname),

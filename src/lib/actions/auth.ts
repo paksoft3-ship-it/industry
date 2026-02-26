@@ -3,7 +3,7 @@ import prisma from "@/lib/prisma";
 import { hashSync } from "bcryptjs";
 import { signIn, signOut } from "@/lib/auth";
 import crypto from "crypto";
-import { sendPasswordResetEmail } from "@/lib/mailer";
+import { sendPasswordResetEmail, sendCustomerPasswordResetEmail } from "@/lib/mailer";
 
 // ── Simple in-memory rate limiter for forgot-password ──────────────────────
 // key: email → { count, resetAt }
@@ -65,6 +65,49 @@ export async function loginUser(email: string, password: string) {
 export async function logoutUser() {
   await signOut({ redirect: false });
 }
+
+// ── Customer Forgot Password ───────────────────────────────────────────────
+export async function requestCustomerPasswordReset(
+  email: string
+): Promise<{ ok: true }> {
+  const normalizedEmail = email.toLowerCase().trim();
+
+  if (!checkRateLimit(normalizedEmail)) {
+    return { ok: true };
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { email: normalizedEmail },
+    select: { id: true, role: true },
+  });
+
+  if (user) {
+    const rawToken = crypto.randomBytes(32).toString("hex");
+    const tokenHash = crypto.createHash("sha256").update(rawToken).digest("hex");
+
+    await prisma.passwordResetToken.updateMany({
+      where: { userId: user.id, usedAt: null },
+      data: { usedAt: new Date() },
+    });
+
+    await prisma.passwordResetToken.create({
+      data: {
+        userId: user.id,
+        tokenHash,
+        expiresAt: new Date(Date.now() + 60 * 60 * 1000),
+      },
+    });
+
+    const baseUrl =
+      process.env.NEXTAUTH_URL || process.env.AUTH_URL || "http://localhost:3000";
+    const resetUrl = `${baseUrl}/sifre-sifirla?token=${rawToken}`;
+
+    await sendCustomerPasswordResetEmail({ to: normalizedEmail, resetUrl });
+  }
+
+  return { ok: true };
+}
+// ───────────────────────────────────────────────────────────────────────────
 
 // ── Forgot Password ────────────────────────────────────────────────────────
 /**

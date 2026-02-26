@@ -38,6 +38,30 @@ export async function sendMail(opts: MailOptions): Promise<void> {
   console.log("────────────────────────────────────────");
 }
 
+export async function sendCustomerPasswordResetEmail(opts: {
+  to: string;
+  resetUrl: string;
+}): Promise<void> {
+  const { to, resetUrl } = opts;
+
+  await sendMail({
+    to,
+    subject: "Şifre Sıfırlama",
+    text: `Şifrenizi sıfırlamak için aşağıdaki bağlantıya tıklayın (1 saat geçerli):\n\n${resetUrl}\n\nBu isteği siz yapmadıysanız bu e-postayı yoksayabilirsiniz.`,
+    html: `
+      <div style="font-family:sans-serif;max-width:480px;margin:auto;padding:24px;background:#f9fafb;border-radius:8px;">
+        <h2 style="color:#111827;margin-bottom:8px;">Şifre Sıfırlama</h2>
+        <p style="color:#4b5563;">Hesabınız için şifre sıfırlama isteği aldık. Aşağıdaki düğmeye tıklayarak yeni şifrenizi belirleyebilirsiniz.</p>
+        <p style="color:#6b7280;font-size:13px;">Bu bağlantı <strong>1 saat</strong> boyunca geçerlidir.</p>
+        <a href="${resetUrl}" style="display:inline-block;margin-top:16px;padding:12px 24px;background:#0d59f2;color:#fff;border-radius:6px;text-decoration:none;font-weight:600;">
+          Şifreyi Sıfırla
+        </a>
+        <p style="color:#9ca3af;font-size:12px;margin-top:24px;">Bu isteği siz yapmadıysanız bu e-postayı yoksayabilirsiniz.</p>
+      </div>
+    `,
+  });
+}
+
 export async function sendPasswordResetEmail(opts: {
   to: string;
   resetUrl: string;

@@ -523,6 +523,19 @@ model SiteSettings {
   defaultCurrency  String  @default("TRY")
   logoUrl          String?
   faviconUrl       String?
+  // Hero section
+  heroTitle        String?
+  heroHighlight    String?
+  heroSubtitle     String?
+  heroBadge        String?
+  heroBadgeIcon    String?
+  heroImage        String?
+  heroCta1Text     String?
+  heroCta1Url      String?
+  heroCta2Text     String?
+  heroCta2Url      String?
+  // Contact page
+  mapEmbedUrl      String?
 }
 
 model AuditLog {

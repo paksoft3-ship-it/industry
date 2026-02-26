@@ -1,7 +1,18 @@
 import Link from "next/link";
 import MaterialIcon from "@/components/ui/MaterialIcon";
+import { getSettings } from "@/lib/actions/settings";
 
-export default function IletisimPage() {
+export const dynamic = "force-dynamic";
+
+export default async function IletisimPage() {
+  const settings = await getSettings();
+
+  const address      = settings.address      || "Organize Sanayi Bölgesi, No: 123, İstanbul, Türkiye";
+  const phone        = settings.phone        || "+90 (212) 123 45 67";
+  const email        = settings.email        || "info@example.com";
+  const workingHours = settings.workingHours || "Pzt-Cum: 08:00 - 18:00";
+  const mapEmbedUrl  = settings.mapEmbedUrl;
+
   return (
     <div className="min-h-screen bg-background-light">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -93,37 +104,51 @@ export default function IletisimPage() {
                   <MaterialIcon icon="location_on" className="text-xl text-primary" />
                 </div>
                 <h3 className="font-semibold text-primary text-sm mb-1">Adres</h3>
-                <p className="text-sm text-gray-500">Organize Sanayi Bölgesi, No: 123, İstanbul, Türkiye</p>
+                <p className="text-sm text-gray-500">{address}</p>
               </div>
               <div className="bg-white rounded-lg border border-gray-100 p-5">
                 <div className="w-10 h-10 rounded-full bg-primary/5 flex items-center justify-center mb-3">
                   <MaterialIcon icon="phone" className="text-xl text-primary" />
                 </div>
                 <h3 className="font-semibold text-primary text-sm mb-1">Telefon</h3>
-                <p className="text-sm text-gray-500">+90 (212) 123 45 67</p>
+                <a href={`tel:${phone.replace(/\s/g, "")}`} className="text-sm text-gray-500 hover:text-primary transition-colors">
+                  {phone}
+                </a>
               </div>
               <div className="bg-white rounded-lg border border-gray-100 p-5">
                 <div className="w-10 h-10 rounded-full bg-primary/5 flex items-center justify-center mb-3">
                   <MaterialIcon icon="mail" className="text-xl text-primary" />
                 </div>
                 <h3 className="font-semibold text-primary text-sm mb-1">E-posta</h3>
-                <p className="text-sm text-gray-500">info@example.com</p>
+                <a href={`mailto:${email}`} className="text-sm text-gray-500 hover:text-primary transition-colors">
+                  {email}
+                </a>
               </div>
               <div className="bg-white rounded-lg border border-gray-100 p-5">
                 <div className="w-10 h-10 rounded-full bg-primary/5 flex items-center justify-center mb-3">
                   <MaterialIcon icon="schedule" className="text-xl text-primary" />
                 </div>
                 <h3 className="font-semibold text-primary text-sm mb-1">Çalışma Saatleri</h3>
-                <p className="text-sm text-gray-500">Pzt-Cum: 08:00 - 18:00</p>
+                <p className="text-sm text-gray-500">{workingHours}</p>
               </div>
             </div>
 
-            {/* Map Placeholder */}
+            {/* Map */}
             <div className="bg-white rounded-lg border border-gray-100 overflow-hidden">
-              <div className="aspect-[4/3] bg-gray-100 flex flex-col items-center justify-center text-gray-400">
-                <MaterialIcon icon="map" className="text-6xl mb-2" />
-                <p className="text-sm">Harita burada gösterilecek</p>
-              </div>
+              {mapEmbedUrl ? (
+                <iframe
+                  src={mapEmbedUrl}
+                  className="w-full aspect-[4/3]"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Konum haritası"
+                />
+              ) : (
+                <div className="aspect-[4/3] bg-gray-100 flex flex-col items-center justify-center text-gray-400">
+                  <MaterialIcon icon="map" className="text-6xl mb-2" />
+                  <p className="text-sm">Harita burada gösterilecek</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
