@@ -10,7 +10,7 @@ import AccountDropdown from "@/components/layout/AccountDropdown";
 import MiniCartDrawer from "@/components/layout/MiniCartDrawer";
 import type { MegaMenuCategory } from "@/lib/types/menu";
 
-const siteName = "CNC Otomasyon";
+const siteName = "SivTech Makina";
 
 interface HeaderProps {
   categories: MegaMenuCategory[];

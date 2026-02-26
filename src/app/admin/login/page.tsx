@@ -4,6 +4,7 @@ import { Suspense, useState } from "react";
 import { signIn, signOut } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import MaterialIcon from "@/components/ui/MaterialIcon";
 
 export default function AdminLoginPage() {
@@ -68,14 +69,39 @@ function AdminLoginForm() {
     <div className="min-h-screen bg-[#0d121c] flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Logo / Brand */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary/20 mb-4">
-            <MaterialIcon icon="precision_manufacturing" className="text-primary text-3xl" />
+        <div className="text-center pt-12 pb-2">
+          <a
+            href="https://www.paksoft.com.tr/tr"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block hover:scale-105 transition-transform duration-500"
+          >
+            <div className="relative w-64 h-28 mx-auto">
+              <Image
+                src="/images/paksoft_logo_white.png?v=2"
+                alt="PakSoft"
+                fill
+                className="object-contain"
+                priority
+              />
+            </div>
+          </a>
+          <div className="mt-8">
+            <a
+              href="https://www.paksoft.com.tr/tr"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block group"
+            >
+              <h1 className="text-4xl font-black text-white font-[family-name:var(--font-display)] tracking-tight group-hover:text-amber-500 transition-colors">
+                Geliştiren PakSoft
+              </h1>
+            </a>
+            <div className="h-px w-12 bg-white/20 mx-auto mt-6" />
+            <h2 className="text-lg font-medium text-gray-400 uppercase tracking-[0.3em] mt-6">
+              Yönetici Paneli
+            </h2>
           </div>
-          <h1 className="text-2xl font-bold text-white font-[family-name:var(--font-display)] tracking-tight">
-            Yönetici Paneli
-          </h1>
-          <p className="text-gray-500 text-sm mt-1">Devam etmek için giriş yapın</p>
         </div>
 
         {/* Card */}

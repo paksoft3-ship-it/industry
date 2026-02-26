@@ -4,7 +4,7 @@ import { auth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 
 function generateOrderNumber() {
-  const prefix = "CNC";
+  const prefix = "STM";
   const date = new Date().toISOString().slice(2, 10).replace(/-/g, "");
   const random = Math.floor(Math.random() * 10000).toString().padStart(4, "0");
   return `${prefix}${date}${random}`;

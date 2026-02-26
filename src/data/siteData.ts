@@ -1,9 +1,9 @@
 export const siteConfig = {
-  name: "CNC Otomasyon",
+  name: "SivTech Makina",
   description: "Endüstriyel Otomasyonda Güvenilir Çözüm Ortağınız",
   phone: "+90 212 555 00 00",
   whatsapp: "+90 555 555 55 55",
-  email: "info@cncotomasyon.com",
+  email: "info@sivtechmakina.com",
   address: "İkitelli OSB Mah. Marmara Sanayi Sitesi M Blok No:12 Başakşehir / İstanbul",
   workingHours: "Pzt-Cum: 09:00 - 18:00",
   social: {

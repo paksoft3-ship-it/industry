@@ -5,9 +5,9 @@ const heroData = {
   backgroundImage: "/images/hero-bg.jpg",
   badgeIcon: "precision_manufacturing",
   badge: "Endüstriyel Otomasyon Çözümleri",
-  title: "CNC ve Otomasyon",
-  highlight: "Çözüm Ortağınız",
-  subtitle: "Endüstriyel otomasyon, CNC makine parçaları ve ekipmanlarında Türkiye'nin güvenilir tedarikçisi.",
+  title: "SivTech Makina",
+  highlight: "& Otomasyon",
+  subtitle: "Endüstriyel otomasyon ve CNC makine parçalarında Türkiye'nin güvenilir ve yenilikçi tedarikçisi.",
   ctaPrimary: "Ürünleri Keşfet",
   ctaSecondary: "Kategoriler",
 };

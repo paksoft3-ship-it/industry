@@ -15,9 +15,9 @@ const notoSans = Noto_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "CNC Otomasyon | Endüstriyel Çözüm Ortağınız",
+  title: "SivTech Makina | Endüstriyel Çözüm Ortağınız",
   description:
-    "Endüstriyel otomasyon parçaları ve CNC çözümlerinde Türkiye'nin lider tedarikçisi.",
+    "Endüstriyel otomasyon ve CNC çözümlerinde Türkiye'nin lider tedarikçisi: SivTech Makina.",
 };
 
 export default function RootLayout({

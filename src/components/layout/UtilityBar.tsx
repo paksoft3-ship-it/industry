@@ -9,7 +9,6 @@ const workingHours = "Pzt-Cum: 09:00 - 18:00";
 
 const topBarLinks = [
   { label: "Ana Sayfa", href: "/" },
-  { label: "Sipariş Takip", href: "/siparis-takip" },
   { label: "Dosya Merkezi", href: "/dosya-merkezi" },
   { label: "Banka Bilgilerimiz", href: "/sayfa/banka-bilgilerimiz" },
   { label: "İletişim", href: "/iletisim" },
