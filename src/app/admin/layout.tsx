@@ -161,9 +161,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <div className="flex items-center gap-4">
             <button className="relative text-gray-500 hover:text-gray-700 transition-colors">
               <MaterialIcon icon="notifications" className="text-xl" />
-              <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-[10px] text-white flex items-center justify-center">
-                3
-              </span>
             </button>
             <div className="w-px h-8 bg-gray-200" />
             <button className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-800 transition-colors">

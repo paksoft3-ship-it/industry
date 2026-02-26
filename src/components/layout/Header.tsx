@@ -8,6 +8,7 @@ import SearchModal from "./SearchModal";
 import MobileMenu from "./MobileMenu";
 import AccountDropdown from "@/components/layout/AccountDropdown";
 import MiniCartDrawer from "@/components/layout/MiniCartDrawer";
+import { useCart } from "@/context/CartContext";
 import type { MegaMenuCategory } from "@/lib/types/menu";
 
 const siteName = "SivTech Makina";
@@ -25,6 +26,7 @@ export default function Header({ categories, educationCategories = [], blogCateg
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
   const [isLoggedIn] = useState(false);
+  const { count: cartCount } = useCart();
 
   const megaMenuButtonRef = useRef<HTMLButtonElement>(null);
   const megaMenuRef = useRef<HTMLDivElement>(null);
@@ -166,9 +168,11 @@ export default function Header({ categories, educationCategories = [], blogCateg
               >
                 <div className="relative">
                   <MaterialIcon icon="shopping_cart" className="group-hover:scale-110 transition-transform" />
+                  {cartCount > 0 && (
                   <span className="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold h-4 w-4 rounded-full flex items-center justify-center">
-                    2
+                    {cartCount > 9 ? "9+" : cartCount}
                   </span>
+                )}
                 </div>
                 <span className="text-[10px] font-medium mt-0.5 hidden sm:block">Sepetim</span>
               </button>

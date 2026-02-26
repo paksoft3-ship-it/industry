@@ -127,22 +127,33 @@ export default function Footer() {
               &copy; {new Date().getFullYear()} {siteName}. Tüm hakları saklıdır.
             </p>
 
-            {/* Middle: Developed By PakSoft */}
-            <div className="flex items-center gap-3 order-1 lg:order-2">
-              <span className="text-gray-500 text-[10px] uppercase tracking-widest">Geliştiren</span>
+            {/* Middle: Developed By Partnership */}
+            <div className="flex flex-wrap items-center justify-center gap-3 order-1 lg:order-2">
               <a
-                href="https://www.paksoft.com.tr/tr"
+                href="https://www.paksoft.com.tr"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center group bg-white/5 px-4 py-1.5 rounded-full border border-white/10 hover:bg-white/10 transition-all duration-300"
+                className="flex items-center group bg-white/5 px-3 py-1 rounded-full border border-white/10 hover:bg-white/10 transition-all duration-300"
               >
-                <div className="flex items-center text-amber-600 group-hover:text-amber-500">
+                <div className="flex items-center text-white group-hover:text-primary transition-colors">
                   <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 -rotate-12">
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c1.85 0 3.58-.5 5.08-1.38-.7.13-1.42.21-2.16.21-5.52 0-10-4.48-10-10S9.42 2.83 14.92 2.83c.74 0 1.46.08 2.16.21C15.58 2.5 13.85 2 12 2z" />
                   </svg>
-                  <span className="font-bold text-xl tracking-tight ml-1">PakSoft</span>
+                  <span className="font-bold text-lg tracking-tight ml-1.5">PakSoft</span>
                 </div>
               </a>
+              <span className="text-gray-400 text-sm font-medium italic">ve</span>
+              <a
+                href="https://724dijital.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center group bg-white/5 px-3 py-1 rounded-full border border-white/10 hover:bg-white/10 transition-all duration-300"
+              >
+                <span className="text-white group-hover:text-primary transition-colors font-bold text-lg tracking-tight">724Dijital</span>
+              </a>
+              <span className="text-gray-400 text-sm font-medium tracking-wide">
+                Uluslararası Teknoloji Ortaklığı Tarafından Geliştirilmiştir
+              </span>
             </div>
 
             {/* Right: Payment Icons */}

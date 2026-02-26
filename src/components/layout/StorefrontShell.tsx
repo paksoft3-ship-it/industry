@@ -1,6 +1,7 @@
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import UtilityBar from "@/components/layout/UtilityBar";
+import { CartProvider } from "@/context/CartContext";
 import type { MegaMenuCategory } from "@/lib/types/menu";
 
 export default function StorefrontShell({
@@ -15,7 +16,7 @@ export default function StorefrontShell({
   blogCategories?: any[];
 }) {
   return (
-    <>
+    <CartProvider>
       <UtilityBar />
       <Header
         categories={categories}
@@ -24,6 +25,6 @@ export default function StorefrontShell({
       />
       <main className="flex-grow">{children}</main>
       <Footer />
-    </>
+    </CartProvider>
   );
 }

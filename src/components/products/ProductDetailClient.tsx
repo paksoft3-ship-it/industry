@@ -3,8 +3,10 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import MaterialIcon from "@/components/ui/MaterialIcon";
+import { useCart } from "@/context/CartContext";
 
 interface ProductData {
+  id: string;
   name: string;
   slug: string;
   category: string;
@@ -27,6 +29,15 @@ export default function ProductDetailClient({ product }: { product: ProductData 
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState("bilgi");
+  const [addedToCart, setAddedToCart] = useState(false);
+  const { addItem, loading } = useCart();
+
+  const handleAddToCart = async () => {
+    if (!product.inStock || loading) return;
+    await addItem(product.id, quantity);
+    setAddedToCart(true);
+    setTimeout(() => setAddedToCart(false), 2000);
+  };
 
   const discountPercent = product.originalPrice
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
@@ -162,9 +173,13 @@ export default function ProductDetailClient({ product }: { product: ProductData 
               </button>
             </div>
 
-            <button className="flex-1 bg-primary hover:bg-primary-dark text-white font-bold py-3 px-8 rounded-lg flex items-center justify-center gap-2 transition-colors">
-              <MaterialIcon icon="shopping_cart" />
-              Sepete Ekle
+            <button
+              onClick={handleAddToCart}
+              disabled={!product.inStock || loading}
+              className="flex-1 bg-primary hover:bg-primary-dark text-white font-bold py-3 px-8 rounded-lg flex items-center justify-center gap-2 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              <MaterialIcon icon={addedToCart ? "check" : "shopping_cart"} />
+              {addedToCart ? "Sepete Eklendi!" : product.inStock ? "Sepete Ekle" : "Stokta Yok"}
             </button>
 
             <button className="p-3 border border-gray-200 rounded-lg text-gray-400 hover:text-red-500 hover:border-red-200 transition-colors">

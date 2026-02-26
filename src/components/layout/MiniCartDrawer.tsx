@@ -1,17 +1,9 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import MaterialIcon from "@/components/ui/MaterialIcon";
-
-interface CartItem {
-  id: string;
-  name: string;
-  slug: string;
-  price: number;
-  quantity: number;
-  image: string;
-}
+import { useCart } from "@/context/CartContext";
 
 interface MiniCartDrawerProps {
   isOpen: boolean;
@@ -19,7 +11,7 @@ interface MiniCartDrawerProps {
 }
 
 export default function MiniCartDrawer({ isOpen, onClose }: MiniCartDrawerProps) {
-  const [items, setItems] = useState<CartItem[]>([]);
+  const { items, loading, removeItem, updateItem } = useCart();
 
   useEffect(() => {
     if (isOpen) {
@@ -47,7 +39,7 @@ export default function MiniCartDrawer({ isOpen, onClose }: MiniCartDrawerProps)
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b">
           <h2 className="text-lg font-bold font-[family-name:var(--font-display)]">
-            Sepetim
+            Sepetim {items.length > 0 && <span className="text-sm font-normal text-gray-400">({items.length} ürün)</span>}
           </h2>
           <button onClick={onClose} className="p-2 text-gray-400 hover:text-gray-600 rounded-lg">
             <MaterialIcon icon="close" />
@@ -70,16 +62,24 @@ export default function MiniCartDrawer({ isOpen, onClose }: MiniCartDrawerProps)
                     <Image src={item.image} alt={item.name} width={60} height={60} className="object-contain" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <Link href={`/urun/${item.slug}`} className="font-medium text-sm hover:text-primary line-clamp-2">
+                    <Link href={`/urun/${item.slug}`} onClick={onClose} className="font-medium text-sm hover:text-primary line-clamp-2">
                       {item.name}
                     </Link>
                     <div className="flex items-center justify-between mt-2">
                       <div className="flex items-center gap-2 border rounded">
-                        <button className="px-2 py-1 text-gray-400 hover:text-gray-600">
+                        <button
+                          onClick={() => updateItem(item.productId, item.quantity - 1)}
+                          disabled={loading}
+                          className="px-2 py-1 text-gray-400 hover:text-gray-600 disabled:opacity-50"
+                        >
                           <MaterialIcon icon="remove" className="text-[16px]" />
                         </button>
-                        <span className="text-sm font-medium">{item.quantity}</span>
-                        <button className="px-2 py-1 text-gray-400 hover:text-gray-600">
+                        <span className="text-sm font-medium px-1">{item.quantity}</span>
+                        <button
+                          onClick={() => updateItem(item.productId, item.quantity + 1)}
+                          disabled={loading}
+                          className="px-2 py-1 text-gray-400 hover:text-gray-600 disabled:opacity-50"
+                        >
                           <MaterialIcon icon="add" className="text-[16px]" />
                         </button>
                       </div>
@@ -88,7 +88,11 @@ export default function MiniCartDrawer({ isOpen, onClose }: MiniCartDrawerProps)
                       </p>
                     </div>
                   </div>
-                  <button className="text-gray-300 hover:text-red-500 self-start">
+                  <button
+                    onClick={() => removeItem(item.productId)}
+                    disabled={loading}
+                    className="text-gray-300 hover:text-red-500 self-start disabled:opacity-50"
+                  >
                     <MaterialIcon icon="delete_outline" className="text-[20px]" />
                   </button>
                 </li>

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import MaterialIcon from "@/components/ui/MaterialIcon";
+import AddToCartButton from "@/components/products/AddToCartButton";
 
 interface Product {
   id: string;
@@ -102,9 +103,7 @@ export default function ProductCard({ product }: { product: Product }) {
               {product.price.toLocaleString("tr-TR", { minimumFractionDigits: 2 })} {product.currency}
             </p>
           </div>
-          <button className="h-10 w-10 rounded-lg bg-gray-100 text-primary hover:bg-primary hover:text-white flex items-center justify-center transition-all">
-            <MaterialIcon icon="add_shopping_cart" />
-          </button>
+          <AddToCartButton productId={product.id} inStock={product.inStock} />
         </div>
         {/* Stock Status */}
         <div className="mt-3 flex items-center gap-1.5">

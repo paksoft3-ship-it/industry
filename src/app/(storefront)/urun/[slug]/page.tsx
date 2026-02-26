@@ -17,6 +17,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   const categoryEntry = product.categories?.[0]?.category;
 
   const productData = {
+    id: product.id,
     name: product.name,
     slug: product.slug,
     category: categoryEntry?.slug || "",

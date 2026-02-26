@@ -4,6 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import MaterialIcon from "@/components/ui/MaterialIcon";
 
+type PaymentMethod = "card" | "havale";
+
 const steps = [
   { key: "address", label: "Adres", icon: "location_on" },
   { key: "shipping", label: "Kargo", icon: "local_shipping" },
@@ -13,6 +15,7 @@ const steps = [
 
 export default function OdemePage() {
   const [currentStep, setCurrentStep] = useState(0);
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("card");
 
   return (
     <div className="min-h-screen bg-background-light">
@@ -140,30 +143,122 @@ export default function OdemePage() {
               {/* Step 2: Payment */}
               {currentStep === 2 && (
                 <div>
-                  <h2 className="text-lg font-semibold text-primary mb-6">Ödeme Bilgileri</h2>
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-primary mb-1">Kart Üzerindeki İsim</label>
-                      <input type="text" placeholder="Ad Soyad" className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-primary mb-1">Kart Numarası</label>
-                      <div className="relative">
-                        <input type="text" placeholder="XXXX XXXX XXXX XXXX" className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
-                        <MaterialIcon icon="credit_card" className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <h2 className="text-lg font-semibold text-primary mb-6">Ödeme Yöntemi</h2>
+
+                  {/* Payment Method Selector */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+                    <label
+                      className={`flex items-center gap-3 p-4 rounded-lg border-2 cursor-pointer transition-colors ${
+                        paymentMethod === "card" ? "border-primary bg-primary/5" : "border-gray-200 hover:border-gray-300"
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="paymentMethod"
+                        value="card"
+                        checked={paymentMethod === "card"}
+                        onChange={() => setPaymentMethod("card")}
+                        className="hidden"
+                      />
+                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${paymentMethod === "card" ? "border-primary" : "border-gray-300"}`}>
+                        {paymentMethod === "card" && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
                       </div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-primary mb-1">Son Kullanma</label>
-                        <input type="text" placeholder="AA/YY" className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
+                      <div className="flex items-center gap-2">
+                        <MaterialIcon icon="credit_card" className="text-primary text-xl" />
+                        <div>
+                          <p className="font-medium text-primary text-sm">Kredi / Banka Kartı</p>
+                          <p className="text-xs text-gray-400">Güvenli online ödeme</p>
+                        </div>
                       </div>
-                      <div>
-                        <label className="block text-sm font-medium text-primary mb-1">CVV</label>
-                        <input type="text" placeholder="XXX" className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
+                    </label>
+
+                    <label
+                      className={`flex items-center gap-3 p-4 rounded-lg border-2 cursor-pointer transition-colors ${
+                        paymentMethod === "havale" ? "border-primary bg-primary/5" : "border-gray-200 hover:border-gray-300"
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="paymentMethod"
+                        value="havale"
+                        checked={paymentMethod === "havale"}
+                        onChange={() => setPaymentMethod("havale")}
+                        className="hidden"
+                      />
+                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${paymentMethod === "havale" ? "border-primary" : "border-gray-300"}`}>
+                        {paymentMethod === "havale" && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
                       </div>
-                    </div>
+                      <div className="flex items-center gap-2">
+                        <MaterialIcon icon="account_balance" className="text-primary text-xl" />
+                        <div>
+                          <p className="font-medium text-primary text-sm">Havale / EFT</p>
+                          <p className="text-xs text-gray-400">Banka transferi</p>
+                        </div>
+                      </div>
+                    </label>
                   </div>
+
+                  {/* Card Form */}
+                  {paymentMethod === "card" && (
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium text-primary mb-1">Kart Üzerindeki İsim</label>
+                        <input type="text" placeholder="Ad Soyad" className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-primary mb-1">Kart Numarası</label>
+                        <div className="relative">
+                          <input type="text" placeholder="XXXX XXXX XXXX XXXX" className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
+                          <MaterialIcon icon="credit_card" className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-primary mb-1">Son Kullanma</label>
+                          <input type="text" placeholder="AA/YY" className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-primary mb-1">CVV</label>
+                          <input type="text" placeholder="XXX" className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Havale/EFT Info */}
+                  {paymentMethod === "havale" && (
+                    <div className="space-y-4">
+                      <div className="p-4 bg-blue-50 border border-blue-100 rounded-lg">
+                        <div className="flex items-start gap-2 mb-3">
+                          <MaterialIcon icon="info" className="text-blue-500 text-lg mt-0.5 flex-shrink-0" />
+                          <p className="text-sm text-blue-700">
+                            Siparişiniz oluşturulduktan sonra aşağıdaki banka hesabına ödeme yapınız. Havale açıklamasına <strong>sipariş numaranızı</strong> yazmayı unutmayınız.
+                          </p>
+                        </div>
+                      </div>
+                      <div className="border border-gray-200 rounded-lg overflow-hidden">
+                        <div className="bg-gray-50 px-4 py-2 border-b border-gray-200">
+                          <p className="text-sm font-semibold text-primary">Banka Hesap Bilgileri</p>
+                        </div>
+                        <div className="divide-y divide-gray-100">
+                          {[
+                            { label: "Banka", value: "Ziraat Bankası" },
+                            { label: "Hesap Sahibi", value: "SivTech Makina Ltd. Şti." },
+                            { label: "IBAN", value: "TR00 0000 0000 0000 0000 0000 00" },
+                            { label: "Şube", value: "İstanbul / Merkez" },
+                          ].map((row) => (
+                            <div key={row.label} className="flex items-center justify-between px-4 py-3">
+                              <span className="text-sm text-gray-500">{row.label}</span>
+                              <span className="text-sm font-medium text-primary">{row.value}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      <p className="text-xs text-gray-400">
+                        * Ödemeniz onaylandıktan sonra siparişiniz hazırlanmaya başlanacaktır. Ödeme onayı 1-2 iş günü içinde gerçekleşir.
+                      </p>
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -182,7 +277,17 @@ export default function OdemePage() {
                     </div>
                     <div className="p-4 bg-gray-50 rounded-lg">
                       <h3 className="text-sm font-medium text-gray-400 mb-2">Ödeme</h3>
-                      <p className="text-primary text-sm">**** **** **** 1234</p>
+                      {paymentMethod === "card" ? (
+                        <p className="text-primary text-sm flex items-center gap-2">
+                          <MaterialIcon icon="credit_card" className="text-base" />
+                          Kredi / Banka Kartı
+                        </p>
+                      ) : (
+                        <p className="text-primary text-sm flex items-center gap-2">
+                          <MaterialIcon icon="account_balance" className="text-base" />
+                          Havale / EFT - Ziraat Bankası
+                        </p>
+                      )}
                     </div>
                     <label className="flex items-start gap-2 mt-4">
                       <input type="checkbox" className="mt-1 rounded border-gray-300" />
