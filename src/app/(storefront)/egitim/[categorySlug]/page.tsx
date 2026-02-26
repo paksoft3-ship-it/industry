@@ -4,10 +4,6 @@ import { getEducationPostsByCategory } from "@/lib/actions/education";
 import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
 
-interface PageProps {
-    params: { categorySlug: string };
-}
-
 export async function generateMetadata({ params }: { params: Promise<{ categorySlug: string }> }) {
     const { categorySlug } = await params;
     const category = await prisma.educationCategory.findUnique({

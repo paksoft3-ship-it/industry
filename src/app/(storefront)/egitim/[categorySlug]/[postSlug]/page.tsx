@@ -3,10 +3,6 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import MaterialIcon from "@/components/ui/MaterialIcon";
 
-interface PageProps {
-    params: { categorySlug: string; postSlug: string };
-}
-
 export async function generateMetadata({ params }: { params: Promise<{ categorySlug: string; postSlug: string }> }) {
     const { categorySlug, postSlug } = await params;
     const post = await getEducationPostBySlug(categorySlug, postSlug);
