@@ -1,6 +1,7 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { signOut } from "next-auth/react";
 import MaterialIcon from "@/components/ui/MaterialIcon";
 
 interface AccountDropdownProps {
@@ -39,7 +40,7 @@ export default function AccountDropdown({ isLoggedIn, userName }: AccountDropdow
           {isLoggedIn ? (
             <>
               <div className="px-5 py-4 bg-gray-50 border-b">
-                <p className="font-bold text-gray-900">{userName}</p>
+                <p className="font-bold text-gray-900">{userName || "Hesabım"}</p>
                 <p className="text-xs text-gray-400">Hesap Paneli</p>
               </div>
               <nav className="py-2">
@@ -57,7 +58,13 @@ export default function AccountDropdown({ isLoggedIn, userName }: AccountDropdow
                 </Link>
               </nav>
               <div className="border-t px-5 py-3">
-                <button className="flex items-center gap-2 text-sm text-red-500 hover:text-red-600 font-medium">
+                <button
+                  onClick={() => {
+                    setIsOpen(false);
+                    signOut({ callbackUrl: "/" });
+                  }}
+                  className="flex items-center gap-2 text-sm text-red-500 hover:text-red-600 font-medium"
+                >
                   <MaterialIcon icon="logout" className="text-[20px]" /> Çıkış Yap
                 </button>
               </div>
@@ -76,7 +83,7 @@ export default function AccountDropdown({ isLoggedIn, userName }: AccountDropdow
                 Giriş Yap
               </Link>
               <Link
-                href="/uye-girisi-sayfasi?tab=register"
+                href="/uye-girisi-sayfasi#kayit"
                 className="block w-full py-2.5 border border-gray-200 text-gray-700 text-sm font-medium rounded-lg text-center hover:bg-gray-50 transition-colors"
                 onClick={() => setIsOpen(false)}
               >

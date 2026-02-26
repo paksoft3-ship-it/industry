@@ -9,6 +9,7 @@ import MobileMenu from "./MobileMenu";
 import AccountDropdown from "@/components/layout/AccountDropdown";
 import MiniCartDrawer from "@/components/layout/MiniCartDrawer";
 import { useCart } from "@/context/CartContext";
+import { useSession } from "next-auth/react";
 import type { MegaMenuCategory } from "@/lib/types/menu";
 
 const siteName = "SivTech Makina";
@@ -25,7 +26,9 @@ export default function Header({ categories, educationCategories = [], blogCateg
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
-  const [isLoggedIn] = useState(false);
+  const { data: session } = useSession();
+  const isLoggedIn = !!session?.user;
+  const userName = session?.user?.name ?? "";
   const { count: cartCount } = useCart();
 
   const megaMenuButtonRef = useRef<HTMLButtonElement>(null);
@@ -159,7 +162,7 @@ export default function Header({ categories, educationCategories = [], blogCateg
               </Link>
 
               {/* Hesabım */}
-              <AccountDropdown isLoggedIn={isLoggedIn} />
+              <AccountDropdown isLoggedIn={isLoggedIn} userName={userName} />
 
               {/* Sepetim */}
               <button

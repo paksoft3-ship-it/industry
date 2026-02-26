@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import { useSession, signOut } from "next-auth/react";
 import MaterialIcon from "@/components/ui/MaterialIcon";
 import type { MegaMenuCategory } from "@/lib/types/menu";
 
@@ -17,6 +18,8 @@ interface MobileMenuProps {
 
 export default function MobileMenu({ onClose, categories }: MobileMenuProps) {
   const [openCategory, setOpenCategory] = useState<number | null>(0);
+  const { data: session } = useSession();
+  const isLoggedIn = !!session?.user;
 
   return (
     <div className="fixed inset-0 z-50 xl:hidden">
@@ -56,22 +59,43 @@ export default function MobileMenu({ onClose, categories }: MobileMenuProps) {
         <div className="flex-1 overflow-y-auto pb-32">
           {/* Account Card */}
           <div className="px-5 py-2 mb-2">
-            <Link
-              href="#"
-              className="bg-primary/10 rounded-xl p-4 flex items-center justify-between"
-              onClick={onClose}
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white shadow-md">
-                  <MaterialIcon icon="person" className="text-xl" />
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-sm font-bold text-gray-900">Hoşgeldiniz</span>
-                  <span className="text-xs text-primary font-medium">Giriş Yap / Kayıt Ol</span>
-                </div>
+            {isLoggedIn ? (
+              <div className="bg-primary/10 rounded-xl p-4 flex items-center justify-between">
+                <Link href="/hesap" onClick={onClose} className="flex items-center gap-3 flex-1">
+                  <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white shadow-md">
+                    <MaterialIcon icon="person" className="text-xl" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-bold text-gray-900">{session?.user?.name || "Hesabım"}</span>
+                    <span className="text-xs text-primary font-medium">Hesabımı Görüntüle</span>
+                  </div>
+                </Link>
+                <button
+                  onClick={() => { onClose(); signOut({ callbackUrl: "/" }); }}
+                  className="p-2 text-red-400 hover:text-red-600 transition-colors"
+                  title="Çıkış Yap"
+                >
+                  <MaterialIcon icon="logout" className="text-xl" />
+                </button>
               </div>
-              <MaterialIcon icon="chevron_right" className="text-primary" />
-            </Link>
+            ) : (
+              <Link
+                href="/uye-girisi-sayfasi"
+                className="bg-primary/10 rounded-xl p-4 flex items-center justify-between"
+                onClick={onClose}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white shadow-md">
+                    <MaterialIcon icon="person" className="text-xl" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-bold text-gray-900">Hoşgeldiniz</span>
+                    <span className="text-xs text-primary font-medium">Giriş Yap / Kayıt Ol</span>
+                  </div>
+                </div>
+                <MaterialIcon icon="chevron_right" className="text-primary" />
+              </Link>
+            )}
           </div>
 
           {/* Accordion Categories */}
