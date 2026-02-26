@@ -246,6 +246,122 @@ export async function updateOrderTracking(orderId: string, data: {
   return order;
 }
 
+// ── Place Order (checkout flow) ────────────────────────────────────────────
+// Creates address + order from cart, then clears the cart.
+export async function placeOrder(data: {
+  address: {
+    title: string;
+    firstName: string;
+    lastName: string;
+    phone: string;
+    city: string;
+    district: string;
+    address: string;
+    postalCode?: string;
+  };
+  couponCode?: string;
+  notes?: string;
+}): Promise<{ orderNumber: string; total: number }> {
+  const session = await auth();
+  if (!session?.user) throw new Error("Giriş yapmanız gerekiyor.");
+
+  const userId = session.user.id;
+
+  // Get live cart items from DB
+  const cartItems = await prisma.cartItem.findMany({
+    where: { userId },
+    include: { product: true },
+  });
+
+  if (cartItems.length === 0) throw new Error("Sepetiniz boş.");
+
+  // Create address record
+  const addressRecord = await prisma.address.create({
+    data: {
+      userId,
+      title: data.address.title,
+      firstName: data.address.firstName,
+      lastName: data.address.lastName,
+      phone: data.address.phone,
+      city: data.address.city,
+      district: data.address.district,
+      address: data.address.address,
+      postalCode: data.address.postalCode,
+    },
+  });
+
+  // Build order items and subtotal
+  let subtotal = 0;
+  const orderItems = cartItems.map((item) => {
+    const lineTotal = Number(item.product.price) * item.quantity;
+    subtotal += lineTotal;
+    return {
+      productId: item.product.id,
+      name: item.product.name,
+      sku: item.product.sku,
+      price: item.product.price,
+      quantity: item.quantity,
+      total: lineTotal,
+    };
+  });
+
+  // Apply coupon
+  let discount = 0;
+  if (data.couponCode) {
+    const coupon = await prisma.coupon.findFirst({
+      where: {
+        code: data.couponCode,
+        isActive: true,
+        OR: [{ expiresAt: null }, { expiresAt: { gte: new Date() } }],
+      },
+    });
+    if (coupon) {
+      discount = coupon.discountType === "percentage"
+        ? subtotal * (Number(coupon.discountValue) / 100)
+        : Number(coupon.discountValue);
+      await prisma.coupon.update({
+        where: { id: coupon.id },
+        data: { usedCount: { increment: 1 } },
+      });
+    }
+  }
+
+  const shippingCost = subtotal >= 2000 ? 0 : 49.90;
+  const total = subtotal - discount + shippingCost;
+
+  const order = await prisma.order.create({
+    data: {
+      orderNumber: generateOrderNumber(),
+      userId,
+      addressId: addressRecord.id,
+      subtotal,
+      shippingCost,
+      discount,
+      total,
+      couponCode: data.couponCode,
+      notes: data.notes,
+      items: { create: orderItems },
+    },
+  });
+
+  // Decrease stock and clear cart in parallel
+  await Promise.all([
+    ...cartItems.map((item) =>
+      prisma.product.update({
+        where: { id: item.productId },
+        data: { stockCount: { decrement: item.quantity } },
+      })
+    ),
+    prisma.cartItem.deleteMany({ where: { userId } }),
+  ]);
+
+  revalidatePath("/hesap/siparisler");
+  revalidatePath("/admin/siparisler");
+
+  return { orderNumber: order.orderNumber, total };
+}
+// ───────────────────────────────────────────────────────────────────────────
+
 export async function addOrderNote(orderId: string, note: string) {
   const session = await auth();
   if (!session?.user || !["ADMIN", "SUPER_ADMIN"].includes((session.user as { role: string }).role)) {
