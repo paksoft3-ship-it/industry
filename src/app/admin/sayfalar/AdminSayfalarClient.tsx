@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import MaterialIcon from "@/components/ui/MaterialIcon";
+import RichTextEditor from "@/components/admin/RichTextEditor";
 import {
   createStaticPage,
   updateStaticPage,
@@ -233,7 +234,7 @@ export default function AdminSayfalarClient({ pages }: { pages: StaticPage[] }) 
             className="fixed inset-0 bg-black/50"
             onClick={() => setModal({ ...modal, open: false })}
           />
-          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-gray-100 flex items-center justify-between">
               <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold text-gray-800">
                 {modal.mode === "create" ? "Yeni Sayfa" : "Sayfa Düzenle"}
@@ -270,13 +271,12 @@ export default function AdminSayfalarClient({ pages }: { pages: StaticPage[] }) 
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  İçerik (HTML)
+                  İçerik
                 </label>
-                <textarea
-                  rows={12}
+                <RichTextEditor
                   value={formContent}
-                  onChange={(e) => setFormContent(e.target.value)}
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-none"
+                  onChange={setFormContent}
+                  placeholder="Sayfa içeriğini buraya yazın..."
                 />
               </div>
               <div>

@@ -83,11 +83,10 @@ export default async function EducationPostPage({ params }: { params: Promise<{ 
                             </div>
                         )}
 
-                        <div className="prose prose-lg prose-primary max-w-none">
-                            {post.content.split('\n').map((para: string, i: number) => (
-                                para ? <p key={i} className="mb-6 leading-relaxed text-gray-700">{para}</p> : <br key={i} />
-                            ))}
-                        </div>
+                        <div
+                            className="prose prose-lg prose-slate max-w-none prose-headings:font-[family-name:var(--font-display)] prose-headings:text-gray-900 prose-p:text-gray-700 prose-p:leading-relaxed prose-a:text-primary prose-img:rounded-2xl prose-img:shadow-lg"
+                            dangerouslySetInnerHTML={{ __html: post.content || "" }}
+                        />
 
                         {/* Footer / Sharing */}
                         <div className="mt-16 pt-8 border-t border-gray-50 flex flex-col sm:flex-row items-center justify-between gap-6">

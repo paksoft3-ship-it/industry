@@ -85,11 +85,10 @@ export default async function BlogPostDetailPage({ params }: Props) {
                     )}
 
                     <div className="p-8 md:p-16">
-                        <div className="prose prose-lg prose-slate max-w-none prose-headings:font-[family-name:var(--font-display)] prose-headings:font-bold prose-headings:text-gray-900 prose-p:text-gray-700 prose-p:leading-relaxed prose-a:text-primary prose-a:font-bold prose-img:rounded-3xl prose-img:shadow-lg">
-                            {(p.content || "").split("\n\n").map((para: string, i: number) => (
-                                <p key={i}>{para}</p>
-                            ))}
-                        </div>
+                        <div
+                            className="prose prose-lg prose-slate max-w-none prose-headings:font-[family-name:var(--font-display)] prose-headings:font-bold prose-headings:text-gray-900 prose-p:text-gray-700 prose-p:leading-relaxed prose-a:text-primary prose-a:font-bold prose-img:rounded-3xl prose-img:shadow-lg"
+                            dangerouslySetInnerHTML={{ __html: p.content || "" }}
+                        />
 
                         {/* Footer / Share */}
                         <div className="mt-16 pt-8 border-t border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-6">

@@ -4,6 +4,8 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import MaterialIcon from "@/components/ui/MaterialIcon";
+import MediaUploader from "@/components/admin/MediaUploader";
+import RichTextEditor from "@/components/admin/RichTextEditor";
 
 interface Category {
     id: string;
@@ -89,6 +91,20 @@ export default function AdminPostClient({ title, posts, categories, actions }: P
             seoDescription: post.seoDescription ?? "",
         });
         setModalOpen(true);
+    }
+
+    async function handleRemoveCoverImage() {
+        if (!form.coverImageUrl) return;
+        const urlToDelete = form.coverImageUrl;
+        setForm(prev => ({ ...prev, coverImageUrl: "" }));
+        try {
+            if (urlToDelete.includes("public.blob.vercel-storage.com")) {
+                await fetch(`/api/blob/delete?url=${encodeURIComponent(urlToDelete)}`, { method: "DELETE" });
+            }
+            toast.success("Kapak görseli kaldırıldı");
+        } catch (error) {
+            console.error("Delete error:", error);
+        }
     }
 
     function handleTitleChange(title: string) {
@@ -192,7 +208,7 @@ export default function AdminPostClient({ title, posts, categories, actions }: P
 
             {modalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm transition-all p-4">
-                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto p-8 transform transition-all">
+                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto p-8 transform transition-all">
                         <div className="flex items-center justify-between mb-8 pb-4 border-b border-gray-100">
                             <h3 className="text-xl font-bold font-[family-name:var(--font-display)] text-gray-800">
                                 {editingId ? "Yazıyı Düzenle" : "Yeni Yazı"}
@@ -253,13 +269,26 @@ export default function AdminPostClient({ title, posts, categories, actions }: P
                             {/* Right Column */}
                             <div className="space-y-6">
                                 <div>
-                                    <label className="block text-sm font-semibold text-gray-700 mb-2">Kapak Görseli URL</label>
-                                    <input
-                                        type="text"
-                                        value={form.coverImageUrl}
-                                        onChange={(e) => setForm((prev) => ({ ...prev, coverImageUrl: e.target.value }))}
-                                        className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all"
-                                    />
+                                    <label className="block text-sm font-semibold text-gray-700 mb-2">Kapak Görseli</label>
+                                    {form.coverImageUrl ? (
+                                        <div className="mb-4 relative group">
+                                            <div className="h-40 w-full bg-gray-50 rounded-xl border border-gray-200 flex items-center justify-center overflow-hidden">
+                                                <img src={form.coverImageUrl} alt="" className="h-full w-full object-cover" />
+                                            </div>
+                                            <button
+                                                type="button"
+                                                onClick={handleRemoveCoverImage}
+                                                className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                                            >
+                                                <MaterialIcon icon="delete" className="text-lg" />
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <MediaUploader
+                                            folderPrefix="posts"
+                                            onUploaded={(items) => setForm(prev => ({ ...prev, coverImageUrl: items[0].url }))}
+                                        />
+                                    )}
                                 </div>
 
                                 <div className="p-4 bg-gray-50 rounded-2xl space-y-4">
@@ -301,12 +330,11 @@ export default function AdminPostClient({ title, posts, categories, actions }: P
 
                             {/* Full Width Bottom */}
                             <div className="md:col-span-2">
-                                <label className="block text-sm font-semibold text-gray-700 mb-2">İçerik (HTML veya Text)</label>
-                                <textarea
-                                    rows={10}
+                                <label className="block text-sm font-semibold text-gray-700 mb-2">İçerik</label>
+                                <RichTextEditor
                                     value={form.content}
-                                    onChange={(e) => setForm((prev) => ({ ...prev, content: e.target.value }))}
-                                    className="w-full border border-gray-200 rounded-xl px-4 py-4 text-sm focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-mono"
+                                    onChange={(value) => setForm((prev) => ({ ...prev, content: value }))}
+                                    placeholder="Yazı içeriğini buraya yazın..."
                                 />
                             </div>
                         </div>
