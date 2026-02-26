@@ -144,8 +144,8 @@ export default function AdminDosyaMerkeziClient({ items }: { items: FileItem[] }
         await fetch(`/api/blob/delete?url=${encodeURIComponent(urlToDelete)}`, { method: "DELETE" });
       }
       toast.success("Dosya kaldırıldı");
-    } catch (error) {
-      console.error("Delete error:", error);
+    } catch {
+      toast.error("Dosya silinemedi");
     }
   }
 

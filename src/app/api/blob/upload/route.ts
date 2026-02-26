@@ -60,9 +60,8 @@ export async function POST(request: Request): Promise<NextResponse> {
                     }),
                 };
             },
-            onUploadCompleted: async ({ blob, tokenPayload }) => {
-                // This occurs on the server after the upload is completed.
-                console.log("Blob upload completed:", blob, tokenPayload);
+            onUploadCompleted: async () => {
+                // Upload complete — no action needed.
             },
         });
 

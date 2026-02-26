@@ -102,8 +102,8 @@ export default function AdminPostClient({ title, posts, categories, actions }: P
                 await fetch(`/api/blob/delete?url=${encodeURIComponent(urlToDelete)}`, { method: "DELETE" });
             }
             toast.success("Kapak görseli kaldırıldı");
-        } catch (error) {
-            console.error("Delete error:", error);
+        } catch {
+            toast.error("Görsel silinemedi");
         }
     }
 

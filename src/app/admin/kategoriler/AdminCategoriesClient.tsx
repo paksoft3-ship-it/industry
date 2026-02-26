@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import MaterialIcon from "@/components/ui/MaterialIcon";
 import { createCategory, updateCategory, deleteCategory } from "@/lib/actions/categories";
+import MediaUploader from "@/components/admin/MediaUploader";
 
 type Category = {
   id: string;
@@ -206,24 +207,17 @@ export default function AdminCategoriesClient({ categories }: { categories: Cate
     if (modal.mode === "create") setFormSlug(slugify(val));
   }
 
-  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setUploading(true);
+  async function handleRemoveImage() {
+    if (!formImage) return;
+    const urlToDelete = formImage;
+    setFormImage("");
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("entity", "categories");
-      const res = await fetch("/api/upload", { method: "POST", body: formData });
-      if (!res.ok) throw new Error();
-      const { url } = await res.json();
-      setFormImage(url);
-      toast.success("Görsel yüklendi");
+      if (urlToDelete.includes("public.blob.vercel-storage.com")) {
+        await fetch(`/api/blob/delete?url=${encodeURIComponent(urlToDelete)}`, { method: "DELETE" });
+      }
+      toast.success("Görsel kaldırıldı");
     } catch {
-      toast.error("Görsel yüklenemedi");
-    } finally {
-      setUploading(false);
-      e.target.value = "";
+      toast.error("Görsel silinemedi");
     }
   }
 
@@ -427,17 +421,25 @@ export default function AdminCategoriesClient({ categories }: { categories: Cate
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">Görsel</label>
-                {formImage && (
-                  <div className="mb-2 flex items-center gap-2">
-                    <img src={formImage} alt="" className="h-16 w-16 object-cover rounded-lg" />
-                    <button type="button" onClick={() => setFormImage("")} className="text-red-500 text-sm">Kaldır</button>
+                {formImage ? (
+                  <div className="mb-4 relative group">
+                    <div className="h-32 w-full bg-gray-50 rounded-xl border border-gray-200 flex items-center justify-center overflow-hidden">
+                      <img src={formImage} alt="" className="h-full w-full object-contain p-2" />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleRemoveImage}
+                      className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <MaterialIcon icon="delete" className="text-lg" />
+                    </button>
                   </div>
+                ) : (
+                  <MediaUploader
+                    folderPrefix="categories"
+                    onUploaded={(items) => setFormImage(items[0].url)}
+                  />
                 )}
-                <label className="w-full py-2 border-2 border-dashed border-gray-200 rounded-lg text-sm text-gray-500 hover:border-primary/30 hover:text-primary transition-colors flex items-center justify-center gap-2 cursor-pointer">
-                  <MaterialIcon icon="cloud_upload" className="text-lg" />
-                  {uploading ? "Yükleniyor..." : "Görsel Yükle"}
-                  <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" disabled={uploading} />
-                </label>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
