@@ -5,11 +5,12 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 interface Props {
-    params: { categorySlug: string; postSlug: string };
+    params: Promise<{ categorySlug: string; postSlug: string }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-    const post = await getBlogPostBySlug(params.categorySlug, params.postSlug);
+    const { categorySlug, postSlug } = await params;
+    const post = await getBlogPostBySlug(categorySlug, postSlug);
     if (!post) return { title: "Yazı Bulunamadı" };
 
     const p = post as any;
@@ -20,7 +21,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function BlogPostDetailPage({ params }: Props) {
-    const post = await getBlogPostBySlug(params.categorySlug, params.postSlug);
+    const { categorySlug, postSlug } = await params;
+    const post = await getBlogPostBySlug(categorySlug, postSlug);
     if (!post) notFound();
 
     const p = post as any;

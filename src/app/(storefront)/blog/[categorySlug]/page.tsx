@@ -5,12 +5,13 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 interface Props {
-    params: { categorySlug: string };
+    params: Promise<{ categorySlug: string }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
+    const { categorySlug } = await params;
     const categories = await getBlogCategories();
-    const category = categories.find((c) => c.slug === params.categorySlug);
+    const category = categories.find((c) => c.slug === categorySlug);
     if (!category) return { title: "Kategori Bulunamadı" };
 
     return {
@@ -20,12 +21,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function BlogCategoryPage({ params }: Props) {
+    const { categorySlug } = await params;
     const [posts, categories] = await Promise.all([
-        getBlogPostsByCategory(params.categorySlug),
+        getBlogPostsByCategory(categorySlug),
         getBlogCategories(),
     ]);
 
-    const category = categories.find((c) => c.slug === params.categorySlug);
+    const category = categories.find((c) => c.slug === categorySlug);
     if (!category) notFound();
 
     return (
