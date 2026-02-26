@@ -31,6 +31,7 @@ export async function POST(request: Request): Promise<NextResponse> {
                     "files/",
                     "settings/",
                     "avatars/",
+                    "editor/",
                 ];
 
                 const isAllowed = allowedPrefixes.some((prefix) => pathname.startsWith(prefix));
