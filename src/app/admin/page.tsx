@@ -174,7 +174,7 @@ export default async function AdminDashboard() {
                           #{order.orderNumber}
                         </Link>
                       </td>
-                      <td className="px-6 py-4 text-gray-700">{order.user.firstName} {order.user.lastName}</td>
+                      <td className="px-6 py-4 text-gray-700">{order.user ? `${order.user.firstName} ${order.user.lastName}` : <span className="text-gray-400 italic">Misafir</span>}</td>
                       <td className="px-6 py-4 text-gray-500">{order.createdAt.toLocaleDateString("tr-TR")}</td>
                       <td className="px-6 py-4 font-medium text-gray-800">{formatCurrency(Number(order.total))}</td>
                       <td className="px-6 py-4">

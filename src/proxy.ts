@@ -56,7 +56,9 @@ export default auth((req) => {
   }
 
   // ── Protected customer routes ─────────────────────────────────────────────
-  const customerProtected = ["/hesap", "/favoriler", "/odeme", "/siparis"];
+  // /odeme and /siparis are NOT protected here — odeme/page.tsx handles the
+  // auth check server-side and redirects to /odeme/giris for unauthenticated guests.
+  const customerProtected = ["/hesap", "/favoriler"];
   if (customerProtected.some((p) => pathname.startsWith(p))) {
     if (!isLoggedIn) {
       const loginUrl = new URL("/uye-girisi-sayfasi", origin);
@@ -69,5 +71,5 @@ export default auth((req) => {
 });
 
 export const config = {
-  matcher: ["/admin/:path*", "/hesap/:path*", "/favoriler/:path*", "/odeme/:path*", "/odeme", "/siparis/:path*"],
+  matcher: ["/admin/:path*", "/hesap/:path*", "/favoriler/:path*"],
 };

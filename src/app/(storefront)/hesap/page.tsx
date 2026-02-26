@@ -107,37 +107,60 @@ export default async function HesapPage() {
                 </Link>
               </div>
             ) : (
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-gray-100">
-                    <th className="text-left p-4 font-medium text-gray-400">Sipariş No</th>
-                    <th className="text-left p-4 font-medium text-gray-400">Tarih</th>
-                    <th className="text-left p-4 font-medium text-gray-400">Durum</th>
-                    <th className="text-right p-4 font-medium text-gray-400">Tutar</th>
-                  </tr>
-                </thead>
-                <tbody>
+              <div>
+                {/* Desktop table */}
+                <table className="w-full text-sm hidden sm:table">
+                  <thead>
+                    <tr className="border-b border-gray-100">
+                      <th className="text-left p-4 font-medium text-gray-400">Sipariş No</th>
+                      <th className="text-left p-4 font-medium text-gray-400">Tarih</th>
+                      <th className="text-left p-4 font-medium text-gray-400">Durum</th>
+                      <th className="text-right p-4 font-medium text-gray-400">Tutar</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {recentOrders.map((order) => {
+                      const st = statusLabels[order.status] ?? { label: order.status, color: "text-gray-600 bg-gray-50" };
+                      return (
+                        <tr key={order.orderNumber} className="border-b border-gray-50 hover:bg-gray-50/50">
+                          <td className="p-4 font-medium text-primary">{order.orderNumber}</td>
+                          <td className="p-4 text-gray-500">
+                            {new Date(order.createdAt).toLocaleDateString("tr-TR", { day: "numeric", month: "long", year: "numeric" })}
+                          </td>
+                          <td className="p-4">
+                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${st.color}`}>
+                              {st.label}
+                            </span>
+                          </td>
+                          <td className="p-4 text-right font-medium text-primary">
+                            {Number(order.total).toLocaleString("tr-TR", { minimumFractionDigits: 2 })} {order.currency}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+                {/* Mobile cards */}
+                <div className="sm:hidden divide-y divide-gray-50">
                   {recentOrders.map((order) => {
                     const st = statusLabels[order.status] ?? { label: order.status, color: "text-gray-600 bg-gray-50" };
                     return (
-                      <tr key={order.orderNumber} className="border-b border-gray-50 hover:bg-gray-50/50">
-                        <td className="p-4 font-medium text-primary">{order.orderNumber}</td>
-                        <td className="p-4 text-gray-500">
-                          {new Date(order.createdAt).toLocaleDateString("tr-TR", { day: "numeric", month: "long", year: "numeric" })}
-                        </td>
-                        <td className="p-4">
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${st.color}`}>
-                            {st.label}
+                      <div key={order.orderNumber} className="p-4 space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="font-semibold text-primary text-sm">{order.orderNumber}</span>
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${st.color}`}>{st.label}</span>
+                        </div>
+                        <div className="flex items-center justify-between text-xs text-gray-400">
+                          <span>{new Date(order.createdAt).toLocaleDateString("tr-TR", { day: "numeric", month: "long", year: "numeric" })}</span>
+                          <span className="font-semibold text-primary text-sm">
+                            {Number(order.total).toLocaleString("tr-TR", { minimumFractionDigits: 2 })} {order.currency}
                           </span>
-                        </td>
-                        <td className="p-4 text-right font-medium text-primary">
-                          {Number(order.total).toLocaleString("tr-TR", { minimumFractionDigits: 2 })} {order.currency}
-                        </td>
-                      </tr>
+                        </div>
+                      </div>
                     );
                   })}
-                </tbody>
-              </table>
+                </div>
+              </div>
             )}
           </div>
         </div>

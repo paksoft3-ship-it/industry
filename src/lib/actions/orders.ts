@@ -2,6 +2,7 @@
 import prisma from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
 
 function generateOrderNumber() {
   const prefix = "STM";
@@ -266,18 +267,51 @@ export async function placeOrder(data: {
   };
   couponCode?: string;
   notes?: string;
+  guestEmail?: string;
 }): Promise<PlaceOrderResult> {
   try {
     const session = await auth();
-    if (!session?.user) return { ok: false, error: "Sipariş verebilmek için giriş yapmanız gerekiyor." };
+    const isGuest = !session?.user;
 
-    const userId = session.user.id;
+    // Guest must provide an email
+    if (isGuest && !data.guestEmail?.trim()) {
+      return { ok: false, error: "Misafir siparişi için e-posta adresi zorunludur." };
+    }
 
-    // Get live cart items from DB
-    const cartItems = await prisma.cartItem.findMany({
-      where: { userId },
-      include: { product: true },
-    });
+    const userId = session?.user?.id ?? null;
+
+    // Get cart items — DB for logged-in users, cookie for guests
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let cartItems: { productId: string; quantity: number; product: any }[] = [];
+
+    if (userId) {
+      const dbItems = await prisma.cartItem.findMany({
+        where: { userId },
+        include: { product: true },
+      });
+      cartItems = dbItems.map((i) => ({
+        productId: i.productId,
+        quantity: i.quantity,
+        product: i.product,
+      }));
+    } else {
+      // Guest: read cookie cart, then fetch products
+      const cookieStore = await cookies();
+      const raw = cookieStore.get("guest_cart")?.value;
+      if (raw) {
+        const guestCart: { productId: string; quantity: number }[] = JSON.parse(raw);
+        if (guestCart.length > 0) {
+          const products = await prisma.product.findMany({
+            where: { id: { in: guestCart.map((i) => i.productId) }, isActive: true },
+          });
+          cartItems = guestCart.flatMap((item) => {
+            const product = products.find((p) => p.id === item.productId);
+            if (!product) return [];
+            return [{ productId: item.productId, quantity: item.quantity, product }];
+          });
+        }
+      }
+    }
 
     if (cartItems.length === 0) return { ok: false, error: "Sepetiniz boş." };
 
@@ -339,6 +373,7 @@ export async function placeOrder(data: {
       data: {
         orderNumber: generateOrderNumber(),
         userId,
+        guestEmail: isGuest ? data.guestEmail : null,
         addressId: addressRecord.id,
         subtotal,
         shippingCost,
@@ -351,15 +386,24 @@ export async function placeOrder(data: {
     });
 
     // Decrease stock and clear cart in parallel
-    await Promise.all([
-      ...cartItems.map((item) =>
-        prisma.product.update({
-          where: { id: item.productId },
-          data: { stockCount: { decrement: item.quantity } },
-        })
-      ),
-      prisma.cartItem.deleteMany({ where: { userId } }),
-    ]);
+    const stockUpdates = cartItems.map((item) =>
+      prisma.product.update({
+        where: { id: item.productId },
+        data: { stockCount: { decrement: item.quantity } },
+      })
+    );
+
+    if (userId) {
+      await Promise.all([
+        ...stockUpdates,
+        prisma.cartItem.deleteMany({ where: { userId } }),
+      ]);
+    } else {
+      await Promise.all(stockUpdates);
+      // Clear guest cart cookie
+      const cookieStore = await cookies();
+      cookieStore.set("guest_cart", "[]", { httpOnly: true, sameSite: "lax", path: "/" });
+    }
 
     revalidatePath("/hesap/siparisler");
     revalidatePath("/admin/siparisler");

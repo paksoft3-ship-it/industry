@@ -48,7 +48,7 @@ model PasswordResetToken {
 
 model Address {
   id         String  @id @default(cuid())
-  userId     String
+  userId     String?
   title      String
   firstName  String
   lastName   String
@@ -58,7 +58,7 @@ model Address {
   address    String
   postalCode String?
   isDefault  Boolean @default(false)
-  user       User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user       User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
   orders     Order[]
 
   @@index([userId])
@@ -322,7 +322,8 @@ model ProductAnswer {
 model Order {
   id             String        @id @default(cuid())
   orderNumber    String        @unique
-  userId         String
+  userId         String?
+  guestEmail     String?
   addressId      String
   status         OrderStatus   @default(PENDING)
   paymentStatus  PaymentStatus @default(PENDING)
@@ -338,7 +339,7 @@ model Order {
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
   address        Address       @relation(fields: [addressId], references: [id])
-  user           User          @relation(fields: [userId], references: [id])
+  user           User?         @relation(fields: [userId], references: [id])
   items          OrderItem[]
 
   @@index([userId])

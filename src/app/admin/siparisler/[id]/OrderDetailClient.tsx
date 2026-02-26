@@ -41,6 +41,7 @@ type Order = {
     address: string;
     postalCode: string | null;
   };
+  guestEmail?: string | null;
   user: {
     id: string;
     firstName: string;
@@ -48,7 +49,7 @@ type Order = {
     email: string;
     phone: string | null;
     _count: { orders: number };
-  };
+  } | null;
 };
 
 const statusColors: Record<string, string> = {
@@ -370,33 +371,47 @@ export default function OrderDetailClient({ order }: { order: Order }) {
             <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold text-gray-800 mb-4">
               Müşteri Bilgileri
             </h2>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-11 h-11 bg-primary/10 rounded-full flex items-center justify-center">
-                <MaterialIcon icon="person" className="text-primary text-xl" />
-              </div>
-              <div>
-                <p className="font-medium text-gray-800">{order.user.firstName} {order.user.lastName}</p>
-                <p className="text-sm text-gray-500">{order.user.email}</p>
-              </div>
-            </div>
-            <div className="space-y-2 text-sm">
-              {order.user.phone && (
-                <div className="flex items-center gap-2 text-gray-600">
-                  <MaterialIcon icon="phone" className="text-gray-400 text-lg" />
-                  <span>{order.user.phone}</span>
+            {order.user ? (
+              <>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-11 h-11 bg-primary/10 rounded-full flex items-center justify-center">
+                    <MaterialIcon icon="person" className="text-primary text-xl" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-gray-800">{order.user.firstName} {order.user.lastName}</p>
+                    <p className="text-sm text-gray-500">{order.user.email}</p>
+                  </div>
                 </div>
-              )}
-              <div className="flex items-center gap-2 text-gray-600">
-                <MaterialIcon icon="shopping_bag" className="text-gray-400 text-lg" />
-                <span>{order.user._count.orders} sipariş</span>
+                <div className="space-y-2 text-sm">
+                  {order.user.phone && (
+                    <div className="flex items-center gap-2 text-gray-600">
+                      <MaterialIcon icon="phone" className="text-gray-400 text-lg" />
+                      <span>{order.user.phone}</span>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-2 text-gray-600">
+                    <MaterialIcon icon="shopping_bag" className="text-gray-400 text-lg" />
+                    <span>{order.user._count.orders} sipariş</span>
+                  </div>
+                </div>
+                <Link
+                  href={`/admin/musteriler/${order.user.id}`}
+                  className="block mt-4 text-center text-sm text-primary hover:underline font-medium"
+                >
+                  Müşteri Profilini Görüntüle
+                </Link>
+              </>
+            ) : (
+              <div className="flex items-center gap-3">
+                <div className="w-11 h-11 bg-gray-100 rounded-full flex items-center justify-center">
+                  <MaterialIcon icon="person_outline" className="text-gray-400 text-xl" />
+                </div>
+                <div>
+                  <p className="font-medium text-gray-500 italic">Misafir Sipariş</p>
+                  <p className="text-sm text-gray-400">{order.guestEmail || "—"}</p>
+                </div>
               </div>
-            </div>
-            <Link
-              href={`/admin/musteriler/${order.user.id}`}
-              className="block mt-4 text-center text-sm text-primary hover:underline font-medium"
-            >
-              Müşteri Profilini Görüntüle
-            </Link>
+            )}
           </div>
 
           {/* Shipping Address */}

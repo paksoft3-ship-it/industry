@@ -12,7 +12,8 @@ type Order = {
   paymentStatus: string;
   total: number;
   createdAt: string;
-  user: { firstName: string; lastName: string; email: string };
+  guestEmail?: string | null;
+  user: { firstName: string; lastName: string; email: string } | null;
   _count: { items: number };
 };
 
@@ -174,8 +175,17 @@ export default function AdminOrdersClient({
                   </td>
                   <td className="px-6 py-4">
                     <div>
-                      <p className="font-medium text-gray-800">{order.user.firstName} {order.user.lastName}</p>
-                      <p className="text-xs text-gray-500">{order.user.email}</p>
+                      {order.user ? (
+                        <>
+                          <p className="font-medium text-gray-800">{order.user.firstName} {order.user.lastName}</p>
+                          <p className="text-xs text-gray-500">{order.user.email}</p>
+                        </>
+                      ) : (
+                        <>
+                          <p className="font-medium text-gray-500 italic">Misafir</p>
+                          <p className="text-xs text-gray-400">{order.guestEmail || "—"}</p>
+                        </>
+                      )}
                     </div>
                   </td>
                   <td className="px-6 py-4 text-gray-500">

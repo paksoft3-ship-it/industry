@@ -27,7 +27,7 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <div className="flex items-center gap-3 mb-6">
-              <div className="relative h-12 w-64">
+              <div className="relative h-10 w-40 sm:h-12 sm:w-64">
                 <Image
                   src="/images/sivtech_makina_horizontal.png"
                   alt={siteName}

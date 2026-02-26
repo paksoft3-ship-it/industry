@@ -156,8 +156,8 @@ export default function ProductDetailClient({ product }: { product: ProductData 
           </div>
 
           {/* Quantity & Add to Cart */}
-          <div className="flex items-center gap-4">
-            <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden self-start">
               <button
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
                 className="px-4 py-3 text-gray-600 hover:bg-gray-50"
@@ -176,13 +176,13 @@ export default function ProductDetailClient({ product }: { product: ProductData 
             <button
               onClick={handleAddToCart}
               disabled={!product.inStock || loading}
-              className="flex-1 bg-primary hover:bg-primary-dark text-white font-bold py-3 px-8 rounded-lg flex items-center justify-center gap-2 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+              className="flex-1 bg-primary hover:bg-primary-dark text-white font-bold py-3 px-6 rounded-lg flex items-center justify-center gap-2 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
             >
               <MaterialIcon icon={addedToCart ? "check" : "shopping_cart"} />
               {addedToCart ? "Sepete Eklendi!" : product.inStock ? "Sepete Ekle" : "Stokta Yok"}
             </button>
 
-            <button className="p-3 border border-gray-200 rounded-lg text-gray-400 hover:text-red-500 hover:border-red-200 transition-colors">
+            <button className="p-3 border border-gray-200 rounded-lg text-gray-400 hover:text-red-500 hover:border-red-200 transition-colors self-start sm:self-auto">
               <MaterialIcon icon="favorite_border" />
             </button>
           </div>
