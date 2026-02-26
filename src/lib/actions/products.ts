@@ -217,7 +217,8 @@ export async function createProduct(data: {
   seoDesc?: string;
   categoryIds?: string[];
   attributes?: { key: string; value: string }[];
-  imageUrls?: string[];
+  images?: { url: string; alt?: string }[];
+  downloads?: { title: string; fileUrl: string; fileType: string; fileSize?: string }[];
 }) {
   const session = await auth();
   if (!session?.user) {
@@ -235,7 +236,7 @@ export async function createProduct(data: {
     throw new Error("Bu işlem için yetkiniz yok.");
   }
 
-  const { categoryIds, attributes, imageUrls, ...productData } = data;
+  const { categoryIds, attributes, images, downloads, ...productData } = data;
 
   // Slug check
   const existingSlug = await prisma.product.findUnique({ where: { slug: data.slug } });
@@ -258,8 +259,11 @@ export async function createProduct(data: {
       attributes: attributes?.length
         ? { create: attributes }
         : undefined,
-      images: imageUrls?.length
-        ? { create: imageUrls.map((url, i) => ({ url, order: i })) }
+      images: images?.length
+        ? { create: images.map((img, i) => ({ url: img.url, alt: img.alt || data.name, order: i })) }
+        : undefined,
+      downloads: downloads?.length
+        ? { create: downloads }
         : undefined,
     },
   });
@@ -307,7 +311,8 @@ export async function updateProduct(
     seoDesc?: string | null;
     categoryIds?: string[];
     attributes?: { key: string; value: string }[];
-    imageUrls?: string[];
+    images?: { url: string; alt?: string }[];
+    downloads?: { title: string; fileUrl: string; fileType: string; fileSize?: string }[];
   }
 ) {
   const session = await auth();
@@ -346,7 +351,7 @@ export async function updateProduct(
     }
   }
 
-  const { categoryIds, attributes, imageUrls, ...productData } = data;
+  const { categoryIds, attributes, images, downloads, ...productData } = data;
 
   // Update categories if provided
   if (categoryIds !== undefined) {
@@ -369,11 +374,29 @@ export async function updateProduct(
   }
 
   // Update images if provided
-  if (imageUrls !== undefined) {
+  if (images !== undefined) {
     await prisma.productImage.deleteMany({ where: { productId: id } });
-    if (imageUrls.length > 0) {
+    if (images.length > 0) {
       await prisma.productImage.createMany({
-        data: imageUrls.map((url, i) => ({ productId: id, url, order: i })),
+        data: images.map((img: any, i: number) => ({
+          productId: id,
+          url: img.url,
+          alt: img.alt || (productData.name ?? "Ürün görseli"),
+          order: i
+        })),
+      });
+    }
+  }
+
+  // Update downloads if provided
+  if (downloads !== undefined) {
+    await prisma.productDownload.deleteMany({ where: { productId: id } });
+    if (downloads.length > 0) {
+      await prisma.productDownload.createMany({
+        data: downloads.map((d: any) => ({
+          productId: id,
+          ...d
+        })),
       });
     }
   }
