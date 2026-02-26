@@ -6,7 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import MaterialIcon from "@/components/ui/MaterialIcon";
 import { useCart } from "@/context/CartContext";
-import { placeOrder } from "@/lib/actions/orders";
+import { placeOrder, type PlaceOrderResult } from "@/lib/actions/orders";
 import { TURKIYE_ILLER } from "@/data/turkiyeIller";
 
 const steps = [
@@ -73,23 +73,23 @@ export default function OdemePage() {
     if (!termsAccepted) { setError("Sözleşmeyi kabul etmelisiniz."); return; }
     setError("");
     startTransition(async () => {
-      try {
-        const result = await placeOrder({
-          address: {
-            title: "Teslimat Adresim",
-            firstName: addr.firstName,
-            lastName: addr.lastName,
-            phone: addr.phone,
-            city: addr.city,
-            district: addr.district,
-            address: addr.address,
-            postalCode: addr.postalCode || undefined,
-          },
-        });
-        router.push(`/siparis/tesekkurler?no=${result.orderNumber}&total=${result.total}`);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Sipariş oluşturulamadı.");
+      const result: PlaceOrderResult = await placeOrder({
+        address: {
+          title: "Teslimat Adresim",
+          firstName: addr.firstName,
+          lastName: addr.lastName,
+          phone: addr.phone,
+          city: addr.city,
+          district: addr.district,
+          address: addr.address,
+          postalCode: addr.postalCode || undefined,
+        },
+      });
+      if (!result.ok) {
+        setError(result.error);
+        return;
       }
+      router.push(`/siparis/tesekkurler?no=${result.orderNumber}&total=${result.total}`);
     });
   };
 

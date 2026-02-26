@@ -56,7 +56,7 @@ export default auth((req) => {
   }
 
   // ── Protected customer routes ─────────────────────────────────────────────
-  const customerProtected = ["/hesap", "/favoriler"];
+  const customerProtected = ["/hesap", "/favoriler", "/odeme", "/siparis"];
   if (customerProtected.some((p) => pathname.startsWith(p))) {
     if (!isLoggedIn) {
       const loginUrl = new URL("/uye-girisi-sayfasi", origin);
@@ -69,5 +69,5 @@ export default auth((req) => {
 });
 
 export const config = {
-  matcher: ["/admin/:path*", "/hesap/:path*", "/favoriler/:path*"],
+  matcher: ["/admin/:path*", "/hesap/:path*", "/favoriler/:path*", "/odeme/:path*", "/odeme", "/siparis/:path*"],
 };
