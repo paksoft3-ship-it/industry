@@ -62,8 +62,7 @@ export async function updateSettings(data: {
     },
   });
 
+  revalidatePath("/", "layout");
   revalidatePath("/admin/ayarlar");
-  revalidatePath("/");
-  revalidatePath("/iletisim");
   return settings;
 }

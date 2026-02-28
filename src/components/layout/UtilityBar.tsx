@@ -3,9 +3,6 @@ import Link from "next/link";
 import MaterialIcon from "@/components/ui/MaterialIcon";
 import CurrencySwitcher from "@/components/layout/CurrencySwitcher";
 
-const phone = "+90 212 555 00 00";
-const whatsapp = "+90 555 555 55 55";
-const workingHours = "Pzt-Cum: 09:00 - 18:00";
 
 const topBarLinks = [
   { label: "Ana Sayfa", href: "/" },
@@ -30,7 +27,15 @@ function WhatsAppIcon({ className = "" }: { className?: string }) {
   );
 }
 
-export default function UtilityBar() {
+export default function UtilityBar({
+  phone,
+  whatsapp,
+  workingHours,
+}: {
+  phone: string;
+  whatsapp: string;
+  workingHours: string;
+}) {
   return (
     <div className="bg-[#101622] text-white py-2 px-4 md:px-10 lg:px-20 text-xs font-medium border-b border-gray-800">
       <div className="max-w-[1440px] mx-auto flex flex-col md:flex-row justify-between items-center gap-2">

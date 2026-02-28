@@ -3,6 +3,7 @@ import Footer from "@/components/layout/Footer";
 import UtilityBar from "@/components/layout/UtilityBar";
 import { CartProvider } from "@/context/CartContext";
 import { auth } from "@/lib/auth";
+import { getSettings } from "@/lib/actions/settings";
 import type { MegaMenuCategory } from "@/lib/types/menu";
 
 export default async function StorefrontShell({
@@ -16,13 +17,17 @@ export default async function StorefrontShell({
   educationCategories?: any[];
   blogCategories?: any[];
 }) {
-  const session = await auth();
+  const [session, settings] = await Promise.all([auth(), getSettings()]);
   const isLoggedIn = !!session?.user;
   const userName = session?.user?.name ?? "";
 
   return (
     <CartProvider>
-      <UtilityBar />
+      <UtilityBar
+        phone={settings.phone ?? ""}
+        whatsapp={settings.whatsapp ?? ""}
+        workingHours={settings.workingHours ?? ""}
+      />
       <Header
         categories={categories}
         educationCategories={educationCategories}
@@ -31,7 +36,15 @@ export default async function StorefrontShell({
         userName={userName}
       />
       <main className="flex-grow">{children}</main>
-      <Footer />
+      <Footer
+        phone={settings.phone ?? ""}
+        email={settings.email ?? ""}
+        address={settings.address ?? ""}
+        facebookUrl={settings.facebookUrl ?? ""}
+        instagramUrl={settings.instagramUrl ?? ""}
+        linkedinUrl={settings.linkedinUrl ?? ""}
+        siteName={settings.siteName}
+      />
     </CartProvider>
   );
 }

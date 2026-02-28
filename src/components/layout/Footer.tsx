@@ -2,12 +2,6 @@ import Link from "next/link";
 import Image from "next/image";
 import MaterialIcon from "@/components/ui/MaterialIcon";
 
-const siteName = "SivTech Makina";
-const address = "İkitelli OSB Mah. Marmara Sanayi Sitesi M Blok No:12 Başakşehir / İstanbul";
-const phone = "+90 212 555 00 00";
-const email = "info@cncotomasyon.com";
-const social = { facebook: "#", instagram: "#", linkedin: "#" };
-
 const quickLinks = [
   { label: "Ana Sayfa", href: "/" },
   { label: "Ürünler", href: "/kategori/tumu" },
@@ -19,7 +13,23 @@ const quickLinks = [
   { label: "Sipariş Takip", href: "/siparis-takip" },
 ];
 
-export default function Footer() {
+export default function Footer({
+  phone,
+  email,
+  address,
+  facebookUrl,
+  instagramUrl,
+  linkedinUrl,
+  siteName,
+}: {
+  phone: string;
+  email: string;
+  address: string;
+  facebookUrl: string;
+  instagramUrl: string;
+  linkedinUrl: string;
+  siteName: string;
+}) {
   return (
     <footer className="bg-[#0d121c] text-white pt-16 pb-8 border-t border-gray-800">
       <div className="max-w-[1440px] mx-auto px-4 md:px-10 lg:px-20">
@@ -41,24 +51,36 @@ export default function Footer() {
               fiyatlar ve mühendislik desteği ile yanınızdayız.
             </p>
             <div className="flex gap-4">
-              <a
-                href={social.facebook}
-                className="w-8 h-8 rounded bg-gray-800 flex items-center justify-center hover:bg-primary transition-colors text-xs"
-              >
-                FB
-              </a>
-              <a
-                href={social.linkedin}
-                className="w-8 h-8 rounded bg-gray-800 flex items-center justify-center hover:bg-primary transition-colors text-xs"
-              >
-                LI
-              </a>
-              <a
-                href={social.instagram}
-                className="w-8 h-8 rounded bg-gray-800 flex items-center justify-center hover:bg-primary transition-colors text-xs"
-              >
-                IG
-              </a>
+              {facebookUrl && (
+                <a
+                  href={facebookUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-8 h-8 rounded bg-gray-800 flex items-center justify-center hover:bg-primary transition-colors text-xs"
+                >
+                  FB
+                </a>
+              )}
+              {linkedinUrl && (
+                <a
+                  href={linkedinUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-8 h-8 rounded bg-gray-800 flex items-center justify-center hover:bg-primary transition-colors text-xs"
+                >
+                  LI
+                </a>
+              )}
+              {instagramUrl && (
+                <a
+                  href={instagramUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-8 h-8 rounded bg-gray-800 flex items-center justify-center hover:bg-primary transition-colors text-xs"
+                >
+                  IG
+                </a>
+              )}
             </div>
           </div>
 
@@ -84,18 +106,24 @@ export default function Footer() {
               İletişim
             </h4>
             <ul className="space-y-4 text-sm text-gray-400">
-              <li className="flex items-start gap-3">
-                <MaterialIcon icon="location_on" className="text-primary mt-0.5" />
-                <span>{address}</span>
-              </li>
-              <li className="flex items-center gap-3">
-                <MaterialIcon icon="call" className="text-primary" />
-                <span>{phone}</span>
-              </li>
-              <li className="flex items-center gap-3">
-                <MaterialIcon icon="mail" className="text-primary" />
-                <span>{email}</span>
-              </li>
+              {address && (
+                <li className="flex items-start gap-3">
+                  <MaterialIcon icon="location_on" className="text-primary mt-0.5" />
+                  <span>{address}</span>
+                </li>
+              )}
+              {phone && (
+                <li className="flex items-center gap-3">
+                  <MaterialIcon icon="call" className="text-primary" />
+                  <span>{phone}</span>
+                </li>
+              )}
+              {email && (
+                <li className="flex items-center gap-3">
+                  <MaterialIcon icon="mail" className="text-primary" />
+                  <span>{email}</span>
+                </li>
+              )}
             </ul>
           </div>
 
