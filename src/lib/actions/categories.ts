@@ -124,6 +124,7 @@ export async function createCategory(data: {
   }
 
   revalidatePath("/admin/kategoriler");
+  revalidatePath("/", "layout");
   return category;
 }
 
@@ -131,7 +132,7 @@ export async function updateCategory(id: string, data: {
   name?: string;
   slug?: string;
   icon?: string;
-  image?: string;
+  image?: string | null;
   description?: string;
   parentId?: string | null;
   seoSlug?: string | null;
@@ -193,6 +194,7 @@ export async function updateCategory(id: string, data: {
   }
 
   revalidatePath("/admin/kategoriler");
+  revalidatePath("/", "layout");
   return category;
 }
 
@@ -245,4 +247,5 @@ export async function deleteCategory(id: string) {
   }
 
   revalidatePath("/admin/kategoriler");
+  revalidatePath("/", "layout");
 }

@@ -248,7 +248,7 @@ export default function AdminCategoriesClient({ categories }: { categories: Cate
             name: formName,
             slug: formSlug,
             icon: formIcon || undefined,
-            image: formImage || undefined,
+            image: formImage || null,
             description: formDescription || undefined,
             isActive: formIsActive,
             order: parseInt(formOrder, 10) || 0,

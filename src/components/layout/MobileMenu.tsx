@@ -100,6 +100,21 @@ export default function MobileMenu({ onClose, categories, isLoggedIn, userName }
             )}
           </div>
 
+          {/* Kategoriler Header Link */}
+          <div className="px-5 pb-2">
+            <Link
+              href="/kategori/tumu"
+              onClick={onClose}
+              className="flex items-center justify-between p-4 bg-white rounded-xl shadow-sm border border-gray-100 hover:border-primary/30 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <MaterialIcon icon="grid_view" className="text-primary" />
+                <span className="font-bold text-gray-900 text-[15px]">Kategoriler</span>
+              </div>
+              <MaterialIcon icon="chevron_right" className="text-gray-400" />
+            </Link>
+          </div>
+
           {/* Accordion Categories */}
           <div className="flex flex-col gap-2 px-5 pb-6">
             {categories.map((cat, i) => (

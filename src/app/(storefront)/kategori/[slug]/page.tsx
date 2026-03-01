@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import MaterialIcon from "@/components/ui/MaterialIcon";
 import CategoryShowcase from "@/components/categories/CategoryShowcase";
 import CategoryFiltersWrapper from "@/components/categories/CategoryFiltersWrapper";
-import { getCategoryBySlug } from "@/lib/actions/categories";
+import { getCategoryBySlug, getCategoryTree } from "@/lib/actions/categories";
 import { getProducts } from "@/lib/actions/products";
 
 export const dynamic = "force-dynamic";
@@ -19,7 +19,8 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
   const sParams = await searchParams;
 
   if (slug === "tumu") {
-    return <CategoryShowcase />;
+    const allCategories = await getCategoryTree();
+    return <CategoryShowcase categories={allCategories as any} />;
   }
 
   const category = await getCategoryBySlug(slug);
