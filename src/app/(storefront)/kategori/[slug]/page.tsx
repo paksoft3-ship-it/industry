@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import MaterialIcon from "@/components/ui/MaterialIcon";
 import CategoryShowcase from "@/components/categories/CategoryShowcase";
 import CategoryFiltersWrapper from "@/components/categories/CategoryFiltersWrapper";
-import { getCategoryBySlug, getCategoryTree } from "@/lib/actions/categories";
+import { getCategoryBySlug, getCategoryTree, getCategoryProductBrands } from "@/lib/actions/categories";
 import { getProducts } from "@/lib/actions/products";
 
 export const dynamic = "force-dynamic";
@@ -23,7 +23,10 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
     return <CategoryShowcase categories={allCategories as any} />;
   }
 
-  const category = await getCategoryBySlug(slug);
+  const [category, categoryBrands] = await Promise.all([
+    getCategoryBySlug(slug),
+    getCategoryProductBrands(slug),
+  ]);
   if (!category) return notFound();
 
   // Parse filters from searchParams
@@ -105,6 +108,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
               <CategoryFiltersWrapper
                 category={category as any}
                 selectedFilters={attributes}
+                categoryBrands={categoryBrands}
               />
             </div>
           </div>

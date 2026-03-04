@@ -54,6 +54,22 @@ export async function getCategoryBySlug(slug: string) {
   });
 }
 
+export async function getCategoryProductBrands(categorySlug: string) {
+  const products = await prisma.product.findMany({
+    where: {
+      isActive: true,
+      categories: { some: { category: { slug: categorySlug } } },
+      brandId: { not: null },
+    },
+    select: { brand: { select: { name: true, slug: true } } },
+    distinct: ["brandId"],
+    orderBy: { brand: { name: "asc" } },
+  });
+  return products
+    .map((p) => p.brand)
+    .filter((b): b is { name: string; slug: string } => b !== null);
+}
+
 export async function getAllCategories() {
   return prisma.category.findMany({
     where: { isActive: true },

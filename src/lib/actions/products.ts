@@ -49,15 +49,37 @@ export async function getProducts({
   }
 
   if (attributes && Object.keys(attributes).length > 0) {
-    const attributeFilters = Object.entries(attributes).map(([key, values]) => ({
-      attributeValues: {
-        some: {
-          attribute: { key },
-          valueString: { in: values }
-        }
+    const andConditions: any[] = [];
+
+    for (const [key, values] of Object.entries(attributes)) {
+      if (!values || values.length === 0) continue;
+
+      if (key === "brand") {
+        andConditions.push({ brand: { slug: { in: values } } });
+      } else if (key === "minPrice" || key === "maxPrice") {
+        // handled below
+      } else {
+        andConditions.push({
+          attributeValues: {
+            some: { attribute: { key }, valueString: { in: values } }
+          }
+        });
       }
-    }));
-    where.AND = [...(where.AND as any[] || []), ...attributeFilters];
+    }
+
+    // Price range
+    const minP = attributes.minPrice?.[0];
+    const maxP = attributes.maxPrice?.[0];
+    if (minP || maxP) {
+      const priceFilter: any = {};
+      if (minP) priceFilter.gte = parseFloat(minP);
+      if (maxP) priceFilter.lte = parseFloat(maxP);
+      andConditions.push({ price: priceFilter });
+    }
+
+    if (andConditions.length > 0) {
+      where.AND = andConditions;
+    }
   }
 
   const [products, total] = await Promise.all([

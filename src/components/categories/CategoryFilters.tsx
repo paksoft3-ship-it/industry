@@ -5,6 +5,61 @@ import { useState } from "react";
 import MaterialIcon from "@/components/ui/MaterialIcon";
 import { FilterUiType } from "@prisma/client";
 
+function PriceRangeFilter({
+    selectedFilters,
+    onPriceApply,
+}: {
+    selectedFilters: Record<string, string[]>;
+    onPriceApply: (min: string, max: string) => void;
+}) {
+    const [min, setMin] = useState(selectedFilters["minPrice"]?.[0] || "");
+    const [max, setMax] = useState(selectedFilters["maxPrice"]?.[0] || "");
+
+    const apply = () => onPriceApply(min, max);
+
+    const clear = () => {
+        setMin(""); setMax("");
+        onPriceApply("", "");
+    };
+
+    return (
+        <div className="space-y-3">
+            <div className="flex gap-2">
+                <input
+                    type="number"
+                    placeholder="Min"
+                    value={min}
+                    onChange={e => setMin(e.target.value)}
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary"
+                />
+                <input
+                    type="number"
+                    placeholder="Max"
+                    value={max}
+                    onChange={e => setMax(e.target.value)}
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary"
+                />
+            </div>
+            <div className="flex gap-2">
+                <button
+                    onClick={apply}
+                    className="flex-1 bg-primary text-white text-xs font-bold py-2 rounded-lg hover:bg-primary/90 transition-colors"
+                >
+                    Uygula
+                </button>
+                {(min || max) && (
+                    <button
+                        onClick={clear}
+                        className="px-3 py-2 text-xs text-gray-500 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                    >
+                        Temizle
+                    </button>
+                )}
+            </div>
+        </div>
+    );
+}
+
 interface FilterOption {
     value: string;
     label: string;
@@ -26,12 +81,14 @@ interface CategoryFiltersProps {
     filters: FilterGroup[];
     selectedFilters: Record<string, string[]>;
     onFilterChange: (id: string, values: string[]) => void;
+    onPriceChange?: (min: string, max: string) => void;
 }
 
 export default function CategoryFilters({
     filters,
     selectedFilters,
     onFilterChange,
+    onPriceChange,
 }: CategoryFiltersProps) {
     const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>(
         Object.fromEntries(filters.map(f => [f.id, true]))
@@ -64,7 +121,14 @@ export default function CategoryFilters({
                             />
                         </button>
 
-                        {isExpanded && (
+                        {isExpanded && group.type === FilterUiType.RANGE && (
+                            <PriceRangeFilter
+                                selectedFilters={selectedFilters}
+                                onPriceApply={onPriceChange || (() => {})}
+                            />
+                        )}
+
+                        {isExpanded && group.type !== FilterUiType.RANGE && (
                             <div className="space-y-2 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
                                 {group.options.map((option) => {
                                     const isChecked = selected.includes(option.value);
