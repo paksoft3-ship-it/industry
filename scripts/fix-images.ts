@@ -29,7 +29,7 @@ async function main() {
                 data: { image: cat.image }
             });
             updatedCats++;
-        } catch (e) {
+        } catch (e: any) {
             console.log(`Failed to update ${cat.slug}: ${e.message}`);
         }
     }
