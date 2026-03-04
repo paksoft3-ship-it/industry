@@ -142,28 +142,28 @@ export default function MegaMenu({ onClose, menuType = "categories", categories,
     return (
       <>
         {/* Menu */}
-        <div className="absolute left-0 top-full w-full bg-white border-t border-gray-200 shadow-2xl z-[100] py-8">
+        <div className="absolute left-0 top-full w-full bg-white border-t border-gray-200 shadow-2xl z-[100] py-4">
           <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-7 gap-2">
               {items.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`group flex flex-col items-center justify-center text-center p-4 rounded-xl hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-100 ${!item.image ? "h-full min-h-[120px] bg-gray-50 hover:bg-gray-100/80" : ""
+                  className={`group flex flex-col items-center justify-center text-center p-2 rounded-lg hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-100 ${!item.image ? "min-h-[72px] bg-gray-50 hover:bg-gray-100/80" : ""
                     }`}
                   onClick={onClose}
                 >
                   {item.image ? (
-                    <div className="w-full aspect-square relative mb-4 bg-white rounded-lg overflow-hidden border border-gray-100 group-hover:border-primary/20 transition-colors p-2">
+                    <div className="w-full aspect-square relative mb-2 bg-white rounded-md overflow-hidden border border-gray-100 group-hover:border-primary/20 transition-colors">
                       <Image
                         src={item.image}
                         alt={item.title}
                         fill
-                        className="object-contain p-2 group-hover:scale-105 transition-transform duration-300"
+                        className="object-contain p-1.5 group-hover:scale-105 transition-transform duration-300"
                       />
                     </div>
                   ) : null}
-                  <span className={`text-sm font-bold text-gray-700 group-hover:text-primary leading-tight ${!item.image ? "text-base px-2" : ""}`}>
+                  <span className={`text-xs font-bold text-gray-700 group-hover:text-primary leading-tight ${!item.image ? "text-xs px-1" : ""}`}>
                     {item.title}
                   </span>
                 </Link>
@@ -194,28 +194,28 @@ export default function MegaMenu({ onClose, menuType = "categories", categories,
   return (
     <>
       {/* Menu */}
-      <div className="absolute left-0 top-full w-full bg-white border-t border-gray-200 shadow-2xl z-40 h-[560px]">
+      <div className="absolute left-0 top-full w-full bg-white border-t border-gray-200 shadow-2xl z-40 h-[420px]">
         <div className="max-w-[1440px] mx-auto h-full flex">
           {/* LEFT: Categories */}
-          <div className="w-1/4 min-w-[280px] border-r border-gray-100 h-full overflow-y-auto py-4">
+          <div className="w-1/4 min-w-[220px] border-r border-gray-100 h-full overflow-y-auto py-2">
             <ul className="flex flex-col">
               {categories.map((cat, i) => (
                 <li key={cat.id}>
                   <button
-                    className={`w-full flex items-center justify-between px-6 py-4 text-left transition-all ${i === activeCategory
+                    className={`w-full flex items-center justify-between px-4 py-2.5 text-left transition-all ${i === activeCategory
                       ? "bg-gray-50 border-l-4 border-primary text-primary font-bold"
                       : "text-gray-600 hover:bg-gray-50 hover:text-primary font-medium border-l-4 border-transparent hover:border-gray-200"
                       }`}
                     onMouseEnter={() => setActiveCategory(i)}
                     onClick={() => setActiveCategory(i)}
                   >
-                    <div className="flex items-center gap-3">
-                      <MaterialIcon icon={cat.icon || "category"} />
+                    <div className="flex items-center gap-2">
+                      <MaterialIcon icon={cat.icon || "category"} className="text-base" />
                       <span className="text-sm">{cat.name}</span>
                     </div>
                     <MaterialIcon
                       icon="arrow_forward_ios"
-                      className={`text-sm ${i === activeCategory ? "" : "opacity-0 group-hover:opacity-100 text-gray-400"
+                      className={`text-xs ${i === activeCategory ? "" : "opacity-0 group-hover:opacity-100 text-gray-400"
                         }`}
                     />
                   </button>
@@ -225,36 +225,36 @@ export default function MegaMenu({ onClose, menuType = "categories", categories,
           </div>
 
           {/* MIDDLE: Subcategories */}
-          <div className="flex-1 p-8 overflow-y-auto">
-            <div className="mb-6 pb-4 border-b border-gray-100 flex items-center justify-between">
-              <h2 className="text-xl font-bold text-gray-900 font-[family-name:var(--font-display)]">
+          <div className="flex-1 px-6 py-4 overflow-y-auto">
+            <div className="mb-3 pb-3 border-b border-gray-100 flex items-center justify-between">
+              <h2 className="text-base font-bold text-gray-900 font-[family-name:var(--font-display)]">
                 {category.name}
               </h2>
               <Link
                 href={`/kategori/${category.slug}`}
-                className="text-sm font-semibold text-primary hover:text-primary-dark flex items-center gap-1"
+                className="text-xs font-semibold text-primary hover:text-primary-dark flex items-center gap-1"
                 onClick={onClose}
               >
-                Tümünü Gör <MaterialIcon icon="arrow_forward" className="text-base" />
+                Tümünü Gör <MaterialIcon icon="arrow_forward" className="text-sm" />
               </Link>
             </div>
-            <div className="grid grid-cols-2 gap-y-8 gap-x-12">
+            <div className="grid grid-cols-2 gap-y-4 gap-x-8">
               {category.children.map((sub) => (
                 <div key={sub.id} className="group">
                   <Link
                     href={`/kategori/${sub.slug}`}
-                    className="block text-gray-900 font-bold mb-3 hover:text-primary flex items-center gap-2 text-sm"
+                    className="block text-gray-900 font-bold mb-1.5 hover:text-primary flex items-center gap-1 text-xs"
                     onClick={onClose}
                   >
-                    <MaterialIcon icon="arrow_right" className="text-gray-400 group-hover:text-primary" />
+                    <MaterialIcon icon="arrow_right" className="text-gray-400 group-hover:text-primary text-base" />
                     {sub.name}
                   </Link>
-                  <ul className="space-y-2 pl-8 border-l border-gray-100">
+                  <ul className="space-y-1 pl-5 border-l border-gray-100">
                     {sub.children.map((item) => (
                       <li key={item.id}>
                         <Link
                           href={`/kategori/${item.slug}`}
-                          className="text-gray-500 hover:text-primary text-sm block transition-colors"
+                          className="text-gray-500 hover:text-primary text-xs block transition-colors"
                           onClick={onClose}
                         >
                           {item.name}
@@ -268,14 +268,14 @@ export default function MegaMenu({ onClose, menuType = "categories", categories,
           </div>
 
           {/* RIGHT: Promo & Quick Links */}
-          <div className="w-1/4 min-w-[280px] bg-gray-50 p-6 flex flex-col gap-6 border-l border-gray-100">
+          <div className="w-1/4 min-w-[240px] bg-gray-50 p-4 flex flex-col gap-4 border-l border-gray-100 overflow-y-auto">
             {/* Promo Banner */}
             <Link
               href={megaMenuPromo.href}
               className="rounded-xl overflow-hidden bg-white shadow-sm border border-gray-200 group cursor-pointer hover:shadow-md transition-shadow"
               onClick={onClose}
             >
-              <div className="h-32 bg-gray-200 relative overflow-hidden">
+              <div className="h-24 bg-gray-200 relative overflow-hidden">
                 <Image
                   src={megaMenuPromo.image}
                   alt={megaMenuPromo.title}
@@ -284,40 +284,40 @@ export default function MegaMenu({ onClose, menuType = "categories", categories,
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                 <div className="absolute bottom-2 left-3">
-                  <span className="bg-primary text-white text-xs font-bold px-2 py-1 rounded">
+                  <span className="bg-primary text-white text-xs font-bold px-2 py-0.5 rounded">
                     {megaMenuPromo.badge}
                   </span>
                 </div>
               </div>
-              <div className="p-4">
-                <h3 className="text-gray-900 font-bold mb-1 leading-tight">{megaMenuPromo.title}</h3>
-                <p className="text-gray-500 text-sm mb-3">{megaMenuPromo.description}</p>
-                <span className="text-primary text-sm font-bold flex items-center gap-1">
-                  İncele <MaterialIcon icon="arrow_forward" className="text-base" />
+              <div className="p-3">
+                <h3 className="text-gray-900 font-bold mb-0.5 leading-tight text-sm">{megaMenuPromo.title}</h3>
+                <p className="text-gray-500 text-xs mb-2">{megaMenuPromo.description}</p>
+                <span className="text-primary text-xs font-bold flex items-center gap-1">
+                  İncele <MaterialIcon icon="arrow_forward" className="text-sm" />
                 </span>
               </div>
             </Link>
 
             {/* Quick Links */}
-            <div className="rounded-xl bg-white shadow-sm border border-gray-200 p-5 flex-1">
-              <h4 className="text-gray-900 font-bold mb-4 flex items-center gap-2 font-[family-name:var(--font-display)]">
-                <MaterialIcon icon="build" className="text-primary" />
+            <div className="rounded-xl bg-white shadow-sm border border-gray-200 p-3 flex-1">
+              <h4 className="text-gray-900 font-bold mb-2 flex items-center gap-1.5 text-sm font-[family-name:var(--font-display)]">
+                <MaterialIcon icon="build" className="text-primary text-base" />
                 Hızlı Erişim
               </h4>
-              <div className="space-y-3">
+              <div className="space-y-1">
                 {megaMenuQuickLinks.map((link) => (
                   <Link
                     key={link.title}
                     href={link.href}
-                    className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 group transition-colors"
+                    className="flex items-center gap-2 p-1.5 rounded-lg hover:bg-gray-50 group transition-colors"
                     onClick={onClose}
                   >
-                    <div className="bg-blue-50 text-primary rounded p-1.5 group-hover:bg-primary group-hover:text-white transition-colors">
-                      <MaterialIcon icon={link.icon} className="text-xl" />
+                    <div className="bg-blue-50 text-primary rounded p-1 group-hover:bg-primary group-hover:text-white transition-colors">
+                      <MaterialIcon icon={link.icon} className="text-base" />
                     </div>
                     <div className="flex flex-col">
-                      <span className="text-sm font-semibold text-gray-800">{link.title}</span>
-                      <span className="text-xs text-gray-500">{link.description}</span>
+                      <span className="text-xs font-semibold text-gray-800">{link.title}</span>
+                      <span className="text-[10px] text-gray-500">{link.description}</span>
                     </div>
                   </Link>
                 ))}
