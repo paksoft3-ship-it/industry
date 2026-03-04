@@ -7,7 +7,6 @@ async function main() {
         { name: 'Product', model: prisma.product, fields: ['description'] },
         { name: 'ProductImage', model: prisma.productImage, fields: ['url'] },
         { name: 'Brand', model: prisma.brand, fields: ['logo', 'description'] },
-        { name: 'Post', model: prisma.post, fields: ['image', 'content'] },
     ];
 
     for (const table of tables) {
