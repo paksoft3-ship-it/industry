@@ -45,12 +45,12 @@ export default function CategoryFilters({
 
     return (
         <div className="space-y-6">
-            {filters.map((group) => {
+            {filters.map((group, index) => {
                 const isExpanded = expandedGroups[group.id];
                 const selected = selectedFilters[group.id] || [];
 
                 return (
-                    <div key={group.id} className="border-b border-gray-100 pb-6 last:border-0 last:pb-0">
+                    <div key={`${group.id}-${index}`} className="border-b border-gray-100 pb-6 last:border-0 last:pb-0">
                         <button
                             onClick={() => toggleGroup(group.id)}
                             className="flex items-center justify-between w-full mb-4 text-left group"
