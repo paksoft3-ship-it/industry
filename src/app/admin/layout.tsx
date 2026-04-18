@@ -58,17 +58,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pathname = usePathname();
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  // Auth pages render standalone — no sidebar
-  if (ADMIN_AUTH_PATHS.some((p) => pathname.startsWith(p))) {
-    return <>{children}</>;
-  }
-
-  const isActive = (href: string) => {
-    if (href === "/admin") return pathname === "/admin";
-    return pathname.startsWith(href);
-  };
-
   const [sessionUser, setSessionUser] = useState<{ name: string; email: string } | null>(null);
 
   useEffect(() => {
@@ -84,6 +73,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   useEffect(() => {
     setSidebarOpen(false);
   }, [pathname]);
+
+  // Auth pages render standalone — no sidebar
+  if (ADMIN_AUTH_PATHS.some((p) => pathname.startsWith(p))) {
+    return <>{children}</>;
+  }
+
+  const isActive = (href: string) => {
+    if (href === "/admin") return pathname === "/admin";
+    return pathname.startsWith(href);
+  };
 
   const SidebarContent = () => (
     <>
