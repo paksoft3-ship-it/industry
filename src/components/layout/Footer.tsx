@@ -255,12 +255,15 @@ export default function Footer({
                 </svg>
               </div>
 
-              {/* PayPal */}
+              {/* iyzico */}
               <div className="h-7 px-2 bg-white rounded flex items-center justify-center">
-                <svg viewBox="0 0 101 32" className="h-4 w-auto">
-                  <path d="M12.237 2.8H5.437c-.483 0-.894.35-.97.83L1.697 27.3c-.056.35.217.665.573.665h3.33c.483 0 .894-.35.97-.832l.815-5.178c.075-.48.487-.832.97-.832h2.14c4.46 0 7.035-2.16 7.706-6.437.304-1.872.013-3.34-.864-4.368-.964-1.133-2.673-1.731-4.95-1.731l.002.213z" fill="#003087"/>
-                  <path d="M13.101 9.232c-.37-.054-.75-.081-1.14-.081H7.297c-.96 0-1.788.69-1.94 1.638L4.1 21.45c-.04.25.153.476.404.476h2.656l.666-4.222-.02.132c.153-.948.98-1.638 1.94-1.638h.404c3.63 0 6.474-1.476 7.303-5.747.025-.127.047-.25.065-.372-.208-.11-.424-.207-.65-.293-.277-.098-.57-.178-.868-.24" fill="#009cde"/>
-                </svg>
+                <Image
+                  src="/images/iyzico-logo-pack/checkout_iyzico_ile_ode/TR/Tr_Colored/iyzico_ile_ode_colored.svg"
+                  alt="iyzico ile öde"
+                  width={56}
+                  height={20}
+                  className="h-4 w-auto"
+                />
               </div>
             </div>
           </div>
