@@ -1,6 +1,7 @@
 import Link from "next/link";
 import MaterialIcon from "@/components/ui/MaterialIcon";
 import { getSettings } from "@/lib/actions/settings";
+import ContactFormClient from "@/components/contact/ContactFormClient";
 
 export const dynamic = "force-dynamic";
 
@@ -34,67 +35,7 @@ export default async function IletisimPage() {
           {/* Contact Form */}
           <div className="bg-white rounded-lg border border-gray-100 p-6">
             <h2 className="text-lg font-semibold text-primary mb-6">Bize Ulaşın</h2>
-            <form className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-primary mb-1">Ad</label>
-                  <input
-                    type="text"
-                    placeholder="Adınız"
-                    className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-primary mb-1">Soyad</label>
-                  <input
-                    type="text"
-                    placeholder="Soyadınız"
-                    className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-primary mb-1">E-posta</label>
-                <input
-                  type="email"
-                  placeholder="ornek@email.com"
-                  className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-primary mb-1">Telefon</label>
-                <input
-                  type="tel"
-                  placeholder="0(5XX) XXX XX XX"
-                  className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-primary mb-1">Konu</label>
-                <select className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
-                  <option value="">Konu seçin</option>
-                  <option value="satis">Satış</option>
-                  <option value="destek">Teknik Destek</option>
-                  <option value="iade">İade / Değişim</option>
-                  <option value="diger">Diğer</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-primary mb-1">Mesajınız</label>
-                <textarea
-                  rows={5}
-                  placeholder="Mesajınızı yazın..."
-                  className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white text-primary resize-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors flex items-center justify-center gap-2"
-              >
-                <MaterialIcon icon="send" className="text-xl" />
-                Gönder
-              </button>
-            </form>
+            <ContactFormClient />
           </div>
 
           {/* Contact Info + Map */}

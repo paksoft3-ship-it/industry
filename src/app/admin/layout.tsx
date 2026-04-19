@@ -14,6 +14,7 @@ const navSections = [
       { label: "Dashboard", icon: "dashboard", href: "/admin" },
       { label: "Siparişler", icon: "receipt_long", href: "/admin/siparisler" },
       { label: "Müşteriler", icon: "group", href: "/admin/musteriler" },
+      { label: "Mesajlar", icon: "mail", href: "/admin/mesajlar" },
     ]
   },
   {
@@ -59,6 +60,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sessionUser, setSessionUser] = useState<{ name: string; email: string } | null>(null);
+  const [unreadMessages, setUnreadMessages] = useState(0);
 
   useEffect(() => {
     fetch("/api/auth/session")
@@ -67,7 +69,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         if (data?.user) setSessionUser({ name: data.user.name, email: data.user.email });
       })
       .catch(() => { });
-  }, []);
+    fetch("/api/admin/unread-messages")
+      .then((r) => r.json())
+      .then((data) => setUnreadMessages(data.count ?? 0))
+      .catch(() => { });
+  }, [pathname]);
 
   // Close sidebar on route change (mobile)
   useEffect(() => {
@@ -116,7 +122,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                       }`}
                   >
                     <MaterialIcon icon={item.icon} className="text-[20px]" />
-                    <span>{item.label}</span>
+                    <span className="flex-1">{item.label}</span>
+                    {item.href === "/admin/mesajlar" && unreadMessages > 0 && (
+                      <span className="px-1.5 py-0.5 rounded-full bg-red-500 text-white text-[10px] font-bold leading-none">
+                        {unreadMessages}
+                      </span>
+                    )}
                   </Link>
                 );
               })}
