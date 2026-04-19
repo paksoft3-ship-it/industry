@@ -170,6 +170,13 @@ export default function OrderDetailClient({ order }: { order: Order }) {
           </div>
         </div>
         <div className="flex items-center gap-3">
+          <button
+            onClick={() => window.print()}
+            className="flex items-center gap-2 px-4 py-2.5 border border-gray-200 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors"
+          >
+            <MaterialIcon icon="picture_as_pdf" className="text-lg" />
+            PDF
+          </button>
           <select
             value=""
             onChange={(e) => handleStatusChange(e.target.value)}
@@ -501,6 +508,135 @@ export default function OrderDetailClient({ order }: { order: Order }) {
               )}
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Print styles + print-only area */}
+      <style>{`
+        @media print {
+          body * { visibility: hidden !important; }
+          #order-print-area, #order-print-area * { visibility: visible !important; }
+          #order-print-area { position: fixed; left: 0; top: 0; width: 100%; padding: 32px; background: white; }
+        }
+      `}</style>
+      <div id="order-print-area" style={{ display: "none" }}>
+        <div style={{ fontFamily: "sans-serif", color: "#1a1a1a", maxWidth: 800, margin: "0 auto" }}>
+          {/* Logo + Header */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 32, borderBottom: "2px solid #0d59f2", paddingBottom: 24 }}>
+            <div>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/images/logo_horizontal.png" alt="Logo" style={{ height: 48, objectFit: "contain" }} />
+            </div>
+            <div style={{ textAlign: "right" }}>
+              <div style={{ fontSize: 22, fontWeight: 700, color: "#0d59f2" }}>
+                {order.status === "QUOTE" ? "TEKLİF" : "SİPARİŞ"} #{order.orderNumber}
+              </div>
+              <div style={{ fontSize: 13, color: "#666", marginTop: 4 }}>
+                Tarih: {new Date(order.createdAt).toLocaleDateString("tr-TR")}
+              </div>
+              {order.status === "QUOTE" && order.quoteExpiresAt && (
+                <div style={{ fontSize: 13, color: "#666" }}>
+                  Geçerlilik: {new Date(order.quoteExpiresAt).toLocaleDateString("tr-TR")}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Customer Info */}
+          <div style={{ marginBottom: 24 }}>
+            <div style={{ fontSize: 13, fontWeight: 600, color: "#555", marginBottom: 8, textTransform: "uppercase", letterSpacing: 1 }}>Müşteri Bilgileri</div>
+            {order.user ? (
+              <div>
+                <div style={{ fontWeight: 600 }}>{order.user.firstName} {order.user.lastName}</div>
+                <div style={{ color: "#666", fontSize: 13 }}>{order.user.email}</div>
+                {order.user.phone && <div style={{ color: "#666", fontSize: 13 }}>{order.user.phone}</div>}
+              </div>
+            ) : (
+              <div style={{ color: "#666", fontSize: 13 }}>{order.guestEmail || "Misafir"}</div>
+            )}
+          </div>
+
+          {/* Delivery Address */}
+          {order.address && (
+            <div style={{ marginBottom: 24 }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: "#555", marginBottom: 8, textTransform: "uppercase", letterSpacing: 1 }}>Teslimat Adresi</div>
+              <div style={{ fontSize: 13, color: "#444" }}>
+                <div>{order.address.firstName} {order.address.lastName}</div>
+                <div>{order.address.address}</div>
+                <div>{order.address.district} / {order.address.city}</div>
+                {order.address.postalCode && <div>{order.address.postalCode}</div>}
+                <div>{order.address.phone}</div>
+              </div>
+            </div>
+          )}
+
+          {/* Items Table */}
+          <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 24 }}>
+            <thead>
+              <tr style={{ background: "#0d59f2", color: "white" }}>
+                <th style={{ textAlign: "left", padding: "10px 12px", fontSize: 12 }}>Ürün</th>
+                <th style={{ textAlign: "left", padding: "10px 12px", fontSize: 12 }}>SKU</th>
+                <th style={{ textAlign: "center", padding: "10px 12px", fontSize: 12 }}>Adet</th>
+                <th style={{ textAlign: "right", padding: "10px 12px", fontSize: 12 }}>Birim Fiyat</th>
+                <th style={{ textAlign: "right", padding: "10px 12px", fontSize: 12 }}>Toplam</th>
+              </tr>
+            </thead>
+            <tbody>
+              {order.items.map((item, idx) => (
+                <tr key={item.id} style={{ background: idx % 2 === 0 ? "#f9f9f9" : "white" }}>
+                  <td style={{ padding: "9px 12px", fontSize: 13 }}>{item.name}</td>
+                  <td style={{ padding: "9px 12px", fontSize: 12, color: "#888", fontFamily: "monospace" }}>{item.sku}</td>
+                  <td style={{ padding: "9px 12px", fontSize: 13, textAlign: "center" }}>{item.quantity}</td>
+                  <td style={{ padding: "9px 12px", fontSize: 13, textAlign: "right" }}>{formatCurrency(Number(item.price))}</td>
+                  <td style={{ padding: "9px 12px", fontSize: 13, textAlign: "right", fontWeight: 600 }}>{formatCurrency(Number(item.total))}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          {/* Totals */}
+          <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 24 }}>
+            <div style={{ minWidth: 260 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", fontSize: 13, borderBottom: "1px solid #eee" }}>
+                <span style={{ color: "#666" }}>Ara Toplam:</span>
+                <span>{formatCurrency(Number(order.subtotal))}</span>
+              </div>
+              {Number(order.discount) > 0 && (
+                <div style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", fontSize: 13, borderBottom: "1px solid #eee" }}>
+                  <span style={{ color: "#666" }}>İndirim:</span>
+                  <span style={{ color: "#dc2626" }}>-{formatCurrency(Number(order.discount))}</span>
+                </div>
+              )}
+              {Number(order.shippingCost) > 0 && (
+                <div style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", fontSize: 13, borderBottom: "1px solid #eee" }}>
+                  <span style={{ color: "#666" }}>Kargo:</span>
+                  <span>{formatCurrency(Number(order.shippingCost))}</span>
+                </div>
+              )}
+              <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", fontSize: 15, fontWeight: 700, borderTop: "2px solid #0d59f2", marginTop: 4 }}>
+                <span>Genel Toplam:</span>
+                <span style={{ color: "#0d59f2" }}>{formatCurrency(Number(order.total))}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Notes */}
+          {(order.notes || (order.status === "QUOTE" && order.quoteNote)) && (
+            <div style={{ borderTop: "1px solid #eee", paddingTop: 16 }}>
+              {order.notes && (
+                <div style={{ marginBottom: 12 }}>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: "#555", marginBottom: 4 }}>NOT</div>
+                  <div style={{ fontSize: 13, color: "#444" }}>{order.notes}</div>
+                </div>
+              )}
+              {order.status === "QUOTE" && order.quoteNote && (
+                <div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: "#555", marginBottom: 4 }}>TEKLİF NOTU</div>
+                  <div style={{ fontSize: 13, color: "#444" }}>{order.quoteNote}</div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

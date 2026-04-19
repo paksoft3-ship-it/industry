@@ -64,8 +64,7 @@ export default function NewOrderClient() {
 
   // ── Derived pricing ───────────────────────────────────────
   const subtotal = lineItems.reduce((s, i) => s + i.unitPrice * i.quantity, 0);
-  const shippingCost = subtotal >= 2000 ? 0 : 49.9;
-  const total = subtotal - discount + shippingCost;
+  const total = subtotal - discount;
 
   // ── Customer search ───────────────────────────────────────
   useEffect(() => {
@@ -178,7 +177,7 @@ export default function NewOrderClient() {
           guestEmail: customerType === "guest" ? guestEmail : null,
           address: orderType === "ORDER" ? addressPayload : (addressFilled && needsAddressForm ? addressPayload : null),
           items: lineItems,
-          shippingCost,
+          shippingCost: 0,
           discount,
           notes: notes || undefined,
           quoteExpiresAt: orderType === "QUOTE" ? quoteExpiresAt : undefined,
@@ -467,10 +466,6 @@ export default function NewOrderClient() {
             <label className={labelCls}>İndirim (₺)</label>
             <input type="number" min={0} step={0.01} value={discount} onChange={(e) => setDiscount(parseFloat(e.target.value) || 0)} className={inputCls} />
           </div>
-          <div>
-            <label className={labelCls}>Kargo Ücreti (Otomatik)</label>
-            <input type="text" value={shippingCost === 0 ? "Ücretsiz" : fmt(shippingCost)} readOnly className={`${inputCls} bg-gray-50 text-gray-500 cursor-default`} />
-          </div>
           <div className="md:col-span-2">
             <label className={labelCls}>İç Not</label>
             <textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="İç not (müşteriye gönderilmez)..." rows={2} className={`${inputCls} resize-none`} />
@@ -512,12 +507,6 @@ export default function NewOrderClient() {
                 <span className="font-medium text-red-600">-{fmt(discount)}</span>
               </div>
             )}
-            <div className="flex items-center gap-8">
-              <span className="text-gray-500 w-28">Kargo:</span>
-              <span className={shippingCost === 0 ? "font-medium text-green-600" : "font-medium text-gray-800"}>
-                {shippingCost === 0 ? "Ücretsiz" : fmt(shippingCost)}
-              </span>
-            </div>
             <div className="flex items-center gap-8 pt-2 border-t border-gray-100 mt-1">
               <span className="font-semibold text-gray-700 w-28">Genel Toplam:</span>
               <span className="font-bold text-primary text-lg">{fmt(total)}</span>
@@ -525,6 +514,16 @@ export default function NewOrderClient() {
           </div>
 
           <div className="flex items-center gap-3">
+            {lineItems.length > 0 && (
+              <button
+                onClick={() => window.print()}
+                type="button"
+                className="flex items-center gap-2 px-4 py-2.5 border border-gray-200 text-gray-600 rounded-xl text-sm font-medium hover:bg-gray-50 transition-colors"
+              >
+                <MaterialIcon icon="picture_as_pdf" className="text-lg" />
+                PDF Önizle
+              </button>
+            )}
             <Link href="/admin/siparisler" className="px-5 py-2.5 border border-gray-200 text-gray-600 rounded-xl text-sm font-medium hover:bg-gray-50 transition-colors">
               İptal
             </Link>
@@ -541,6 +540,115 @@ export default function NewOrderClient() {
               {isPending ? "İşleniyor..." : orderType === "QUOTE" ? "Teklif Oluştur & Gönder" : "Siparişi Oluştur"}
             </button>
           </div>
+        </div>
+      </div>
+
+      {/* Print-only area */}
+      <style>{`
+        @media print {
+          body * { visibility: hidden !important; }
+          #order-print-area, #order-print-area * { visibility: visible !important; }
+          #order-print-area { position: fixed; left: 0; top: 0; width: 100%; padding: 32px; background: white; }
+        }
+      `}</style>
+      <div id="order-print-area" style={{ display: "none" }}>
+        <div style={{ fontFamily: "sans-serif", color: "#1a1a1a", maxWidth: 800, margin: "0 auto" }}>
+          {/* Logo + Header */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 32, borderBottom: "2px solid #0d59f2", paddingBottom: 24 }}>
+            <div>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/images/logo_horizontal.png" alt="Logo" style={{ height: 48, objectFit: "contain" }} />
+            </div>
+            <div style={{ textAlign: "right" }}>
+              <div style={{ fontSize: 22, fontWeight: 700, color: "#0d59f2" }}>
+                {orderType === "QUOTE" ? "TEKLİF" : "SİPARİŞ"}
+              </div>
+              <div style={{ fontSize: 13, color: "#666", marginTop: 4 }}>
+                Tarih: {new Date().toLocaleDateString("tr-TR")}
+              </div>
+              {orderType === "QUOTE" && quoteExpiresAt && (
+                <div style={{ fontSize: 13, color: "#666" }}>
+                  Geçerlilik: {new Date(quoteExpiresAt).toLocaleDateString("tr-TR")}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Customer Info */}
+          <div style={{ marginBottom: 24 }}>
+            <div style={{ fontSize: 13, fontWeight: 600, color: "#555", marginBottom: 8, textTransform: "uppercase", letterSpacing: 1 }}>Müşteri Bilgileri</div>
+            {customerType === "registered" && selectedCustomer ? (
+              <div>
+                <div style={{ fontWeight: 600 }}>{selectedCustomer.firstName} {selectedCustomer.lastName}</div>
+                <div style={{ color: "#666", fontSize: 13 }}>{selectedCustomer.email}</div>
+                {selectedCustomer.phone && <div style={{ color: "#666", fontSize: 13 }}>{selectedCustomer.phone}</div>}
+              </div>
+            ) : (
+              <div style={{ color: "#666", fontSize: 13 }}>{guestEmail || "—"}</div>
+            )}
+          </div>
+
+          {/* Items Table */}
+          <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 24 }}>
+            <thead>
+              <tr style={{ background: "#0d59f2", color: "white" }}>
+                <th style={{ textAlign: "left", padding: "10px 12px", fontSize: 12 }}>Ürün</th>
+                <th style={{ textAlign: "left", padding: "10px 12px", fontSize: 12 }}>SKU</th>
+                <th style={{ textAlign: "center", padding: "10px 12px", fontSize: 12 }}>Adet</th>
+                <th style={{ textAlign: "right", padding: "10px 12px", fontSize: 12 }}>Birim Fiyat</th>
+                <th style={{ textAlign: "right", padding: "10px 12px", fontSize: 12 }}>Toplam</th>
+              </tr>
+            </thead>
+            <tbody>
+              {lineItems.map((item, idx) => (
+                <tr key={item.productId} style={{ background: idx % 2 === 0 ? "#f9f9f9" : "white" }}>
+                  <td style={{ padding: "9px 12px", fontSize: 13 }}>{item.name}</td>
+                  <td style={{ padding: "9px 12px", fontSize: 12, color: "#888", fontFamily: "monospace" }}>{item.sku}</td>
+                  <td style={{ padding: "9px 12px", fontSize: 13, textAlign: "center" }}>{item.quantity}</td>
+                  <td style={{ padding: "9px 12px", fontSize: 13, textAlign: "right" }}>{fmt(item.unitPrice)}</td>
+                  <td style={{ padding: "9px 12px", fontSize: 13, textAlign: "right", fontWeight: 600 }}>{fmt(item.unitPrice * item.quantity)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          {/* Totals */}
+          <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 24 }}>
+            <div style={{ minWidth: 240 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", fontSize: 13, borderBottom: "1px solid #eee" }}>
+                <span style={{ color: "#666" }}>Ara Toplam:</span>
+                <span>{fmt(subtotal)}</span>
+              </div>
+              {discount > 0 && (
+                <div style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", fontSize: 13, borderBottom: "1px solid #eee" }}>
+                  <span style={{ color: "#666" }}>İndirim:</span>
+                  <span style={{ color: "#dc2626" }}>-{fmt(discount)}</span>
+                </div>
+              )}
+              <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", fontSize: 15, fontWeight: 700, borderTop: "2px solid #0d59f2", marginTop: 4 }}>
+                <span>Genel Toplam:</span>
+                <span style={{ color: "#0d59f2" }}>{fmt(total)}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Notes */}
+          {(notes || (orderType === "QUOTE" && quoteNote)) && (
+            <div style={{ borderTop: "1px solid #eee", paddingTop: 16 }}>
+              {notes && (
+                <div style={{ marginBottom: 12 }}>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: "#555", marginBottom: 4 }}>NOT</div>
+                  <div style={{ fontSize: 13, color: "#444" }}>{notes}</div>
+                </div>
+              )}
+              {orderType === "QUOTE" && quoteNote && (
+                <div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: "#555", marginBottom: 4 }}>TEKLİF NOTU</div>
+                  <div style={{ fontSize: 13, color: "#444" }}>{quoteNote}</div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

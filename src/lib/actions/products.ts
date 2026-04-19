@@ -483,3 +483,19 @@ export async function deleteProduct(id: string) {
 
   revalidatePath("/admin/urunler");
 }
+
+export async function deleteProductsBulk(ids: string[]) {
+  if (!ids.length) return;
+  const session = await auth();
+  if (!session?.user) throw new Error("Oturumunuz sona ermiş.");
+
+  const dbUser = await prisma.user.findUnique({ where: { id: session.user.id } });
+  if (!dbUser) throw new Error("Kullanıcı bulunamadı.");
+
+  const userRole = (session.user as { role: string }).role;
+  if (!["ADMIN", "SUPER_ADMIN"].includes(userRole)) throw new Error("Bu işlem için yetkiniz yok.");
+
+  await prisma.product.deleteMany({ where: { id: { in: ids } } });
+
+  revalidatePath("/admin/urunler");
+}

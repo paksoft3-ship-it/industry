@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import toast from "react-hot-toast";
 import MaterialIcon from "@/components/ui/MaterialIcon";
-import { deleteProduct } from "@/lib/actions/products";
+import { deleteProduct, deleteProductsBulk } from "@/lib/actions/products";
 
 type Product = {
   id: string;
@@ -66,6 +66,27 @@ export default function AdminProductsClient({
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [search, setSearch] = useState(filters.search);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+
+  const allSelected = products.length > 0 && products.every((p) => selectedIds.has(p.id));
+  const someSelected = selectedIds.size > 0;
+
+  function toggleSelect(id: string) {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  function toggleSelectAll() {
+    if (allSelected) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(products.map((p) => p.id)));
+    }
+  }
 
   function updateFilters(updates: Record<string, string>) {
     const params = new URLSearchParams();
@@ -74,6 +95,7 @@ export default function AdminProductsClient({
     if (merged.categoryId) params.set("category", merged.categoryId);
     if (merged.brandId) params.set("brand", merged.brandId);
     if (merged.status) params.set("status", merged.status);
+    if (updates.page) params.set("page", updates.page);
     router.push(`/admin/urunler?${params.toString()}`);
   }
 
@@ -88,9 +110,25 @@ export default function AdminProductsClient({
       try {
         await deleteProduct(id);
         toast.success("Ürün silindi");
+        setSelectedIds((prev) => { const next = new Set(prev); next.delete(id); return next; });
         router.refresh();
       } catch (err) {
         toast.error(err instanceof Error ? err.message : "Silme başarısız");
+      }
+    });
+  }
+
+  async function handleBulkDelete() {
+    const ids = Array.from(selectedIds);
+    if (!confirm(`${ids.length} ürünü silmek istediğinize emin misiniz? Bu işlem geri alınamaz.`)) return;
+    startTransition(async () => {
+      try {
+        await deleteProductsBulk(ids);
+        toast.success(`${ids.length} ürün silindi`);
+        setSelectedIds(new Set());
+        router.refresh();
+      } catch (err) {
+        toast.error(err instanceof Error ? err.message : "Toplu silme başarısız");
       }
     });
   }
@@ -145,12 +183,35 @@ export default function AdminProductsClient({
         </div>
       </div>
 
+      {/* Bulk Action Bar */}
+      {someSelected && (
+        <div className="bg-primary/5 border border-primary/20 rounded-xl px-4 py-3 flex items-center justify-between">
+          <span className="text-sm font-medium text-primary">{selectedIds.size} ürün seçildi</span>
+          <button
+            onClick={handleBulkDelete}
+            disabled={isPending}
+            className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+          >
+            <MaterialIcon icon="delete_sweep" className="text-lg" />
+            Seçilenleri Sil
+          </button>
+        </div>
+      )}
+
       {/* Table */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-100 bg-gray-50/50">
+                <th className="pl-6 pr-2 py-3.5 w-10">
+                  <input
+                    type="checkbox"
+                    checked={allSelected}
+                    onChange={toggleSelectAll}
+                    className="rounded border-gray-300 text-primary focus:ring-primary/20"
+                  />
+                </th>
                 <th className="text-left px-6 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">Görsel</th>
                 <th className="text-left px-6 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">Ürün Adı</th>
                 <th className="text-left px-6 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">SKU</th>
@@ -164,15 +225,24 @@ export default function AdminProductsClient({
             <tbody className="divide-y divide-gray-50">
               {products.length === 0 && (
                 <tr>
-                  <td colSpan={8} className="px-6 py-12 text-center text-gray-500">
+                  <td colSpan={9} className="px-6 py-12 text-center text-gray-500">
                     Ürün bulunamadı
                   </td>
                 </tr>
               )}
               {products.map((product) => {
                 const status = getProductStatus(product);
+                const isSelected = selectedIds.has(product.id);
                 return (
-                  <tr key={product.id} className="hover:bg-gray-50/50 transition-colors">
+                  <tr key={product.id} className={`transition-colors ${isSelected ? "bg-primary/5" : "hover:bg-gray-50/50"}`}>
+                    <td className="pl-6 pr-2 py-4 w-10">
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={() => toggleSelect(product.id)}
+                        className="rounded border-gray-300 text-primary focus:ring-primary/20"
+                      />
+                    </td>
                     <td className="px-6 py-4">
                       <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
                         {product.images[0] ? (
