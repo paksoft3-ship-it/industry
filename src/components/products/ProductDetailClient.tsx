@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import MaterialIcon from "@/components/ui/MaterialIcon";
@@ -20,9 +20,20 @@ interface ProductData {
   sku: string;
   images: string[];
   description: string;
-  specs: string[];
+  shortDescription: string;
+  specs: { key: string; value: string }[];
   technicalSpecs: Record<string, string>;
   badge: string | null;
+  downloads: { id: string; title: string; fileUrl: string; fileType: string; fileSize: string | null }[];
+}
+
+function fileTypeIcon(fileType: string) {
+  const t = fileType.toLowerCase();
+  if (t.includes("pdf")) return "picture_as_pdf";
+  if (t.includes("word") || t.includes("doc")) return "description";
+  if (t.includes("excel") || t.includes("xls") || t.includes("sheet")) return "table_chart";
+  if (t.includes("zip") || t.includes("rar")) return "folder_zip";
+  return "insert_drive_file";
 }
 
 export default function ProductDetailClient({ product }: { product: ProductData }) {
@@ -31,6 +42,7 @@ export default function ProductDetailClient({ product }: { product: ProductData 
   const [activeTab, setActiveTab] = useState("bilgi");
   const [addedToCart, setAddedToCart] = useState(false);
   const { addItem, loading } = useCart();
+  const tabsRef = useRef<HTMLDivElement>(null);
 
   const handleAddToCart = async () => {
     if (!product.inStock || loading) return;
@@ -39,9 +51,19 @@ export default function ProductDetailClient({ product }: { product: ProductData 
     setTimeout(() => setAddedToCart(false), 2000);
   };
 
+  function goToTeknikTab() {
+    setActiveTab("teknik");
+    setTimeout(() => {
+      tabsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 50);
+  }
+
   const discountPercent = product.originalPrice
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
     : null;
+
+  const visibleSpecs = product.specs.slice(0, 5);
+  const hasMoreSpecs = product.specs.length > 5;
 
   const tabs = [
     { id: "bilgi", label: "Ürün Bilgisi" },
@@ -114,6 +136,9 @@ export default function ProductDetailClient({ product }: { product: ProductData 
             <h1 className="text-2xl md:text-3xl font-bold text-gray-900 font-[family-name:var(--font-display)]">
               {product.name}
             </h1>
+            {product.shortDescription && (
+              <p className="mt-2 text-sm text-gray-500 leading-relaxed">{product.shortDescription}</p>
+            )}
           </div>
 
           <div className="flex items-center gap-4">
@@ -188,21 +213,33 @@ export default function ProductDetailClient({ product }: { product: ProductData 
           </div>
 
           {/* Specs quick list */}
-          <div className="border-t pt-4">
-            <ul className="space-y-2">
-              {product.specs.map((spec) => (
-                <li key={spec} className="flex items-center gap-2 text-sm text-gray-600">
-                  <MaterialIcon icon="check_circle" className="text-[16px] text-green-500" />
-                  {spec}
-                </li>
-              ))}
-            </ul>
-          </div>
+          {visibleSpecs.length > 0 && (
+            <div className="border-t pt-4">
+              <ul className="space-y-2">
+                {visibleSpecs.map((spec) => (
+                  <li key={spec.key} className="flex items-center gap-2 text-sm text-gray-600">
+                    <MaterialIcon icon="check_circle" className="text-[16px] text-green-500 flex-shrink-0" />
+                    <span className="font-medium text-gray-700">{spec.key}:</span>
+                    <span>{spec.value}</span>
+                  </li>
+                ))}
+              </ul>
+              {hasMoreSpecs && (
+                <button
+                  onClick={goToTeknikTab}
+                  className="mt-3 flex items-center gap-1 text-sm text-primary hover:underline font-medium"
+                >
+                  <MaterialIcon icon="expand_more" className="text-[18px]" />
+                  Daha Fazla Özellik Gör ({product.specs.length - 5} daha)
+                </button>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="border-b border-gray-200 mb-8">
+      <div ref={tabsRef} className="border-b border-gray-200 mb-8">
         <div className="flex gap-1 overflow-x-auto hide-scrollbar">
           {tabs.map((tab) => (
             <button
@@ -229,16 +266,54 @@ export default function ProductDetailClient({ product }: { product: ProductData 
         )}
         {activeTab === "teknik" && (
           <div className="max-w-2xl">
-            <table className="w-full">
-              <tbody>
-                {Object.entries(product.technicalSpecs).map(([key, value], i) => (
-                  <tr key={key} className={i % 2 === 0 ? "bg-gray-50" : ""}>
-                    <td className="px-4 py-3 text-sm font-medium text-gray-600 w-1/3">{key}</td>
-                    <td className="px-4 py-3 text-sm text-gray-900">{value}</td>
-                  </tr>
+            {Object.keys(product.technicalSpecs).length > 0 ? (
+              <table className="w-full">
+                <tbody>
+                  {Object.entries(product.technicalSpecs).map(([key, value], i) => (
+                    <tr key={key} className={i % 2 === 0 ? "bg-gray-50" : ""}>
+                      <td className="px-4 py-3 text-sm font-medium text-gray-600 w-1/3">{key}</td>
+                      <td className="px-4 py-3 text-sm text-gray-900">{value}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p className="text-gray-400 text-sm">Teknik özellik girilmemiş.</p>
+            )}
+          </div>
+        )}
+        {activeTab === "indirme" && (
+          <div>
+            {product.downloads.length > 0 ? (
+              <ul className="space-y-3 max-w-2xl">
+                {product.downloads.map((doc) => (
+                  <li key={doc.id}>
+                    <a
+                      href={doc.fileUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-4 p-4 border border-gray-200 rounded-xl hover:border-primary hover:bg-primary/5 transition-colors group"
+                    >
+                      <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <MaterialIcon icon={fileTypeIcon(doc.fileType)} className="text-primary text-xl" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-gray-800 group-hover:text-primary transition-colors truncate">{doc.title}</p>
+                        <p className="text-xs text-gray-400 mt-0.5 uppercase">
+                          {doc.fileType}{doc.fileSize ? ` · ${doc.fileSize}` : ""}
+                        </p>
+                      </div>
+                      <MaterialIcon icon="download" className="text-gray-400 group-hover:text-primary transition-colors flex-shrink-0" />
+                    </a>
+                  </li>
                 ))}
-              </tbody>
-            </table>
+              </ul>
+            ) : (
+              <div className="text-center py-12 text-gray-400">
+                <MaterialIcon icon="folder_open" className="text-5xl mb-3" />
+                <p>İndirilebilir dosya bulunmuyor.</p>
+              </div>
+            )}
           </div>
         )}
         {activeTab === "yorumlar" && (
@@ -255,7 +330,7 @@ export default function ProductDetailClient({ product }: { product: ProductData 
             <button className="mt-4 text-primary font-medium hover:underline">Soru sor</button>
           </div>
         )}
-        {(activeTab === "foto" || activeTab === "odeme" || activeTab === "indirme") && (
+        {(activeTab === "foto" || activeTab === "odeme") && (
           <div className="text-center py-12 text-gray-400">
             <MaterialIcon icon="construction" className="text-5xl mb-3" />
             <p>Bu bölüm yakında eklenecektir.</p>

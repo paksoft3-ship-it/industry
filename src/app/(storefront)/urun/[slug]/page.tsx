@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { getProductBySlug } from "@/lib/actions/products";
 import ProductDetailClient from "@/components/products/ProductDetailClient";
 
@@ -6,6 +7,16 @@ export const dynamic = "force-dynamic";
 
 interface ProductDetailPageProps {
   params: Promise<{ slug: string }>;
+}
+
+export async function generateMetadata({ params }: ProductDetailPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const product = await getProductBySlug(slug);
+  if (!product) return {};
+  return {
+    title: product.seoTitle || product.name,
+    description: product.seoDesc || product.shortDesc || undefined,
+  };
 }
 
 export default async function ProductDetailPage({ params }: ProductDetailPageProps) {
@@ -31,9 +42,17 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
     sku: product.sku || "",
     images: product.images.map((i) => i.url),
     description: product.description || "",
-    specs: product.attributes.slice(0, 5).map((a) => `${a.key}: ${a.value}`),
+    shortDescription: product.shortDesc || "",
+    specs: product.attributes.map((a) => ({ key: a.key, value: a.value })),
     technicalSpecs: Object.fromEntries(product.attributes.map((a) => [a.key, a.value])),
     badge: null as string | null,
+    downloads: product.downloads.map((d) => ({
+      id: d.id,
+      title: d.title,
+      fileUrl: d.fileUrl,
+      fileType: d.fileType,
+      fileSize: d.fileSize || null,
+    })),
   };
 
   return <ProductDetailClient product={productData} />;
