@@ -1,13 +1,16 @@
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
+
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const Iyzipay = require("iyzipay");
 
-const iyzipay = new Iyzipay({
-  apiKey: process.env.IYZICO_API_KEY || "",
-  secretKey: process.env.IYZICO_SECRET_KEY || "",
-  uri: process.env.IYZICO_BASE_URL || "https://sandbox-api.iyzipay.com",
-});
+function getClient() {
+  return new Iyzipay({
+    apiKey: process.env.IYZICO_API_KEY || "",
+    secretKey: process.env.IYZICO_SECRET_KEY || "",
+    uri: process.env.IYZICO_BASE_URL || "https://sandbox-api.iyzipay.com",
+  });
+}
 
 export interface IyzicoCheckoutRequest {
   conversationId: string;
@@ -61,11 +64,11 @@ export function initializeCheckoutForm(request: IyzicoCheckoutRequest): Promise<
   tokenExpireTime?: number;
 }> {
   return new Promise((resolve, reject) => {
-    iyzipay.checkoutFormInitialize.create(
+    getClient().checkoutFormInitialize.create(
       { locale: "tr", ...request },
       (err: Error | null, result: Record<string, unknown>) => {
         if (err) reject(err);
-        else resolve(result as ReturnType<typeof initializeCheckoutForm> extends Promise<infer T> ? T : never);
+        else resolve(result as never);
       }
     );
   });
@@ -81,11 +84,11 @@ export function retrieveCheckoutForm(conversationId: string, token: string): Pro
   conversationId?: string;
 }> {
   return new Promise((resolve, reject) => {
-    iyzipay.checkoutForm.retrieve(
+    getClient().checkoutForm.retrieve(
       { locale: "tr", conversationId, token },
       (err: Error | null, result: Record<string, unknown>) => {
         if (err) reject(err);
-        else resolve(result as ReturnType<typeof retrieveCheckoutForm> extends Promise<infer T> ? T : never);
+        else resolve(result as never);
       }
     );
   });
