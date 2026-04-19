@@ -6,7 +6,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import MaterialIcon from "@/components/ui/MaterialIcon";
-import { updateOrderStatus, updateOrderTracking, addOrderNote } from "@/lib/actions/orders";
+import { updateOrderStatus, updateOrderTracking, addOrderNote, convertQuoteToOrder } from "@/lib/actions/orders";
 
 type Order = {
   id: string;
@@ -31,6 +31,8 @@ type Order = {
     total: number;
     product: { images: { url: string }[] };
   }[];
+  quoteExpiresAt?: string | null;
+  quoteNote?: string | null;
   address: {
     title: string;
     firstName: string;
@@ -40,7 +42,7 @@ type Order = {
     district: string;
     address: string;
     postalCode: string | null;
-  };
+  } | null;
   guestEmail?: string | null;
   user: {
     id: string;
@@ -53,6 +55,8 @@ type Order = {
 };
 
 const statusColors: Record<string, string> = {
+  DRAFT: "bg-gray-100 text-gray-600",
+  QUOTE: "bg-amber-100 text-amber-700",
   PENDING: "bg-yellow-100 text-yellow-700",
   CONFIRMED: "bg-blue-100 text-blue-700",
   PROCESSING: "bg-blue-100 text-blue-700",
@@ -63,6 +67,8 @@ const statusColors: Record<string, string> = {
 };
 
 const statusLabels: Record<string, string> = {
+  DRAFT: "Taslak",
+  QUOTE: "Teklif",
   PENDING: "Ödeme Bekliyor",
   CONFIRMED: "Onaylandı",
   PROCESSING: "Hazırlanıyor",
@@ -179,6 +185,43 @@ export default function OrderDetailClient({ order }: { order: Order }) {
           </select>
         </div>
       </div>
+
+      {/* Quote Banner */}
+      {order.status === "QUOTE" && (
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-start gap-3">
+            <MaterialIcon icon="request_quote" className="text-amber-600 text-2xl flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="font-semibold text-amber-800">Bu kayıt bir tekliftir</p>
+              <p className="text-sm text-amber-700 mt-0.5">
+                {order.quoteExpiresAt
+                  ? `Geçerlilik: ${new Date(order.quoteExpiresAt).toLocaleDateString("tr-TR")}`
+                  : "Geçerlilik tarihi belirtilmemiş"}
+              </p>
+              {order.quoteNote && <p className="text-sm text-amber-600 mt-1">{order.quoteNote}</p>}
+            </div>
+          </div>
+          <button
+            onClick={() => {
+              if (!confirm("Teklifi siparişe dönüştürmek istiyor musunuz?")) return;
+              startTransition(async () => {
+                try {
+                  await convertQuoteToOrder(order.id);
+                  toast.success("Teklif siparişe dönüştürüldü!");
+                  router.refresh();
+                } catch (err) {
+                  toast.error(err instanceof Error ? err.message : "İşlem başarısız");
+                }
+              });
+            }}
+            disabled={isPending}
+            className="flex items-center gap-2 px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-sm font-medium transition-colors disabled:opacity-50 flex-shrink-0"
+          >
+            <MaterialIcon icon="check_circle" className="text-lg" />
+            Siparişe Dönüştür
+          </button>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column */}
@@ -419,15 +462,17 @@ export default function OrderDetailClient({ order }: { order: Order }) {
             <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold text-gray-800 mb-4">
               Teslimat Adresi
             </h2>
-            <div className="text-sm text-gray-600 space-y-1">
-              <p className="font-medium text-gray-800">
-                {order.address.firstName} {order.address.lastName}
-              </p>
-              <p>{order.address.address}</p>
-              <p>{order.address.district} / {order.address.city}</p>
-              {order.address.postalCode && <p>{order.address.postalCode}</p>}
-              <p className="text-gray-500">{order.address.phone}</p>
-            </div>
+            {order.address ? (
+              <div className="text-sm text-gray-600 space-y-1">
+                <p className="font-medium text-gray-800">{order.address.firstName} {order.address.lastName}</p>
+                <p>{order.address.address}</p>
+                <p>{order.address.district} / {order.address.city}</p>
+                {order.address.postalCode && <p>{order.address.postalCode}</p>}
+                <p className="text-gray-500">{order.address.phone}</p>
+              </div>
+            ) : (
+              <p className="text-sm text-gray-400 italic">Adres belirtilmemiş</p>
+            )}
           </div>
 
           {/* Payment Info */}

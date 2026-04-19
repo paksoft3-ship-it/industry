@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import MaterialIcon from "@/components/ui/MaterialIcon";
 
+
 type Order = {
   id: string;
   orderNumber: string;
@@ -18,6 +19,8 @@ type Order = {
 };
 
 const statusColors: Record<string, string> = {
+  DRAFT: "bg-gray-100 text-gray-600",
+  QUOTE: "bg-amber-100 text-amber-700",
   PENDING: "bg-yellow-100 text-yellow-700",
   CONFIRMED: "bg-blue-100 text-blue-700",
   PROCESSING: "bg-blue-100 text-blue-700",
@@ -28,6 +31,8 @@ const statusColors: Record<string, string> = {
 };
 
 const statusLabels: Record<string, string> = {
+  DRAFT: "Taslak",
+  QUOTE: "Teklif",
   PENDING: "Ödeme Bekliyor",
   CONFIRMED: "Onaylandı",
   PROCESSING: "Hazırlanıyor",
@@ -70,6 +75,7 @@ export default function AdminOrdersClient({
 
   const statusTabs = [
     { label: "Tümü", value: "", count: allCount },
+    { label: "Teklifler", value: "QUOTE", count: statusCounts.QUOTE || 0 },
     { label: "Bekleyen", value: "PENDING", count: statusCounts.PENDING || 0 },
     { label: "Hazırlanıyor", value: "PROCESSING", count: statusCounts.PROCESSING || 0 },
     { label: "Kargoda", value: "SHIPPED", count: statusCounts.SHIPPED || 0 },
@@ -98,10 +104,17 @@ export default function AdminOrdersClient({
           <h1 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-800">Siparişler</h1>
           <p className="text-sm text-gray-500 mt-1">Toplam {total} sipariş</p>
         </div>
+        <Link
+          href="/admin/siparisler/yeni"
+          className="flex items-center gap-2 px-4 py-2.5 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors"
+        >
+          <MaterialIcon icon="add" className="text-lg" />
+          Sipariş / Teklif Ekle
+        </Link>
       </div>
 
       {/* Status Tabs */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+      <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
         {statusTabs.map((tab) => (
           <button
             key={tab.value}

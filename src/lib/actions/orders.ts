@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
+import { sendQuoteEmail } from "@/lib/mailer";
 
 function generateOrderNumber() {
   const prefix = "STM";
@@ -413,6 +414,201 @@ export async function placeOrder(data: {
     console.error("[placeOrder]", err);
     return { ok: false, error: "Sipariş oluşturulurken bir hata oluştu. Lütfen tekrar deneyin." };
   }
+}
+// ───────────────────────────────────────────────────────────────────────────
+
+// ── Admin: Search customers ────────────────────────────────────────────────
+export async function searchCustomers(query: string) {
+  const session = await auth();
+  if (!session?.user || !["ADMIN", "SUPER_ADMIN"].includes((session.user as { role: string }).role)) {
+    throw new Error("Unauthorized");
+  }
+  return prisma.user.findMany({
+    where: {
+      role: "CUSTOMER",
+      OR: [
+        { firstName: { contains: query, mode: "insensitive" } },
+        { lastName: { contains: query, mode: "insensitive" } },
+        { email: { contains: query, mode: "insensitive" } },
+      ],
+    },
+    select: { id: true, firstName: true, lastName: true, email: true, phone: true },
+    take: 8,
+  });
+}
+
+// ── Admin: Get customer's saved addresses ──────────────────────────────────
+export async function getCustomerAddresses(userId: string) {
+  const session = await auth();
+  if (!session?.user || !["ADMIN", "SUPER_ADMIN"].includes((session.user as { role: string }).role)) {
+    throw new Error("Unauthorized");
+  }
+  return prisma.address.findMany({
+    where: { userId },
+    orderBy: [{ isDefault: "desc" }, { id: "desc" }],
+  });
+}
+
+// ── Admin: Search products ─────────────────────────────────────────────────
+export async function searchAdminProducts(query: string) {
+  const session = await auth();
+  if (!session?.user || !["ADMIN", "SUPER_ADMIN"].includes((session.user as { role: string }).role)) {
+    throw new Error("Unauthorized");
+  }
+  return prisma.product.findMany({
+    where: {
+      isActive: true,
+      OR: [
+        { name: { contains: query, mode: "insensitive" } },
+        { sku: { contains: query, mode: "insensitive" } },
+      ],
+    },
+    select: { id: true, name: true, sku: true, price: true, inStock: true, images: { take: 1, select: { url: true } } },
+    take: 8,
+  });
+}
+
+// ── Admin: Create manual order or quote ────────────────────────────────────
+export async function createAdminOrder(data: {
+  type: "ORDER" | "QUOTE";
+  userId?: string | null;
+  guestEmail?: string | null;
+  address?: {
+    firstName: string;
+    lastName: string;
+    phone: string;
+    city: string;
+    district: string;
+    address: string;
+    postalCode?: string;
+  } | null;
+  items: { productId: string; name: string; sku: string; quantity: number; unitPrice: number }[];
+  shippingCost: number;
+  discount: number;
+  notes?: string;
+  quoteExpiresAt?: string;
+  quoteNote?: string;
+}) {
+  const session = await auth();
+  if (!session?.user || !["ADMIN", "SUPER_ADMIN"].includes((session.user as { role: string }).role)) {
+    throw new Error("Unauthorized");
+  }
+  if (data.items.length === 0) throw new Error("En az bir ürün eklenmelidir.");
+  if (data.type === "ORDER" && !data.address) throw new Error("Manuel sipariş için teslimat adresi zorunludur.");
+
+  let subtotal = 0;
+  const orderItems = data.items.map((item) => {
+    const lineTotal = item.unitPrice * item.quantity;
+    subtotal += lineTotal;
+    return {
+      productId: item.productId,
+      name: item.name,
+      sku: item.sku,
+      price: item.unitPrice,
+      quantity: item.quantity,
+      total: lineTotal,
+    };
+  });
+
+  const total = subtotal - data.discount + data.shippingCost;
+
+  let addressId: string | null = null;
+  if (data.address) {
+    const addrRecord = await prisma.address.create({
+      data: {
+        userId: data.userId ?? null,
+        title: "Manuel Sipariş",
+        firstName: data.address.firstName,
+        lastName: data.address.lastName,
+        phone: data.address.phone,
+        city: data.address.city,
+        district: data.address.district,
+        address: data.address.address,
+        postalCode: data.address.postalCode,
+      },
+    });
+    addressId = addrRecord.id;
+  }
+
+  const order = await prisma.order.create({
+    data: {
+      orderNumber: generateOrderNumber(),
+      userId: data.userId ?? null,
+      guestEmail: data.guestEmail ?? null,
+      addressId,
+      status: (data.type === "QUOTE" ? "QUOTE" : "CONFIRMED") as never,
+      paymentStatus: (data.type === "ORDER" ? "PAID" : "PENDING") as never,
+      subtotal,
+      shippingCost: data.shippingCost,
+      discount: data.discount,
+      total,
+      notes: data.notes,
+      quoteExpiresAt: data.quoteExpiresAt ? new Date(data.quoteExpiresAt) : null,
+      quoteNote: data.quoteNote ?? null,
+      items: { create: orderItems },
+    },
+  });
+
+  await prisma.auditLog.create({
+    data: {
+      userId: session.user.id,
+      action: "CREATE",
+      entity: "Order",
+      entityId: order.id,
+      details: `Admin tarafından ${data.type === "QUOTE" ? "teklif" : "manuel sipariş"} oluşturuldu`,
+    },
+  });
+
+  if (data.type === "QUOTE") {
+    let email = data.guestEmail ?? null;
+    if (!email && data.userId) {
+      const u = await prisma.user.findUnique({ where: { id: data.userId }, select: { email: true } });
+      email = u?.email ?? null;
+    }
+    if (email) {
+      await sendQuoteEmail({
+        to: email,
+        orderNumber: order.orderNumber,
+        items: orderItems.map((i) => ({ name: i.name, quantity: i.quantity, price: Number(i.price) })),
+        subtotal,
+        shippingCost: data.shippingCost,
+        discount: data.discount,
+        total,
+        quoteNote: data.quoteNote,
+        expiresAt: data.quoteExpiresAt ? new Date(data.quoteExpiresAt) : undefined,
+      });
+    }
+  }
+
+  revalidatePath("/admin/siparisler");
+  return order;
+}
+
+// ── Admin: Convert quote to order ──────────────────────────────────────────
+export async function convertQuoteToOrder(orderId: string) {
+  const session = await auth();
+  if (!session?.user || !["ADMIN", "SUPER_ADMIN"].includes((session.user as { role: string }).role)) {
+    throw new Error("Unauthorized");
+  }
+
+  const order = await prisma.order.update({
+    where: { id: orderId },
+    data: { status: "CONFIRMED" as never, paymentStatus: "PENDING" as never },
+  });
+
+  await prisma.auditLog.create({
+    data: {
+      userId: session.user.id,
+      action: "UPDATE",
+      entity: "Order",
+      entityId: order.id,
+      details: "Teklif siparişe dönüştürüldü",
+    },
+  });
+
+  revalidatePath("/admin/siparisler");
+  revalidatePath(`/admin/siparisler/${orderId}`);
+  return order;
 }
 // ───────────────────────────────────────────────────────────────────────────
 

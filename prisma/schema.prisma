@@ -324,7 +324,7 @@ model Order {
   orderNumber    String        @unique
   userId         String?
   guestEmail     String?
-  addressId      String
+  addressId      String?
   status         OrderStatus   @default(PENDING)
   paymentStatus  PaymentStatus @default(PENDING)
   subtotal       Decimal       @db.Decimal(10, 2)
@@ -336,9 +336,11 @@ model Order {
   notes          String?
   trackingNumber String?
   trackingUrl    String?
+  quoteExpiresAt DateTime?
+  quoteNote      String?
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
-  address        Address       @relation(fields: [addressId], references: [id])
+  address        Address?      @relation(fields: [addressId], references: [id])
   user           User?         @relation(fields: [userId], references: [id])
   items          OrderItem[]
 
@@ -562,6 +564,8 @@ enum UserRole {
 }
 
 enum OrderStatus {
+  DRAFT
+  QUOTE
   PENDING
   CONFIRMED
   PROCESSING
