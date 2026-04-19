@@ -92,7 +92,7 @@ export default function NewOrderClient() {
     productSearchTimer.current = setTimeout(async () => {
       try {
         const results = await searchAdminProducts(productSearch);
-        setProductResults(results.map((r) => ({ ...r, price: Number(r.price) })));
+        setProductResults(results);
       } catch { /* silent */ }
     }, 300);
   }, [productSearch]);

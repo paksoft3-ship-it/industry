@@ -1,5 +1,6 @@
 "use server";
 import prisma from "@/lib/prisma";
+import { OrderStatus, PaymentStatus } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
@@ -455,7 +456,7 @@ export async function searchAdminProducts(query: string) {
   if (!session?.user || !["ADMIN", "SUPER_ADMIN"].includes((session.user as { role: string }).role)) {
     throw new Error("Unauthorized");
   }
-  return prisma.product.findMany({
+  const results = await prisma.product.findMany({
     where: {
       isActive: true,
       OR: [
@@ -466,6 +467,7 @@ export async function searchAdminProducts(query: string) {
     select: { id: true, name: true, sku: true, price: true, inStock: true, images: { take: 1, select: { url: true } } },
     take: 8,
   });
+  return results.map((r) => ({ ...r, price: Number(r.price) }));
 }
 
 // ── Admin: Create manual order or quote ────────────────────────────────────
@@ -536,8 +538,8 @@ export async function createAdminOrder(data: {
       userId: data.userId ?? null,
       guestEmail: data.guestEmail ?? null,
       addressId,
-      status: (data.type === "QUOTE" ? "QUOTE" : "CONFIRMED") as never,
-      paymentStatus: (data.type === "ORDER" ? "PAID" : "PENDING") as never,
+      status: data.type === "QUOTE" ? OrderStatus.QUOTE : OrderStatus.CONFIRMED,
+      paymentStatus: data.type === "ORDER" ? PaymentStatus.PAID : PaymentStatus.PENDING,
       subtotal,
       shippingCost: data.shippingCost,
       discount: data.discount,
@@ -593,7 +595,7 @@ export async function convertQuoteToOrder(orderId: string) {
 
   const order = await prisma.order.update({
     where: { id: orderId },
-    data: { status: "CONFIRMED" as never, paymentStatus: "PENDING" as never },
+    data: { status: OrderStatus.CONFIRMED, paymentStatus: PaymentStatus.PENDING },
   });
 
   await prisma.auditLog.create({
