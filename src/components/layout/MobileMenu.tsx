@@ -199,6 +199,14 @@ export default function MobileMenu({ onClose, categories, isLoggedIn, userName }
           {/* Extra Links */}
           <div className="px-5 pb-8 flex flex-col gap-3">
             <Link
+              href="/teklif-al"
+              className="flex items-center gap-3 p-4 rounded-lg bg-secondary/5 hover:bg-secondary/10 transition-colors border border-secondary/20"
+              onClick={onClose}
+            >
+              <MaterialIcon icon="request_quote" className="text-secondary" />
+              <span className="text-sm font-bold text-secondary">Teklif Al</span>
+            </Link>
+            <Link
               href="/kampanyalar"
               className="flex items-center gap-3 p-4 rounded-lg hover:bg-white transition-colors border border-transparent hover:border-gray-200"
               onClick={onClose}

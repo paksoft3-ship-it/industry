@@ -143,7 +143,7 @@ export default function Header({ categories, educationCategories = [], blogCateg
 
               {/* Teklif Al */}
               <Link
-                href="/kurumsal"
+                href="/teklif-al"
                 className="hidden lg:flex items-center justify-center px-5 py-2.5 bg-secondary text-white font-bold rounded-lg hover:bg-secondary-dark transition-all shadow-md shadow-secondary/20 whitespace-nowrap text-sm"
               >
                 <MaterialIcon icon="request_quote" className="text-[18px] mr-1.5" />

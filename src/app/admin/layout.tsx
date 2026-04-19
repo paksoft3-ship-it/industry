@@ -13,6 +13,7 @@ const navSections = [
     items: [
       { label: "Dashboard", icon: "dashboard", href: "/admin" },
       { label: "Siparişler", icon: "receipt_long", href: "/admin/siparisler" },
+      { label: "Teklif Talepleri", icon: "request_quote", href: "/admin/teklif-talepleri" },
       { label: "Müşteriler", icon: "group", href: "/admin/musteriler" },
       { label: "Mesajlar", icon: "mail", href: "/admin/mesajlar" },
     ]
@@ -61,6 +62,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sessionUser, setSessionUser] = useState<{ name: string; email: string } | null>(null);
   const [unreadMessages, setUnreadMessages] = useState(0);
+  const [unreadQuotes, setUnreadQuotes] = useState(0);
 
   useEffect(() => {
     fetch("/api/auth/session")
@@ -72,6 +74,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     fetch("/api/admin/unread-messages")
       .then((r) => r.json())
       .then((data) => setUnreadMessages(data.count ?? 0))
+      .catch(() => { });
+    fetch("/api/admin/unread-quotes")
+      .then((r) => r.json())
+      .then((data) => setUnreadQuotes(data.count ?? 0))
       .catch(() => { });
   }, [pathname]);
 
@@ -126,6 +132,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     {item.href === "/admin/mesajlar" && unreadMessages > 0 && (
                       <span className="px-1.5 py-0.5 rounded-full bg-red-500 text-white text-[10px] font-bold leading-none">
                         {unreadMessages}
+                      </span>
+                    )}
+                    {item.href === "/admin/teklif-talepleri" && unreadQuotes > 0 && (
+                      <span className="px-1.5 py-0.5 rounded-full bg-secondary text-white text-[10px] font-bold leading-none">
+                        {unreadQuotes}
                       </span>
                     )}
                   </Link>
