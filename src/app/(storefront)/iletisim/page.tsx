@@ -11,7 +11,9 @@ export default async function IletisimPage() {
   const phone        = settings.phone        || "+90 (212) 123 45 67";
   const email        = settings.email        || "info@example.com";
   const workingHours = settings.workingHours || "Pzt-Cum: 08:00 - 18:00";
-  const mapEmbedUrl  = settings.mapEmbedUrl;
+  const mapEmbedUrl  = settings.mapEmbedUrl  ||
+    `https://maps.google.com/maps?q=${encodeURIComponent(address)}&output=embed&hl=tr&z=16`;
+  const directionsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
 
   return (
     <div className="min-h-screen bg-background-light">
@@ -135,20 +137,27 @@ export default async function IletisimPage() {
 
             {/* Map */}
             <div className="bg-white rounded-lg border border-gray-100 overflow-hidden">
-              {mapEmbedUrl ? (
-                <iframe
-                  src={mapEmbedUrl}
-                  className="w-full aspect-[4/3]"
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title="Konum haritası"
-                />
-              ) : (
-                <div className="aspect-[4/3] bg-gray-100 flex flex-col items-center justify-center text-gray-400">
-                  <MaterialIcon icon="map" className="text-6xl mb-2" />
-                  <p className="text-sm">Harita burada gösterilecek</p>
-                </div>
-              )}
+              <iframe
+                src={mapEmbedUrl}
+                className="w-full"
+                style={{ height: 380 }}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                allowFullScreen
+                title="Konum haritası"
+              />
+              <div className="px-4 py-3 border-t border-gray-100 flex items-center justify-between">
+                <p className="text-xs text-gray-500 truncate">{address}</p>
+                <a
+                  href={directionsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 text-xs font-medium text-primary hover:underline flex-shrink-0 ml-4"
+                >
+                  <MaterialIcon icon="directions" className="text-base" />
+                  Yol Tarifi Al
+                </a>
+              </div>
             </div>
           </div>
         </div>

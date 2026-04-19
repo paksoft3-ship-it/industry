@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import toast from "react-hot-toast";
 import MaterialIcon from "@/components/ui/MaterialIcon";
 import RichTextEditor from "@/components/admin/RichTextEditor";
@@ -198,6 +199,15 @@ export default function AdminSayfalarClient({ pages }: { pages: StaticPage[] }) 
                 </td>
                 <td className="px-6 py-4 text-gray-500 text-xs">{formatDate(page.createdAt)}</td>
                 <td className="px-6 py-4 text-right">
+                  <Link
+                    href={`/sayfa/${page.slug}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-gray-400 hover:text-gray-600 mr-2 inline-flex"
+                    title="Sayfada Görüntüle"
+                  >
+                    <MaterialIcon icon="open_in_new" className="text-[18px]" />
+                  </Link>
                   <button
                     onClick={() => openEditModal(page)}
                     className="text-gray-400 hover:text-primary mr-2"

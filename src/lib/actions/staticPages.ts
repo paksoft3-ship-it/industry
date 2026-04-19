@@ -29,6 +29,7 @@ export async function createStaticPage(data: {
   const page = await prisma.staticPage.create({ data });
   await prisma.auditLog.create({ data: { userId: session.user.id, action: "CREATE", entity: "StaticPage", entityId: page.id, details: `Sayfa oluşturuldu: ${page.title}` } });
   revalidatePath("/admin/sayfalar");
+  revalidatePath("/", "layout");
   return page;
 }
 
@@ -43,6 +44,7 @@ export async function updateStaticPage(id: string, data: {
   await prisma.auditLog.create({ data: { userId: session.user.id, action: "UPDATE", entity: "StaticPage", entityId: page.id, details: `Sayfa güncellendi: ${page.title}` } });
   revalidatePath("/admin/sayfalar");
   revalidatePath(`/sayfa/${page.slug}`);
+  revalidatePath("/", "layout");
   return page;
 }
 
@@ -54,4 +56,5 @@ export async function deleteStaticPage(id: string) {
   await prisma.staticPage.delete({ where: { id } });
   await prisma.auditLog.create({ data: { userId: session.user.id, action: "DELETE", entity: "StaticPage", entityId: id, details: `Sayfa silindi: ${page?.title}` } });
   revalidatePath("/admin/sayfalar");
+  revalidatePath("/", "layout");
 }
