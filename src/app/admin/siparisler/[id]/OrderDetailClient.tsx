@@ -573,7 +573,7 @@ export default function OrderDetailClient({ order }: { order: Order }) {
               {order.status === "QUOTE" && order.quoteExpiresAt && (
                 <div><strong>Geçerlilik:</strong> {new Date(order.quoteExpiresAt).toLocaleDateString("tr-TR")}</div>
               )}
-              <div style={{ color: "#888", fontSize: 12, marginTop: 4 }}>Sipariş No: #{order.orderNumber}</div>
+              <div style={{ color: "#888", fontSize: 12, marginTop: 4 }}>{order.status === "QUOTE" ? "Teklif No" : "Sipariş No"}: #{order.orderNumber}</div>
             </div>
           </div>
 
