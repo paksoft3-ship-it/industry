@@ -569,11 +569,11 @@ export default function OrderDetailClient({ order }: { order: Order }) {
               )}
             </div>
             <div style={{ textAlign: "right" }}>
+              <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 4 }}>{order.status === "QUOTE" ? "Teklif No" : "Sipariş No"}: #{order.orderNumber}</div>
               <div><strong>Tarih:</strong> {new Date(order.createdAt).toLocaleDateString("tr-TR")}</div>
               {order.status === "QUOTE" && order.quoteExpiresAt && (
                 <div><strong>Geçerlilik:</strong> {new Date(order.quoteExpiresAt).toLocaleDateString("tr-TR")}</div>
               )}
-              <div style={{ color: "#888", fontSize: 12, marginTop: 4 }}>{order.status === "QUOTE" ? "Teklif No" : "Sipariş No"}: #{order.orderNumber}</div>
             </div>
           </div>
 
