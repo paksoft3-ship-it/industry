@@ -2,7 +2,9 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import toast from "react-hot-toast";
 import MaterialIcon from "@/components/ui/MaterialIcon";
+import { useCart } from "@/context/CartContext";
 
 interface FeaturedProduct {
   id: string;
@@ -27,6 +29,9 @@ interface FeaturedProductsProps {
 }
 
 export default function FeaturedProducts({ products, isAdmin = false }: FeaturedProductsProps) {
+  const { addItem } = useCart();
+  const [addingId, setAddingId] = useState<string | null>(null);
+
   // Build dynamic filter tabs from the categories present in the data
   const allCategoryNames = Array.from(
     new Set(products.flatMap((p) => p.categories.map((c) => c.category.name)))
@@ -34,6 +39,21 @@ export default function FeaturedProducts({ products, isAdmin = false }: Featured
   const filterTabs = ["Tümü", ...allCategoryNames.slice(0, 3)];
 
   const [activeTab, setActiveTab] = useState("Tümü");
+
+  async function handleAddToCart(e: React.MouseEvent, product: FeaturedProduct) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!product.inStock) return;
+    setAddingId(product.id);
+    try {
+      await addItem(product.id, 1);
+      toast.success(`${product.name} sepete eklendi`);
+    } catch {
+      toast.error("Sepete eklenemedi. Lütfen giriş yapın.");
+    } finally {
+      setAddingId(null);
+    }
+  }
 
   const filteredProducts =
     activeTab === "Tümü"
@@ -110,10 +130,8 @@ export default function FeaturedProducts({ products, isAdmin = false }: Featured
                   key={product.id}
                   className="group bg-background-light rounded-xl border border-gray-200 overflow-hidden hover:shadow-xl hover:border-primary/30 transition-all duration-300 flex flex-col"
                 >
-                  <Link
-                    href={`/urun/${product.slug}`}
-                    className="relative aspect-square bg-white p-6 flex items-center justify-center overflow-hidden"
-                  >
+                  <div className="relative aspect-square bg-white p-6 flex items-center justify-center overflow-hidden">
+                    <Link href={`/urun/${product.slug}`} className="absolute inset-0" />
                     <Image
                       src={imageUrl}
                       alt={product.name}
@@ -122,19 +140,22 @@ export default function FeaturedProducts({ products, isAdmin = false }: Featured
                       className="object-contain h-full w-full mix-blend-multiply group-hover:scale-110 transition-transform duration-300"
                     />
                     {discountPercent && discountPercent > 0 && (
-                      <div className="absolute top-3 left-3 bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded">
+                      <div className="absolute top-3 left-3 bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded pointer-events-none">
                         -{discountPercent}%
                       </div>
                     )}
                     {product.badge === "Yeni" && !discountPercent && (
-                      <div className="absolute top-3 left-3 bg-blue-600 text-white text-[10px] font-bold px-2 py-1 rounded">
+                      <div className="absolute top-3 left-3 bg-blue-600 text-white text-[10px] font-bold px-2 py-1 rounded pointer-events-none">
                         YENİ
                       </div>
                     )}
-                    <button className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0">
+                    <button
+                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                      className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0 z-10"
+                    >
                       <MaterialIcon icon="favorite" className="text-[20px]" />
                     </button>
-                  </Link>
+                  </div>
                   <div className="p-5 flex flex-col flex-1">
                     {/* Brand */}
                     {product.brand && (
@@ -159,8 +180,16 @@ export default function FeaturedProducts({ products, isAdmin = false }: Featured
                           {product.price.toLocaleString("tr-TR", { minimumFractionDigits: 2 })}
                         </p>
                       </div>
-                      <button className="size-10 rounded-lg bg-primary text-white flex items-center justify-center hover:bg-primary-dark transition-colors shadow-lg shadow-blue-500/30">
-                        <MaterialIcon icon="add_shopping_cart" className="text-[20px]" />
+                      <button
+                        onClick={(e) => handleAddToCart(e, product)}
+                        disabled={!product.inStock || addingId === product.id}
+                        className="size-10 rounded-lg bg-primary text-white flex items-center justify-center hover:bg-primary-dark transition-colors shadow-lg shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
+                        title={product.inStock ? "Sepete Ekle" : "Stokta Yok"}
+                      >
+                        <MaterialIcon
+                          icon={addingId === product.id ? "hourglass_empty" : "add_shopping_cart"}
+                          className="text-[20px]"
+                        />
                       </button>
                     </div>
                     {/* Stock indicator */}

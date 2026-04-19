@@ -16,13 +16,13 @@ export default function CTASection() {
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-4">
           <Link
-            href="#"
+            href="/teklif-al"
             className="px-8 py-3.5 bg-white text-primary font-bold rounded-lg hover:bg-gray-100 transition-colors shadow-lg"
           >
             Teklif İste
           </Link>
           <Link
-            href="#"
+            href="/iletisim"
             className="px-8 py-3.5 bg-transparent border border-white text-white font-medium rounded-lg hover:bg-white/10 transition-colors"
           >
             Bize Ulaşın

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import toast from "react-hot-toast";
 import MaterialIcon from "@/components/ui/MaterialIcon";
 import { useCart } from "@/context/CartContext";
 
@@ -15,10 +16,16 @@ export default function AddToCartButton({ productId, inStock }: AddToCartButtonP
 
   const handleClick = async (e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     if (!inStock || loading) return;
-    await addItem(productId, 1);
-    setAdded(true);
-    setTimeout(() => setAdded(false), 1500);
+    try {
+      await addItem(productId, 1);
+      setAdded(true);
+      toast.success("Ürün sepete eklendi");
+      setTimeout(() => setAdded(false), 1500);
+    } catch {
+      toast.error("Sepete eklenemedi. Lütfen giriş yapın.");
+    }
   };
 
   return (

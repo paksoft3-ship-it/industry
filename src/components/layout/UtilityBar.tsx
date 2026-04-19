@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
 import MaterialIcon from "@/components/ui/MaterialIcon";
-import CurrencySwitcher from "@/components/layout/CurrencySwitcher";
 
 
 const topBarLinks = [
@@ -73,7 +72,7 @@ export default function UtilityBar({
         {/* Right: Working Hours */}
         <div className="flex items-center gap-4">
           <span className="hidden md:inline">{workingHours}</span>
-          <CurrencySwitcher />
+
         </div>
       </div>
     </div>

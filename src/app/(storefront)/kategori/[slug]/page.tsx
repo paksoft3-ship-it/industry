@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import MaterialIcon from "@/components/ui/MaterialIcon";
 import CategoryShowcase from "@/components/categories/CategoryShowcase";
 import CategoryFiltersWrapper from "@/components/categories/CategoryFiltersWrapper";
+import AddToCartButton from "@/components/products/AddToCartButton";
 import { getCategoryBySlug, getCategoryTree, getCategoryProductBrands } from "@/lib/actions/categories";
 import { getProducts } from "@/lib/actions/products";
 
@@ -178,9 +179,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
                             {price.toLocaleString("tr-TR", { minimumFractionDigits: 2 })}
                           </p>
                         </div>
-                        <button className="size-10 rounded-lg bg-primary text-white flex items-center justify-center hover:bg-primary-dark transition-colors shadow-lg shadow-blue-500/30">
-                          <MaterialIcon icon="add_shopping_cart" className="text-[20px]" />
-                        </button>
+                        <AddToCartButton productId={product.id} inStock={product.inStock} />
                       </div>
                       {/* Stock indicator */}
                       <div className="mt-3 flex items-center gap-1.5">
