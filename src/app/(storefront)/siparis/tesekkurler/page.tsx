@@ -22,6 +22,8 @@ async function TesekkurlerContent({
   const params = await searchParams;
   const orderNumber = params.no || "";
   const total = params.total ? Number(params.total) : null;
+  const method = params.method || "havale"; // "havale" | "iyzico"
+  const isIyzico = method === "iyzico";
 
   return (
     <div className="min-h-screen bg-background-light">
@@ -33,10 +35,12 @@ async function TesekkurlerContent({
           </div>
 
           <h1 className="text-2xl md:text-3xl font-bold text-primary font-[family-name:var(--font-display)] mb-3">
-            Siparişiniz Alındı!
+            {isIyzico ? "Ödeme Başarılı!" : "Siparişiniz Alındı!"}
           </h1>
           <p className="text-gray-500 mb-8">
-            Siparişiniz başarıyla oluşturuldu. Havale / EFT ödemesini tamamladıktan sonra siparişiniz hazırlanmaya başlanacaktır.
+            {isIyzico
+              ? "Ödemeniz onaylandı. Siparişiniz hazırlanmaya başlandı."
+              : "Siparişiniz başarıyla oluşturuldu. Havale / EFT ödemesini tamamladıktan sonra siparişiniz hazırlanmaya başlanacaktır."}
           </p>
 
           {/* Order Info Card */}
@@ -62,21 +66,24 @@ async function TesekkurlerContent({
               )}
               <div>
                 <p className="text-gray-400 mb-1">Ödeme Yöntemi</p>
-                <p className="font-semibold text-primary">Havale / EFT</p>
+                <p className="font-semibold text-primary">{isIyzico ? "Kredi / Banka Kartı" : "Havale / EFT"}</p>
               </div>
             </div>
           </div>
 
-          {/* Havale reminder */}
-          <div className="bg-blue-50 border border-blue-100 rounded-lg p-4 mb-8 text-left">
-            <div className="flex items-start gap-2">
-              <MaterialIcon icon="info" className="text-blue-500 text-lg mt-0.5 flex-shrink-0" />
-              <div className="text-sm text-blue-700">
-                <p className="font-medium mb-1">Ödeme Hatırlatması</p>
-                <p>Havale / EFT yaparken açıklama kısmına <strong>{orderNumber || "sipariş numaranızı"}</strong> yazmayı unutmayınız. Ödemeniz onaylandıktan sonra siparişiniz hazırlanmaya başlanacaktır.</p>
+          {/* Reminder */}
+          {!isIyzico && (
+            <div className="bg-blue-50 border border-blue-100 rounded-lg p-4 mb-8 text-left">
+              <div className="flex items-start gap-2">
+                <MaterialIcon icon="info" className="text-blue-500 text-lg mt-0.5 flex-shrink-0" />
+                <div className="text-sm text-blue-700">
+                  <p className="font-medium mb-1">Ödeme Hatırlatması</p>
+                  <p>Havale / EFT yaparken açıklama kısmına <strong>{orderNumber || "sipariş numaranızı"}</strong> yazmayı unutmayınız.</p>
+                  <p className="mt-1 font-mono font-semibold">IBAN: TR10 0020 5000 0984 4795 3000 01 (Kuveyt Türk)</p>
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Actions */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">

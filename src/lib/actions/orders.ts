@@ -253,7 +253,7 @@ export async function updateOrderTracking(orderId: string, data: {
 // Returns a discriminated union instead of throwing so the client-side
 // catch block always receives a clean, serializable value in production.
 export type PlaceOrderResult =
-  | { ok: true; orderNumber: string; total: number }
+  | { ok: true; orderNumber: string; total: number; orderId: string; paymentMethod: string }
   | { ok: false; error: string };
 
 export async function placeOrder(data: {
@@ -270,6 +270,7 @@ export async function placeOrder(data: {
   couponCode?: string;
   notes?: string;
   guestEmail?: string;
+  paymentMethod?: "havale-eft" | "iyzico";
 }): Promise<PlaceOrderResult> {
   try {
     const session = await auth();
@@ -371,46 +372,53 @@ export async function placeOrder(data: {
     const shippingCost = subtotal >= 2000 ? 0 : 49.90;
     const total = subtotal - discount + shippingCost;
 
+    const paymentMethod = data.paymentMethod ?? "havale-eft";
+    // iyzico orders start as DRAFT — confirmed after callback
+    const orderStatus = paymentMethod === "iyzico" ? OrderStatus.DRAFT : OrderStatus.PENDING;
+
     const order = await prisma.order.create({
       data: {
         orderNumber: generateOrderNumber(),
         userId,
         guestEmail: isGuest ? data.guestEmail : null,
         addressId: addressRecord.id,
+        status: orderStatus,
         subtotal,
         shippingCost,
         discount,
         total,
         couponCode: data.couponCode,
         notes: data.notes,
+        paymentMethod,
         items: { create: orderItems },
       },
     });
 
-    // Decrease stock and clear cart in parallel
-    const stockUpdates = cartItems.map((item) =>
-      prisma.product.update({
-        where: { id: item.productId },
-        data: { stockCount: { decrement: item.quantity } },
-      })
-    );
-
-    if (userId) {
-      await Promise.all([
-        ...stockUpdates,
-        prisma.cartItem.deleteMany({ where: { userId } }),
-      ]);
-    } else {
-      await Promise.all(stockUpdates);
-      // Clear guest cart cookie
-      const cookieStore = await cookies();
-      cookieStore.set("guest_cart", "[]", { httpOnly: true, sameSite: "lax", path: "/" });
+    // For havale-eft: decrease stock and clear cart immediately
+    // For iyzico: stock decremented only after successful payment callback
+    if (paymentMethod === "havale-eft") {
+      const stockUpdates = cartItems.map((item) =>
+        prisma.product.update({
+          where: { id: item.productId },
+          data: { stockCount: { decrement: item.quantity } },
+        })
+      );
+      if (userId) {
+        await Promise.all([
+          ...stockUpdates,
+          prisma.cartItem.deleteMany({ where: { userId } }),
+        ]);
+      } else {
+        await Promise.all(stockUpdates);
+        const cookieStore = await cookies();
+        cookieStore.set("guest_cart", "[]", { httpOnly: true, sameSite: "lax", path: "/" });
+      }
     }
 
     revalidatePath("/hesap/siparisler");
     revalidatePath("/admin/siparisler");
 
-    return { ok: true, orderNumber: order.orderNumber, total };
+    return { ok: true, orderNumber: order.orderNumber, total, orderId: order.id, paymentMethod };
   } catch (err) {
     console.error("[placeOrder]", err);
     return { ok: false, error: "Sipariş oluşturulurken bir hata oluştu. Lütfen tekrar deneyin." };

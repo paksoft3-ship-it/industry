@@ -40,6 +40,7 @@
     "@types/react": "^19.2.14",
     "@vercel/blob": "^2.3.0",
     "bcryptjs": "^3.0.3",
+    "iyzipay": "^2.0.67",
     "next": "^16.1.6",
     "next-auth": "^5.0.0-beta.30",
     "postcss": "^8.5.6",
