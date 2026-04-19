@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 import path from "path";
 
 const nextConfig: NextConfig = {
+  serverExternalPackages: ["iyzipay"],
   images: {
     localPatterns: [
       { pathname: "/images/**" },

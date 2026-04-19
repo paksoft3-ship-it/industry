@@ -1,5 +1,6 @@
+export const runtime = "nodejs";
+
 import { NextRequest, NextResponse } from "next/server";
-import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { retrieveCheckoutForm } from "@/lib/iyzico";
 import { OrderStatus, PaymentStatus } from "@prisma/client";
