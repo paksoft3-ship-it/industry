@@ -518,128 +518,147 @@ export default function OrderDetailClient({ order }: { order: Order }) {
         }
         @media print {
           body * { visibility: hidden; }
-          #order-print-area { visibility: visible; position: fixed; left: 0; top: 0; width: 100%; height: auto; overflow: visible; padding: 32px; background: white; box-sizing: border-box; }
+          #order-print-area { visibility: visible; position: fixed; left: 0; top: 0; width: 100%; height: auto; overflow: visible; padding: 40px 48px; background: white; box-sizing: border-box; }
           #order-print-area * { visibility: visible; }
         }
       `}</style>
       <div id="order-print-area">
-        <div style={{ fontFamily: "sans-serif", color: "#1a1a1a", maxWidth: 800, margin: "0 auto" }}>
-          {/* Logo + Header */}
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 32, borderBottom: "2px solid #0d59f2", paddingBottom: 24 }}>
+        <div style={{ fontFamily: "Arial, sans-serif", color: "#1a1a1a", maxWidth: 780, margin: "0 auto", fontSize: 13 }}>
+
+          {/* Logo */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/images/logo.jpeg" alt="SivTech Makina" style={{ height: 110, objectFit: "contain", marginBottom: 16 }} />
+
+          {/* Company Header */}
+          <div style={{ marginBottom: 24 }}>
+            <div style={{ fontWeight: 700, fontSize: 14 }}>SİVTECH MAKİNA İMALAT İTHALAT İHRACAT TİCARET VE SANAYİ LTD ŞTİ</div>
+            <div>Gültepe Mahallesi 11.Sanayi Sok. 36/H Merkez/SİVAS</div>
+            <div>Vergi Dairesi : SİTE</div>
+            <div>Vergi No : 7721512290</div>
+            <div>sivtechmakina@gmail.com</div>
+          </div>
+
+          <hr style={{ border: "none", borderTop: "1px solid #ccc", marginBottom: 24 }} />
+
+          {/* Document Title */}
+          <div style={{ textAlign: "center", fontSize: 22, fontWeight: 400, letterSpacing: 2, marginBottom: 28 }}>
+            {order.status === "QUOTE" ? "TEKLİF FORMU" : "SİPARİŞ FORMU"}
+          </div>
+
+          {/* Customer Info + Date Row */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
             <div>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/images/logo_horizontal.png" alt="Logo" style={{ height: 48, objectFit: "contain" }} />
-            </div>
-            <div style={{ textAlign: "right" }}>
-              <div style={{ fontSize: 22, fontWeight: 700, color: "#0d59f2" }}>
-                {order.status === "QUOTE" ? "TEKLİF" : "SİPARİŞ"} #{order.orderNumber}
-              </div>
-              <div style={{ fontSize: 13, color: "#666", marginTop: 4 }}>
-                Tarih: {new Date(order.createdAt).toLocaleDateString("tr-TR")}
-              </div>
-              {order.status === "QUOTE" && order.quoteExpiresAt && (
-                <div style={{ fontSize: 13, color: "#666" }}>
-                  Geçerlilik: {new Date(order.quoteExpiresAt).toLocaleDateString("tr-TR")}
-                </div>
+              {order.user ? (
+                <>
+                  <div style={{ fontWeight: 700, fontSize: 14 }}>{order.user.firstName.toUpperCase()} {order.user.lastName.toUpperCase()}</div>
+                  <div>{order.user.email}</div>
+                  {order.user.phone && <div>{order.user.phone}</div>}
+                  {order.address && (
+                    <div>{order.address.address}, {order.address.district} / {order.address.city}</div>
+                  )}
+                </>
+              ) : order.address ? (
+                <>
+                  <div style={{ fontWeight: 700, fontSize: 14 }}>{order.address.firstName.toUpperCase()} {order.address.lastName.toUpperCase()}</div>
+                  <div>{order.address.address}</div>
+                  <div>{order.address.district} / {order.address.city}</div>
+                  <div>{order.address.phone}</div>
+                </>
+              ) : (
+                <div>{order.guestEmail || "Misafir"}</div>
               )}
             </div>
+            <div style={{ textAlign: "right" }}>
+              <div><strong>Tarih:</strong> {new Date(order.createdAt).toLocaleDateString("tr-TR")}</div>
+              {order.status === "QUOTE" && order.quoteExpiresAt && (
+                <div><strong>Geçerlilik:</strong> {new Date(order.quoteExpiresAt).toLocaleDateString("tr-TR")}</div>
+              )}
+              <div style={{ color: "#888", fontSize: 12, marginTop: 4 }}>Sipariş No: #{order.orderNumber}</div>
+            </div>
           </div>
 
-          {/* Customer Info */}
-          <div style={{ marginBottom: 24 }}>
-            <div style={{ fontSize: 13, fontWeight: 600, color: "#555", marginBottom: 8, textTransform: "uppercase", letterSpacing: 1 }}>Müşteri Bilgileri</div>
-            {order.user ? (
-              <div>
-                <div style={{ fontWeight: 600 }}>{order.user.firstName} {order.user.lastName}</div>
-                <div style={{ color: "#666", fontSize: 13 }}>{order.user.email}</div>
-                {order.user.phone && <div style={{ color: "#666", fontSize: 13 }}>{order.user.phone}</div>}
-              </div>
-            ) : (
-              <div style={{ color: "#666", fontSize: 13 }}>{order.guestEmail || "Misafir"}</div>
-            )}
-          </div>
-
-          {/* Delivery Address */}
-          {order.address && (
-            <div style={{ marginBottom: 24 }}>
-              <div style={{ fontSize: 13, fontWeight: 600, color: "#555", marginBottom: 8, textTransform: "uppercase", letterSpacing: 1 }}>Teslimat Adresi</div>
-              <div style={{ fontSize: 13, color: "#444" }}>
-                <div>{order.address.firstName} {order.address.lastName}</div>
-                <div>{order.address.address}</div>
-                <div>{order.address.district} / {order.address.city}</div>
-                {order.address.postalCode && <div>{order.address.postalCode}</div>}
-                <div>{order.address.phone}</div>
-              </div>
+          {/* Attention line */}
+          {order.user && (
+            <div style={{ fontWeight: 700, marginBottom: 8 }}>
+              Sayın {order.user.firstName.toUpperCase()} {order.user.lastName.toUpperCase()} dikkatine;
             </div>
           )}
 
+          {/* Intro */}
+          <div style={{ marginBottom: 20, fontSize: 13 }}>
+            Yapmış olduğumuz görüşmeler sonrasında hazırlamış olduğumuz fiyat teklifimizi değerlendirmenize sunarız.
+          </div>
+
           {/* Items Table */}
-          <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 24 }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 8, fontSize: 13 }}>
             <thead>
-              <tr style={{ background: "#0d59f2", color: "white" }}>
-                <th style={{ textAlign: "left", padding: "10px 12px", fontSize: 12 }}>Ürün</th>
-                <th style={{ textAlign: "left", padding: "10px 12px", fontSize: 12 }}>SKU</th>
-                <th style={{ textAlign: "center", padding: "10px 12px", fontSize: 12 }}>Adet</th>
-                <th style={{ textAlign: "right", padding: "10px 12px", fontSize: 12 }}>Birim Fiyat</th>
-                <th style={{ textAlign: "right", padding: "10px 12px", fontSize: 12 }}>Toplam</th>
+              <tr style={{ borderBottom: "2px solid #333" }}>
+                <th style={{ textAlign: "left", padding: "8px 6px", fontWeight: 700, width: 30 }}></th>
+                <th style={{ textAlign: "left", padding: "8px 6px", fontWeight: 700 }}>Açıklama</th>
+                <th style={{ textAlign: "center", padding: "8px 6px", fontWeight: 700, width: 70 }}>Miktar</th>
+                <th style={{ textAlign: "right", padding: "8px 6px", fontWeight: 700, width: 110 }}>Fiyat</th>
+                <th style={{ textAlign: "center", padding: "8px 6px", fontWeight: 700, width: 70 }}>KDV (%)</th>
+                <th style={{ textAlign: "right", padding: "8px 6px", fontWeight: 700, width: 130 }}>Tutar (KDV Hariç)</th>
               </tr>
             </thead>
             <tbody>
               {order.items.map((item, idx) => (
-                <tr key={item.id} style={{ background: idx % 2 === 0 ? "#f9f9f9" : "white" }}>
-                  <td style={{ padding: "9px 12px", fontSize: 13 }}>{item.name}</td>
-                  <td style={{ padding: "9px 12px", fontSize: 12, color: "#888", fontFamily: "monospace" }}>{item.sku}</td>
-                  <td style={{ padding: "9px 12px", fontSize: 13, textAlign: "center" }}>{item.quantity}</td>
-                  <td style={{ padding: "9px 12px", fontSize: 13, textAlign: "right" }}>{formatCurrency(Number(item.price))}</td>
-                  <td style={{ padding: "9px 12px", fontSize: 13, textAlign: "right", fontWeight: 600 }}>{formatCurrency(Number(item.total))}</td>
+                <tr key={item.id} style={{ borderBottom: "1px solid #e5e5e5", verticalAlign: "top" }}>
+                  <td style={{ padding: "8px 6px", color: "#666" }}>{idx + 1}</td>
+                  <td style={{ padding: "8px 6px" }}>
+                    <div style={{ fontWeight: 700 }}>{item.name}</div>
+                    <div style={{ color: "#666", fontSize: 12 }}>{item.sku}</div>
+                  </td>
+                  <td style={{ padding: "8px 6px", textAlign: "center" }}>{item.quantity} ad</td>
+                  <td style={{ padding: "8px 6px", textAlign: "right" }}>{formatCurrency(Number(item.price))}</td>
+                  <td style={{ padding: "8px 6px", textAlign: "center" }}>%20</td>
+                  <td style={{ padding: "8px 6px", textAlign: "right" }}>{formatCurrency(Number(item.total))}</td>
                 </tr>
               ))}
             </tbody>
           </table>
 
           {/* Totals */}
-          <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 24 }}>
-            <div style={{ minWidth: 260 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", fontSize: 13, borderBottom: "1px solid #eee" }}>
-                <span style={{ color: "#666" }}>Ara Toplam:</span>
-                <span>{formatCurrency(Number(order.subtotal))}</span>
-              </div>
+          <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 32 }}>
+            <div style={{ minWidth: 240, fontSize: 13 }}>
               {Number(order.discount) > 0 && (
-                <div style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", fontSize: 13, borderBottom: "1px solid #eee" }}>
-                  <span style={{ color: "#666" }}>İndirim:</span>
-                  <span style={{ color: "#dc2626" }}>-{formatCurrency(Number(order.discount))}</span>
+                <div style={{ display: "flex", justifyContent: "space-between", padding: "3px 0" }}>
+                  <span>İndirim:</span>
+                  <span>-{formatCurrency(Number(order.discount))}</span>
                 </div>
               )}
-              {Number(order.shippingCost) > 0 && (
-                <div style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", fontSize: 13, borderBottom: "1px solid #eee" }}>
-                  <span style={{ color: "#666" }}>Kargo:</span>
-                  <span>{formatCurrency(Number(order.shippingCost))}</span>
-                </div>
-              )}
-              <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", fontSize: 15, fontWeight: 700, borderTop: "2px solid #0d59f2", marginTop: 4 }}>
-                <span>Genel Toplam:</span>
-                <span style={{ color: "#0d59f2" }}>{formatCurrency(Number(order.total))}</span>
+              <div style={{ display: "flex", justifyContent: "space-between", padding: "3px 0" }}>
+                <span>Net</span>
+                <span>{formatCurrency(Number(order.total))}</span>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", padding: "3px 0" }}>
+                <span>KDV (%20)</span>
+                <span>{formatCurrency(Number(order.total) * 0.20)}</span>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", padding: "4px 0", fontWeight: 700, borderTop: "1px solid #333", marginTop: 4 }}>
+                <span>Toplam</span>
+                <span>{formatCurrency(Number(order.total) * 1.20)}</span>
               </div>
             </div>
           </div>
 
           {/* Notes */}
-          {(order.notes || (order.status === "QUOTE" && order.quoteNote)) && (
-            <div style={{ borderTop: "1px solid #eee", paddingTop: 16 }}>
-              {order.notes && (
-                <div style={{ marginBottom: 12 }}>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: "#555", marginBottom: 4 }}>NOT</div>
-                  <div style={{ fontSize: 13, color: "#444" }}>{order.notes}</div>
-                </div>
-              )}
-              {order.status === "QUOTE" && order.quoteNote && (
-                <div>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: "#555", marginBottom: 4 }}>TEKLİF NOTU</div>
-                  <div style={{ fontSize: 13, color: "#444" }}>{order.quoteNote}</div>
-                </div>
-              )}
+          {order.status === "QUOTE" && order.quoteNote && (
+            <div style={{ marginBottom: 16, fontSize: 13 }}>
+              <strong>Not:</strong> {order.quoteNote}
             </div>
           )}
+          {order.notes && (
+            <div style={{ marginBottom: 16, fontSize: 13 }}>
+              <strong>İç Not:</strong> {order.notes}
+            </div>
+          )}
+
+          {/* Footer */}
+          <div style={{ fontSize: 13, marginTop: 8 }}>
+            Teklifimiz ile ilgili sorularınızı cevaplandırmaya hazır olduğumuzu belirtir, çalışmalarınızda başarılar dileriz.
+          </div>
+          <div style={{ marginTop: 8, fontSize: 13 }}>Saygılarımızla,</div>
         </div>
       </div>
     </div>
