@@ -577,16 +577,16 @@ export default function ProductForm({
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
             <h2 className="font-[family-name:var(--font-display)] text-lg font-semibold text-gray-800 mb-4">Stok Bilgisi</h2>
             <div className="space-y-4">
-              <label className={`flex items-center gap-3 ${parseInt(stockCount) === 0 ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}>
+              <label className={`flex items-center gap-3 ${!(parseInt(stockCount) > 0) ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}>
                 <input
                   type="checkbox"
                   checked={inStock}
-                  disabled={parseInt(stockCount) === 0}
+                  disabled={!(parseInt(stockCount) > 0)}
                   onChange={(e) => setInStock(e.target.checked)}
                   className="rounded border-gray-300 text-primary focus:ring-primary disabled:cursor-not-allowed"
                 />
                 <span className="text-sm text-gray-700">Stokta Var</span>
-                {parseInt(stockCount) === 0 && (
+                {!(parseInt(stockCount) > 0) && (
                   <span className="text-xs text-gray-400">(stok miktarı 0)</span>
                 )}
               </label>
@@ -598,8 +598,8 @@ export default function ProductForm({
                   onChange={(e) => {
                     const val = e.target.value;
                     setStockCount(val);
-                    const num = parseInt(val) || 0;
-                    if (num === 0) setInStock(false);
+                    const num = parseInt(val);
+                    if (!(num > 0)) setInStock(false);
                     else if (num > 0 && !inStock) setInStock(true);
                   }}
                   className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"

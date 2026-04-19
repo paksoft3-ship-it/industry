@@ -5,6 +5,12 @@ import Link from "next/link";
 import MaterialIcon from "@/components/ui/MaterialIcon";
 import { useCart } from "@/context/CartContext";
 
+function getPreviewUrl(fileUrl: string, fileType: string) {
+  const t = fileType.toLowerCase();
+  if (t.includes("pdf")) return fileUrl;
+  return `https://docs.google.com/viewer?url=${encodeURIComponent(fileUrl)}&embedded=true`;
+}
+
 interface ProductData {
   id: string;
   name: string;
@@ -41,6 +47,7 @@ export default function ProductDetailClient({ product }: { product: ProductData 
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState("bilgi");
   const [addedToCart, setAddedToCart] = useState(false);
+  const [previewDoc, setPreviewDoc] = useState<{ title: string; url: string; fileType: string } | null>(null);
   const { addItem, loading } = useCart();
   const tabsRef = useRef<HTMLDivElement>(null);
 
@@ -287,24 +294,34 @@ export default function ProductDetailClient({ product }: { product: ProductData 
             {product.downloads.length > 0 ? (
               <ul className="space-y-3 max-w-2xl">
                 {product.downloads.map((doc) => (
-                  <li key={doc.id}>
-                    <a
-                      href={doc.fileUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-4 p-4 border border-gray-200 rounded-xl hover:border-primary hover:bg-primary/5 transition-colors group"
-                    >
-                      <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <MaterialIcon icon={fileTypeIcon(doc.fileType)} className="text-primary text-xl" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium text-gray-800 group-hover:text-primary transition-colors truncate">{doc.title}</p>
-                        <p className="text-xs text-gray-400 mt-0.5 uppercase">
-                          {doc.fileType}{doc.fileSize ? ` · ${doc.fileSize}` : ""}
-                        </p>
-                      </div>
-                      <MaterialIcon icon="download" className="text-gray-400 group-hover:text-primary transition-colors flex-shrink-0" />
-                    </a>
+                  <li key={doc.id} className="flex items-center gap-4 p-4 border border-gray-200 rounded-xl">
+                    <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <MaterialIcon icon={fileTypeIcon(doc.fileType)} className="text-primary text-xl" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-gray-800 truncate">{doc.title}</p>
+                      <p className="text-xs text-gray-400 mt-0.5 uppercase">
+                        {doc.fileType}{doc.fileSize ? ` · ${doc.fileSize}` : ""}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <button
+                        onClick={() => setPreviewDoc({ title: doc.title, url: doc.fileUrl, fileType: doc.fileType })}
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-primary border border-primary/30 rounded-lg hover:bg-primary/5 transition-colors"
+                      >
+                        <MaterialIcon icon="visibility" className="text-base" />
+                        Önizle
+                      </button>
+                      <a
+                        href={doc.fileUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-white bg-primary rounded-lg hover:bg-primary/90 transition-colors"
+                      >
+                        <MaterialIcon icon="download" className="text-base" />
+                        İndir
+                      </a>
+                    </div>
                   </li>
                 ))}
               </ul>
@@ -337,6 +354,45 @@ export default function ProductDetailClient({ product }: { product: ProductData 
           </div>
         )}
       </div>
+
+      {/* Document Preview Modal */}
+      {previewDoc && (
+        <div
+          className="fixed inset-0 z-50 flex flex-col bg-black/70"
+          onClick={() => setPreviewDoc(null)}
+        >
+          <div
+            className="flex items-center justify-between px-4 py-3 bg-white shadow"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <p className="font-medium text-gray-800 truncate">{previewDoc.title}</p>
+            <div className="flex items-center gap-3">
+              <a
+                href={previewDoc.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-white bg-primary rounded-lg hover:bg-primary/90 transition-colors"
+              >
+                <MaterialIcon icon="download" className="text-base" />
+                İndir
+              </a>
+              <button
+                onClick={() => setPreviewDoc(null)}
+                className="p-2 text-gray-500 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <MaterialIcon icon="close" className="text-xl" />
+              </button>
+            </div>
+          </div>
+          <div className="flex-1 overflow-hidden" onClick={(e) => e.stopPropagation()}>
+            <iframe
+              src={getPreviewUrl(previewDoc.url, previewDoc.fileType)}
+              className="w-full h-full border-0"
+              title={previewDoc.title}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
