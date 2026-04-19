@@ -7,6 +7,14 @@ export async function getStaticPages() {
   return prisma.staticPage.findMany({ orderBy: { createdAt: "desc" } });
 }
 
+export async function getActiveStaticPages() {
+  return prisma.staticPage.findMany({
+    where: { isActive: true },
+    select: { id: true, title: true, slug: true },
+    orderBy: { title: "asc" },
+  });
+}
+
 export async function getStaticPageBySlug(slug: string) {
   return prisma.staticPage.findUnique({ where: { slug } });
 }

@@ -4,6 +4,7 @@ import UtilityBar from "@/components/layout/UtilityBar";
 import { CartProvider } from "@/context/CartContext";
 import { auth } from "@/lib/auth";
 import { getSettings } from "@/lib/actions/settings";
+import { getActiveStaticPages } from "@/lib/actions/staticPages";
 import type { MegaMenuCategory } from "@/lib/types/menu";
 
 export default async function StorefrontShell({
@@ -17,7 +18,7 @@ export default async function StorefrontShell({
   educationCategories?: any[];
   blogCategories?: any[];
 }) {
-  const [session, settings] = await Promise.all([auth(), getSettings()]);
+  const [session, settings, pages] = await Promise.all([auth(), getSettings(), getActiveStaticPages()]);
   const isLoggedIn = !!session?.user;
   const userName = session?.user?.name ?? "";
 
@@ -43,7 +44,9 @@ export default async function StorefrontShell({
         facebookUrl={settings.facebookUrl ?? ""}
         instagramUrl={settings.instagramUrl ?? ""}
         linkedinUrl={settings.linkedinUrl ?? ""}
+        youtubeUrl={settings.youtubeUrl ?? ""}
         siteName={settings.siteName}
+        pages={pages}
       />
     </CartProvider>
   );
