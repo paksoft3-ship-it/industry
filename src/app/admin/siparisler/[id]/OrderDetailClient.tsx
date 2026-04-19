@@ -513,13 +513,13 @@ export default function OrderDetailClient({ order }: { order: Order }) {
 
       {/* Print styles + print-only area */}
       <style>{`
+        @media screen { #order-print-area { display: none; } }
         @media print {
-          body * { visibility: hidden !important; }
-          #order-print-area, #order-print-area * { visibility: visible !important; }
-          #order-print-area { position: fixed; left: 0; top: 0; width: 100%; padding: 32px; background: white; }
+          body > * { display: none !important; }
+          #order-print-area { display: block !important; position: fixed; left: 0; top: 0; width: 100%; padding: 32px; background: white; }
         }
       `}</style>
-      <div id="order-print-area" style={{ display: "none" }}>
+      <div id="order-print-area">
         <div style={{ fontFamily: "sans-serif", color: "#1a1a1a", maxWidth: 800, margin: "0 auto" }}>
           {/* Logo + Header */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 32, borderBottom: "2px solid #0d59f2", paddingBottom: 24 }}>
