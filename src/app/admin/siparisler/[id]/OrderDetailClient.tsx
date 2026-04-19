@@ -513,10 +513,13 @@ export default function OrderDetailClient({ order }: { order: Order }) {
 
       {/* Print styles + print-only area */}
       <style>{`
-        @media screen { #order-print-area { display: none; } }
+        @media screen {
+          #order-print-area { position: absolute; left: -9999px; top: 0; height: 0; overflow: hidden; }
+        }
         @media print {
-          body > * { display: none !important; }
-          #order-print-area { display: block !important; position: fixed; left: 0; top: 0; width: 100%; padding: 32px; background: white; }
+          body * { visibility: hidden; }
+          #order-print-area { visibility: visible; position: fixed; left: 0; top: 0; width: 100%; height: auto; overflow: visible; padding: 32px; background: white; box-sizing: border-box; }
+          #order-print-area * { visibility: visible; }
         }
       `}</style>
       <div id="order-print-area">
