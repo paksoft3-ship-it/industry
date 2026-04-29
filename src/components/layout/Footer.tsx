@@ -205,7 +205,7 @@ export default function Footer({
 
             {/* Developed by */}
             <div className="flex flex-wrap items-center justify-center gap-3 order-1 lg:order-2">
-              <span className="text-gray-500 text-sm italic">geliştiren</span>
+              <span className="text-gray-500 text-sm italic">Geliştiren</span>
               <a
                 href="https://www.paksoft.com.tr"
                 target="_blank"
@@ -221,28 +221,28 @@ export default function Footer({
               {/* Visa */}
               <div className="h-7 px-2 bg-white rounded flex items-center justify-center">
                 <svg viewBox="0 0 780 500" className="h-4 w-auto">
-                  <path d="M293.2 348.7l33.4-195.7h53.4l-33.4 195.7h-53.4zM536.5 157.2c-10.6-4-27.2-8.2-48-8.2-52.9 0-90.2 26.6-90.5 64.7-.3 28.1 26.6 43.8 46.9 53.2 20.8 9.6 27.8 15.7 27.7 24.3-.1 13.1-16.6 19.1-32 19.1-21.4 0-32.7-3-50.3-10.3l-6.9-3.1-7.5 43.6c12.5 5.4 35.5 10.1 59.5 10.3 56.1 0 92.6-26.3 93-67.1.2-22.4-14.1-39.4-44.9-53.4-18.7-9.1-30.2-15.1-30.1-24.3 0-8.1 9.7-16.8 30.6-16.8 17.5-.3 30.2 3.5 40.1 7.5l4.8 2.3 7.2-43.7" fill="#1A1F71"/>
-                  <path d="M638.1 152.9h-41.3c-12.8 0-22.4 3.5-28 16.3l-79.4 179.6h56.1l11.1-29.2 68.4.1c1.6 6.8 6.5 29.1 6.5 29.1H680l-41.9-195.9zm-65.6 126.3c4.4-11.3 21.3-54.7 21.3-54.7-.3.5 4.4-11.4 7.1-18.8l3.6 17s10.2 46.6 12.3 56.5H572.5z" fill="#1A1F71"/>
-                  <path d="M240.6 152.9l-52.4 133.5-5.6-27.3c-9.7-31.2-40-65-73.9-81.9l48 172.3 56.5-.1 84.1-196.5-56.7"  fill="#1A1F71"/>
-                  <path d="M140.2 152.9H55.8l-.7 4c65.5 15.8 108.8 54 126.9 99.9l-18.3-87.6c-3.2-12.3-12.5-15.9-23.5-16.3" fill="#F9A51A"/>
+                  <path d="M293.2 348.7l33.4-195.7h53.4l-33.4 195.7h-53.4zM536.5 157.2c-10.6-4-27.2-8.2-48-8.2-52.9 0-90.2 26.6-90.5 64.7-.3 28.1 26.6 43.8 46.9 53.2 20.8 9.6 27.8 15.7 27.7 24.3-.1 13.1-16.6 19.1-32 19.1-21.4 0-32.7-3-50.3-10.3l-6.9-3.1-7.5 43.6c12.5 5.4 35.5 10.1 59.5 10.3 56.1 0 92.6-26.3 93-67.1.2-22.4-14.1-39.4-44.9-53.4-18.7-9.1-30.2-15.1-30.1-24.3 0-8.1 9.7-16.8 30.6-16.8 17.5-.3 30.2 3.5 40.1 7.5l4.8 2.3 7.2-43.7" fill="#1A1F71" />
+                  <path d="M638.1 152.9h-41.3c-12.8 0-22.4 3.5-28 16.3l-79.4 179.6h56.1l11.1-29.2 68.4.1c1.6 6.8 6.5 29.1 6.5 29.1H680l-41.9-195.9zm-65.6 126.3c4.4-11.3 21.3-54.7 21.3-54.7-.3.5 4.4-11.4 7.1-18.8l3.6 17s10.2 46.6 12.3 56.5H572.5z" fill="#1A1F71" />
+                  <path d="M240.6 152.9l-52.4 133.5-5.6-27.3c-9.7-31.2-40-65-73.9-81.9l48 172.3 56.5-.1 84.1-196.5-56.7" fill="#1A1F71" />
+                  <path d="M140.2 152.9H55.8l-.7 4c65.5 15.8 108.8 54 126.9 99.9l-18.3-87.6c-3.2-12.3-12.5-15.9-23.5-16.3" fill="#F9A51A" />
                 </svg>
               </div>
 
               {/* Mastercard */}
               <div className="h-7 px-1.5 bg-white rounded flex items-center justify-center gap-0">
                 <svg viewBox="0 0 48 30" className="h-5 w-auto">
-                  <circle cx="15" cy="15" r="15" fill="#EB001B"/>
-                  <circle cx="33" cy="15" r="15" fill="#F79E1B"/>
-                  <path d="M24 4.8a15 15 0 010 20.4A15 15 0 0124 4.8z" fill="#FF5F00"/>
+                  <circle cx="15" cy="15" r="15" fill="#EB001B" />
+                  <circle cx="33" cy="15" r="15" fill="#F79E1B" />
+                  <path d="M24 4.8a15 15 0 010 20.4A15 15 0 0124 4.8z" fill="#FF5F00" />
                 </svg>
               </div>
 
               {/* Troy */}
               <div className="h-7 px-2 bg-white rounded flex items-center justify-center">
                 <svg viewBox="0 0 80 28" className="h-4 w-auto">
-                  <rect width="80" height="28" rx="3" fill="white"/>
+                  <rect width="80" height="28" rx="3" fill="white" />
                   <text x="8" y="20" fontFamily="Arial" fontWeight="900" fontSize="16" fill="#1a237e" letterSpacing="1">TROY</text>
-                  <circle cx="72" cy="14" r="5" fill="#FFB300"/>
+                  <circle cx="72" cy="14" r="5" fill="#FFB300" />
                 </svg>
               </div>
 
