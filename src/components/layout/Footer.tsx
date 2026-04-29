@@ -205,6 +205,7 @@ export default function Footer({
 
             {/* Developed by */}
             <div className="flex flex-wrap items-center justify-center gap-3 order-1 lg:order-2">
+              <span className="text-gray-500 text-sm italic">geliştiren</span>
               <a
                 href="https://www.paksoft.com.tr"
                 target="_blank"
@@ -213,16 +214,6 @@ export default function Footer({
               >
                 <span className="font-bold text-base tracking-tight text-white group-hover:text-primary transition-colors">PakSoft</span>
               </a>
-              <span className="text-gray-500 text-sm italic">ve</span>
-              <a
-                href="https://724dijital.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center group bg-white/5 px-3 py-1 rounded-full border border-white/10 hover:bg-white/10 transition-all"
-              >
-                <span className="font-bold text-base tracking-tight text-white group-hover:text-primary transition-colors">724Dijital</span>
-              </a>
-              <span className="text-gray-500 text-xs tracking-wide hidden sm:inline">Uluslararası Teknoloji Ortaklığı</span>
             </div>
 
             {/* Payment Icons */}
