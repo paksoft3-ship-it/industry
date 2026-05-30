@@ -216,6 +216,10 @@ export default function Footer({
               </a>
             </div>
 
+
+
+
+
             {/* Payment Icons */}
             <div className="flex items-center gap-3 order-2 lg:order-3">
               {/* Visa */}

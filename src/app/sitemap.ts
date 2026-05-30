@@ -6,17 +6,25 @@ export const dynamic = "force-dynamic";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXTAUTH_URL || "https://cncotomasyon.com";
 
-  // Static pages
+  // ─── Static routes ────────────────────────────────────────────────────────
   const staticRoutes: MetadataRoute.Sitemap = [
-    { url: baseUrl, lastModified: new Date(), changeFrequency: "daily", priority: 1.0 },
-    { url: `${baseUrl}/markalar`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.7 },
-    { url: `${baseUrl}/kampanyalar`, lastModified: new Date(), changeFrequency: "daily", priority: 0.8 },
-    { url: `${baseUrl}/iletisim`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
-    { url: `${baseUrl}/egitim`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.7 },
-    { url: `${baseUrl}/dosya-merkezi`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.6 },
+    { url: baseUrl,                          lastModified: new Date(), changeFrequency: "daily",   priority: 1.0 },
+    { url: `${baseUrl}/kategori/tumu`,       lastModified: new Date(), changeFrequency: "daily",   priority: 0.9 },
+    { url: `${baseUrl}/markalar`,            lastModified: new Date(), changeFrequency: "weekly",  priority: 0.7 },
+    { url: `${baseUrl}/kampanyalar`,         lastModified: new Date(), changeFrequency: "daily",   priority: 0.8 },
+    { url: `${baseUrl}/blog-egitim`,         lastModified: new Date(), changeFrequency: "weekly",  priority: 0.7 },
+    { url: `${baseUrl}/blog`,                lastModified: new Date(), changeFrequency: "weekly",  priority: 0.7 },
+    { url: `${baseUrl}/egitim`,              lastModified: new Date(), changeFrequency: "weekly",  priority: 0.7 },
+    { url: `${baseUrl}/dosya-merkezi`,       lastModified: new Date(), changeFrequency: "weekly",  priority: 0.6 },
+    { url: `${baseUrl}/iletisim`,            lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
+    { url: `${baseUrl}/teklif-al`,           lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
+    { url: `${baseUrl}/kombin-liste`,        lastModified: new Date(), changeFrequency: "weekly",  priority: 0.5 },
+    { url: `${baseUrl}/siparis-takip`,       lastModified: new Date(), changeFrequency: "monthly", priority: 0.4 },
+    { url: `${baseUrl}/arama`,               lastModified: new Date(), changeFrequency: "monthly", priority: 0.4 },
+    { url: `${baseUrl}/favoriler`,           lastModified: new Date(), changeFrequency: "monthly", priority: 0.4 },
   ];
 
-  // Categories
+  // ─── Categories ───────────────────────────────────────────────────────────
   const categories = await prisma.category.findMany({
     where: { isActive: true },
     select: { slug: true, updatedAt: true },
@@ -28,7 +36,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
-  // Products
+  // ─── Products ─────────────────────────────────────────────────────────────
   const products = await prisma.product.findMany({
     where: { isActive: true },
     select: { slug: true, updatedAt: true },
@@ -40,7 +48,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.9,
   }));
 
-  // Brands
+  // ─── Brands ───────────────────────────────────────────────────────────────
   const brands = await prisma.brand.findMany({
     where: { isActive: true },
     select: { slug: true, updatedAt: true },
@@ -52,7 +60,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  // Education categories
+  // ─── Education categories ─────────────────────────────────────────────────
   const edCategories = await prisma.educationCategory.findMany({
     where: { isActive: true },
     select: { slug: true, updatedAt: true },
@@ -64,19 +72,36 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  // Education posts
-  const posts = await prisma.educationPost.findMany({
+  // ─── Education posts ──────────────────────────────────────────────────────
+  const eduPosts = await prisma.educationPost.findMany({
     where: { isPublished: true },
     include: { category: { select: { slug: true } } },
   });
-  const educationPostRoutes: MetadataRoute.Sitemap = posts.map((post: any) => ({
+  const educationPostRoutes: MetadataRoute.Sitemap = eduPosts.map((post: any) => ({
     url: `${baseUrl}/egitim/${post.category.slug}/${post.slug}`,
     lastModified: post.updatedAt,
     changeFrequency: "monthly" as const,
     priority: 0.6,
   }));
 
-  // Static pages
+  // ─── Blog posts ───────────────────────────────────────────────────────────
+  let blogRoutes: MetadataRoute.Sitemap = [];
+  try {
+    const blogPosts = await (prisma as any).blogPost.findMany({
+      where: { isPublished: true },
+      select: { slug: true, updatedAt: true },
+    });
+    blogRoutes = blogPosts.map((post: any) => ({
+      url: `${baseUrl}/blog/${post.slug}`,
+      lastModified: post.updatedAt,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    }));
+  } catch {
+    // blogPost model may not exist yet
+  }
+
+  // ─── Static pages (from DB) ───────────────────────────────────────────────
   const pages = await prisma.staticPage.findMany({
     where: { isActive: true },
     select: { slug: true, updatedAt: true },
@@ -95,6 +120,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...brandRoutes,
     ...educationCategoryRoutes,
     ...educationPostRoutes,
+    ...blogRoutes,
     ...pageRoutes,
   ];
 }
