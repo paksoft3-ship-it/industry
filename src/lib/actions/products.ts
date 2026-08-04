@@ -2,6 +2,14 @@
 import prisma from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
+import { getSettings } from "@/lib/actions/settings";
+
+// Storefront-wide catalog switch (admin "Ürünleri Gizle" toggle).
+// Admin queries (getAdminProducts, getProductById) are NOT gated.
+async function catalogHidden() {
+  const settings = await getSettings();
+  return settings.productsVisible === false;
+}
 
 export async function getProducts({
   categorySlug,
@@ -24,6 +32,10 @@ export async function getProducts({
   inStockOnly?: boolean;
   attributes?: Record<string, string[]>;
 } = {}) {
+  if (await catalogHidden()) {
+    return { products: [], total: 0, totalPages: 0, page };
+  }
+
   const where: Record<string, unknown> = { isActive: true };
 
   if (categorySlug) {
@@ -169,6 +181,8 @@ export async function getProductById(id: string) {
 }
 
 export async function getProductBySlug(slug: string) {
+  if (await catalogHidden()) return null;
+
   const product = await prisma.product.findUnique({
     where: { slug },
     include: {
@@ -204,6 +218,8 @@ export async function getProductBySlug(slug: string) {
 }
 
 export async function getFeaturedProducts(limit = 8) {
+  if (await catalogHidden()) return [];
+
   return prisma.product.findMany({
     where: { isActive: true, isFeatured: true },
     include: {

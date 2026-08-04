@@ -25,6 +25,7 @@ export async function updateSettings(data: {
   youtubeUrl?: string;
   dosyaMerkeziSlug?: string;
   defaultCurrency?: string;
+  productsVisible?: boolean;
   logoUrl?: string;
   faviconUrl?: string;
   // Hero section

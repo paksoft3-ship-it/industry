@@ -526,6 +526,7 @@ model SiteSettings {
   youtubeUrl       String?
   dosyaMerkeziSlug String  @default("dosya-merkezi")
   defaultCurrency  String  @default("TRY")
+  productsVisible  Boolean @default(true)
   logoUrl          String?
   faviconUrl       String?
   // Hero section

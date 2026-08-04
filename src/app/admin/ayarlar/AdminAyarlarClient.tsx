@@ -33,11 +33,31 @@ interface SiteSettings {
   heroCta2Url: string | null;
   // Contact
   mapEmbedUrl: string | null;
+  // Catalog
+  productsVisible: boolean;
 }
 
 export default function AdminAyarlarClient({ settings }: { settings: SiteSettings }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [productsVisible, setProductsVisible] = useState(settings.productsVisible !== false);
+  const [isTogglingCatalog, setIsTogglingCatalog] = useState(false);
+
+  const toggleCatalog = async () => {
+    const next = !productsVisible;
+    setProductsVisible(next);
+    setIsTogglingCatalog(true);
+    try {
+      await updateSettings({ productsVisible: next });
+      toast.success(next ? "Ürünler sitede tekrar görünür" : "Ürünler sitede gizlendi");
+      router.refresh();
+    } catch {
+      setProductsVisible(!next);
+      toast.error("Ayar kaydedilemedi");
+    } finally {
+      setIsTogglingCatalog(false);
+    }
+  };
 
   const [form, setForm] = useState({
     siteName: settings.siteName ?? "",
@@ -156,6 +176,42 @@ export default function AdminAyarlarClient({ settings }: { settings: SiteSetting
       <div>
         <h2 className="text-2xl font-bold font-[family-name:var(--font-display)] text-gray-800">Site Ayarları</h2>
         <p className="text-sm text-gray-500 mt-1">Genel site yapılandırmasını düzenleyin</p>
+      </div>
+
+      {/* ── Catalog Visibility ──────────────────────────────────────── */}
+      <div className={`rounded-xl shadow-sm border p-6 ${productsVisible ? "bg-white border-gray-100" : "bg-orange-50 border-orange-200"}`}>
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-start gap-3">
+            <MaterialIcon
+              icon={productsVisible ? "storefront" : "visibility_off"}
+              className={`text-3xl ${productsVisible ? "text-primary" : "text-orange-500"}`}
+            />
+            <div>
+              <h3 className="text-lg font-semibold text-gray-800">Ürün Kataloğu</h3>
+              <p className="text-sm text-gray-500 mt-1">
+                {productsVisible
+                  ? "Ürünler sitede görünüyor. Kapatırsanız tüm ürünler (ana sayfa, kategoriler, arama ve ürün sayfaları) ziyaretçilerden gizlenir."
+                  : "Tüm ürünler şu anda ziyaretçilerden gizli. Admin panelindeki ürün yönetimi etkilenmez."}
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            role="switch"
+            aria-checked={productsVisible}
+            onClick={toggleCatalog}
+            disabled={isTogglingCatalog}
+            className={`relative inline-flex h-7 w-13 shrink-0 items-center rounded-full transition-colors disabled:opacity-50 ${
+              productsVisible ? "bg-primary" : "bg-gray-300"
+            }`}
+          >
+            <span
+              className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform ${
+                productsVisible ? "translate-x-7" : "translate-x-1"
+              }`}
+            />
+          </button>
+        </div>
       </div>
 
       {/* ── General Info ────────────────────────────────────────────── */}
